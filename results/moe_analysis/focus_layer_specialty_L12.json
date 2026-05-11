@@ -1,0 +1,449 @@
+{
+  "focus_layer": 12,
+  "tasks": [
+    "Cell",
+    "DNA",
+    "Mol",
+    "NL",
+    "Protein",
+    "RemHomology",
+    "StdHomology",
+    "Structure"
+  ],
+  "v3_top5_at_L12": {
+    "Cell": [
+      {
+        "expert_id": 109,
+        "log_specialty": 2.079441038668234,
+        "routing_prob": 0.0013916175507531106
+      },
+      {
+        "expert_id": 56,
+        "log_specialty": 1.9511715907039477,
+        "routing_prob": 0.0019646365422396855
+      },
+      {
+        "expert_id": 116,
+        "log_specialty": 1.8360642982404543,
+        "routing_prob": 0.026850032743942372
+      },
+      {
+        "expert_id": 3,
+        "log_specialty": 1.7020817909868697,
+        "routing_prob": 8.185985592665357e-05
+      },
+      {
+        "expert_id": 72,
+        "log_specialty": 1.6562997995338484,
+        "routing_prob": 0.022102161100196464
+      }
+    ],
+    "DNA": [
+      {
+        "expert_id": 91,
+        "log_specialty": 1.2619625766138869,
+        "routing_prob": 0.0066401226629735875
+      },
+      {
+        "expert_id": 9,
+        "log_specialty": 0.8260396865464323,
+        "routing_prob": 0.11534276387377584
+      },
+      {
+        "expert_id": 58,
+        "log_specialty": 0.6636237605798407,
+        "routing_prob": 0.005749826886932437
+      },
+      {
+        "expert_id": 94,
+        "log_specialty": 0.5943735437366469,
+        "routing_prob": 0.010658818874270452
+      },
+      {
+        "expert_id": 49,
+        "log_specialty": 0.5414525462502138,
+        "routing_prob": 0.12448066079730932
+      }
+    ],
+    "Mol": [
+      {
+        "expert_id": 47,
+        "log_specialty": 2.0700714784972623,
+        "routing_prob": 0.03174186778593914
+      },
+      {
+        "expert_id": 127,
+        "log_specialty": 2.008731688760826,
+        "routing_prob": 0.003585169639734173
+      },
+      {
+        "expert_id": 119,
+        "log_specialty": 1.7955217248586606,
+        "routing_prob": 8.744316194473592e-05
+      },
+      {
+        "expert_id": 82,
+        "log_specialty": 1.7693303489332888,
+        "routing_prob": 0.06212836656173487
+      },
+      {
+        "expert_id": 18,
+        "log_specialty": 1.698882383490568,
+        "routing_prob": 0.003016789087093389
+      }
+    ],
+    "NL": [
+      {
+        "expert_id": 54,
+        "log_specialty": 2.0794415293753508,
+        "routing_prob": 0.056889822876013206
+      },
+      {
+        "expert_id": 121,
+        "log_specialty": 2.0794415233560644,
+        "routing_prob": 0.0382017412188532
+      },
+      {
+        "expert_id": 61,
+        "log_specialty": 2.0794415194467017,
+        "routing_prob": 0.0314845391774242
+      },
+      {
+        "expert_id": 52,
+        "log_specialty": 2.079441513502193,
+        "routing_prob": 0.02484238967277094
+      },
+      {
+        "expert_id": 37,
+        "log_specialty": 2.0794415101170616,
+        "routing_prob": 0.02217802461723206
+      }
+    ],
+    "Protein": [
+      {
+        "expert_id": 9,
+        "log_specialty": 0.7895016287646678,
+        "routing_prob": 0.11120442708333333
+      },
+      {
+        "expert_id": 49,
+        "log_specialty": 0.5454596524633324,
+        "routing_prob": 0.12498046875
+      },
+      {
+        "expert_id": 39,
+        "log_specialty": 0.5151667787703704,
+        "routing_prob": 0.057779947916666664
+      },
+      {
+        "expert_id": 78,
+        "log_specialty": 0.4687878085768128,
+        "routing_prob": 0.12496744791666667
+      },
+      {
+        "expert_id": 124,
+        "log_specialty": 0.4368278163774118,
+        "routing_prob": 0.12494140625
+      }
+    ],
+    "RemHomology": [
+      {
+        "expert_id": 44,
+        "log_specialty": 0.7566506338565624,
+        "routing_prob": 0.00264034590303374
+      },
+      {
+        "expert_id": 49,
+        "log_specialty": 0.4297094840724176,
+        "routing_prob": 0.11131981854267083
+      },
+      {
+        "expert_id": 39,
+        "log_specialty": 0.39726473474382706,
+        "routing_prob": 0.051353841791891126
+      },
+      {
+        "expert_id": 71,
+        "log_specialty": 0.38263143056375565,
+        "routing_prob": 0.10533030904451375
+      },
+      {
+        "expert_id": 78,
+        "log_specialty": 0.37471576975250004,
+        "routing_prob": 0.11374751913807768
+      }
+    ],
+    "StdHomology": [
+      {
+        "expert_id": 91,
+        "log_specialty": 0.667429657027412,
+        "routing_prob": 0.0036641541038525964
+      },
+      {
+        "expert_id": 44,
+        "log_specialty": 0.5802922767679074,
+        "routing_prob": 0.002213448193347691
+      },
+      {
+        "expert_id": 49,
+        "log_specialty": 0.4481737678218079,
+        "routing_prob": 0.11339435271596075
+      },
+      {
+        "expert_id": 9,
+        "log_specialty": 0.40221813478098745,
+        "routing_prob": 0.07549653027039961
+      },
+      {
+        "expert_id": 71,
+        "log_specialty": 0.3870508817155365,
+        "routing_prob": 0.10579684134960517
+      }
+    ],
+    "Structure": [
+      {
+        "expert_id": 123,
+        "log_specialty": 2.0794412737414207,
+        "routing_prob": 0.002612540192926045
+      },
+      {
+        "expert_id": 10,
+        "log_specialty": 2.0794403225607914,
+        "routing_prob": 0.0005741846577859439
+      },
+      {
+        "expert_id": 105,
+        "log_specialty": 1.861377622926016,
+        "routing_prob": 0.0007177308222324299
+      },
+      {
+        "expert_id": 107,
+        "log_specialty": 1.576505835704558,
+        "routing_prob": 5.7418465778594396e-05
+      },
+      {
+        "expert_id": 23,
+        "log_specialty": 1.3238867795659168,
+        "routing_prob": 0.0019091639871382637
+      }
+    ]
+  },
+  "baseline_top5_at_L12": {
+    "Cell": [
+      {
+        "expert_id": 77,
+        "log_specialty": 1.2671399538549626,
+        "routing_prob": 0.0029469548133595285
+      },
+      {
+        "expert_id": 119,
+        "log_specialty": 1.2456562899679102,
+        "routing_prob": 0.0002455795677799607
+      },
+      {
+        "expert_id": 92,
+        "log_specialty": 1.1850662964415455,
+        "routing_prob": 0.0009823182711198428
+      },
+      {
+        "expert_id": 22,
+        "log_specialty": 1.1837998698528969,
+        "routing_prob": 0.008840864440078585
+      },
+      {
+        "expert_id": 36,
+        "log_specialty": 1.107714309613728,
+        "routing_prob": 0.002865094957432875
+      }
+    ],
+    "DNA": [
+      {
+        "expert_id": 124,
+        "log_specialty": 1.1532691196725913,
+        "routing_prob": 0.10677366702937977
+      },
+      {
+        "expert_id": 3,
+        "log_specialty": 0.8674826940043324,
+        "routing_prob": 0.00022257394401028785
+      },
+      {
+        "expert_id": 76,
+        "log_specialty": 0.6795011920308491,
+        "routing_prob": 0.004513304975764171
+      },
+      {
+        "expert_id": 49,
+        "log_specialty": 0.5385525190184423,
+        "routing_prob": 0.11748194678009695
+      },
+      {
+        "expert_id": 80,
+        "log_specialty": 0.44480367712853563,
+        "routing_prob": 0.11683895538628944
+      }
+    ],
+    "Mol": [
+      {
+        "expert_id": 100,
+        "log_specialty": 2.0338852267007557,
+        "routing_prob": 0.011498775795732774
+      },
+      {
+        "expert_id": 47,
+        "log_specialty": 1.8983186254355287,
+        "routing_prob": 0.0025358516963973417
+      },
+      {
+        "expert_id": 41,
+        "log_specialty": 1.7747236108591402,
+        "routing_prob": 0.0017051416579223506
+      },
+      {
+        "expert_id": 8,
+        "log_specialty": 1.727275605430852,
+        "routing_prob": 0.003497726477789437
+      },
+      {
+        "expert_id": 116,
+        "log_specialty": 1.6497867823672299,
+        "routing_prob": 0.0023172437915355017
+      }
+    ],
+    "NL": [
+      {
+        "expert_id": 61,
+        "log_specialty": 2.0794414664637104,
+        "routing_prob": 0.009306514560192134
+      },
+      {
+        "expert_id": 54,
+        "log_specialty": 2.079441464598848,
+        "routing_prob": 0.009081356949864906
+      },
+      {
+        "expert_id": 121,
+        "log_specialty": 2.079441380872956,
+        "routing_prob": 0.004353047132993095
+      },
+      {
+        "expert_id": 93,
+        "log_specialty": 2.079441376603747,
+        "routing_prob": 0.00424046832782948
+      },
+      {
+        "expert_id": 70,
+        "log_specialty": 2.0794413247775405,
+        "routing_prob": 0.00322725908135695
+      }
+    ],
+    "Protein": [
+      {
+        "expert_id": 107,
+        "log_specialty": 2.079387783537704,
+        "routing_prob": 1.3020833333333334e-05
+      },
+      {
+        "expert_id": 109,
+        "log_specialty": 1.9672628839118351,
+        "routing_prob": 0.00010416666666666667
+      },
+      {
+        "expert_id": 31,
+        "log_specialty": 1.9522173041800248,
+        "routing_prob": 9.114583333333334e-05
+      },
+      {
+        "expert_id": 95,
+        "log_specialty": 0.7628240661220586,
+        "routing_prob": 0.00056640625
+      },
+      {
+        "expert_id": 69,
+        "log_specialty": 0.5998216638842416,
+        "routing_prob": 1.953125e-05
+      }
+    ],
+    "RemHomology": [
+      {
+        "expert_id": 98,
+        "log_specialty": 0.6503024166445235,
+        "routing_prob": 0.00012404309611567906
+      },
+      {
+        "expert_id": 78,
+        "log_specialty": 0.4161146952391591,
+        "routing_prob": 0.11105401190813723
+      },
+      {
+        "expert_id": 44,
+        "log_specialty": 0.40790399660175236,
+        "routing_prob": 0.0025694641338247803
+      },
+      {
+        "expert_id": 76,
+        "log_specialty": 0.36518180470269174,
+        "routing_prob": 0.003296002268216615
+      },
+      {
+        "expert_id": 49,
+        "log_specialty": 0.3444355370910622,
+        "routing_prob": 0.09675361497022966
+      }
+    ],
+    "StdHomology": [
+      {
+        "expert_id": 34,
+        "log_specialty": 1.471634839967283,
+        "routing_prob": 4.486719310839914e-05
+      },
+      {
+        "expert_id": 111,
+        "log_specialty": 0.763884354898576,
+        "routing_prob": 2.9911462072266092e-05
+      },
+      {
+        "expert_id": 78,
+        "log_specialty": 0.37886423265575847,
+        "routing_prob": 0.10699329983249581
+      },
+      {
+        "expert_id": 80,
+        "log_specialty": 0.3463756212684,
+        "routing_prob": 0.10588657573582197
+      },
+      {
+        "expert_id": 49,
+        "log_specialty": 0.3253446754666392,
+        "routing_prob": 0.09492402488633644
+      }
+    ],
+    "Structure": [
+      {
+        "expert_id": 10,
+        "log_specialty": 2.0793927784084962,
+        "routing_prob": 1.4354616444648599e-05
+      },
+      {
+        "expert_id": 105,
+        "log_specialty": 1.8619041590541388,
+        "routing_prob": 0.0010335323840146991
+      },
+      {
+        "expert_id": 23,
+        "log_specialty": 1.710141989498743,
+        "routing_prob": 0.0010765962333486449
+      },
+      {
+        "expert_id": 123,
+        "log_specialty": 1.7059779462075426,
+        "routing_prob": 0.0010622416169039964
+      },
+      {
+        "expert_id": 27,
+        "log_specialty": 1.661638810871664,
+        "routing_prob": 0.00048805695911805234
+      }
+    ]
+  }
+}
