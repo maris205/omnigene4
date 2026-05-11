@@ -1,0 +1,31 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Data/models (too large, not tracked)
+*.pt
+*.safetensors
+*.bin
+*.gguf
+data/
+outputs/
+checkpoints*/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp

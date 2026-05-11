@@ -1,0 +1,19 @@
+{
+  "standard_homology": {
+    "accuracy": 1.0,
+    "valid": 6000,
+    "failed": 0
+  },
+  "remote_homology": {
+    "accuracy": 0.5655,
+    "valid": 2000,
+    "total": 2000,
+    "failed": 0,
+    "source": "dnagpt/biopaws::protein_pair_remote"
+  },
+  "bixbench_knowledge": {
+    "accuracy": 0.9104477611940298,
+    "correct": 183,
+    "total": 201
+  }
+}

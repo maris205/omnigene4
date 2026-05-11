@@ -1,0 +1,2163 @@
+{
+  "NL": {
+    "E94": {
+      "total_hits_L11_13": 3076,
+      "task_distribution": {
+        "NL": 460,
+        "Cell": 154,
+        "Mol": 473,
+        "DNA": 862,
+        "Protein": 229,
+        "StdHomology": 294,
+        "RemHomology": 128,
+        "Structure": 476
+      },
+      "top_tokens": [
+        {
+          "token": "C",
+          "task": "Mol",
+          "count": 86
+        },
+        {
+          "token": "AT",
+          "task": "DNA",
+          "count": 82
+        },
+        {
+          "token": "AG",
+          "task": "DNA",
+          "count": 81
+        },
+        {
+          "token": " sequence",
+          "task": "Structure",
+          "count": 71
+        },
+        {
+          "token": "GT",
+          "task": "DNA",
+          "count": 70
+        },
+        {
+          "token": "GC",
+          "task": "DNA",
+          "count": 68
+        },
+        {
+          "token": "AC",
+          "task": "DNA",
+          "count": 61
+        },
+        {
+          "token": "CT",
+          "task": "DNA",
+          "count": 57
+        },
+        {
+          "token": "TAG",
+          "task": "DNA",
+          "count": 51
+        },
+        {
+          "token": "###",
+          "task": "StdHomology",
+          "count": 50
+        },
+        {
+          "token": "###",
+          "task": "RemHomology",
+          "count": 50
+        },
+        {
+          "token": "###",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": "CC",
+          "task": "DNA",
+          "count": 42
+        },
+        {
+          "token": "GG",
+          "task": "DNA",
+          "count": 40
+        },
+        {
+          "token": "(",
+          "task": "Mol",
+          "count": 37
+        }
+      ]
+    },
+    "E3": {
+      "total_hits_L11_13": 332,
+      "task_distribution": {
+        "NL": 102,
+        "Cell": 6,
+        "Mol": 15,
+        "Structure": 209
+      },
+      "top_tokens": [
+        {
+          "token": "###",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " Answer",
+          "task": "Structure",
+          "count": 30
+        },
+        {
+          "token": " for",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": " Use",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": "-",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": "style",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": " Instruction",
+          "task": "Structure",
+          "count": 13
+        },
+        {
+          "token": " of",
+          "task": "NL",
+          "count": 5
+        },
+        {
+          "token": "<",
+          "task": "Cell",
+          "count": 4
+        },
+        {
+          "token": ".",
+          "task": "NL",
+          "count": 4
+        },
+        {
+          "token": " the",
+          "task": "NL",
+          "count": 4
+        },
+        {
+          "token": "LES",
+          "task": "Mol",
+          "count": 3
+        },
+        {
+          "token": " given",
+          "task": "Mol",
+          "count": 3
+        },
+        {
+          "token": " provided",
+          "task": "Mol",
+          "count": 3
+        },
+        {
+          "token": ",",
+          "task": "NL",
+          "count": 3
+        }
+      ]
+    },
+    "E54": {
+      "total_hits_L11_13": 2357,
+      "task_distribution": {
+        "Protein": 1,
+        "NL": 1889,
+        "Cell": 89,
+        "Mol": 61,
+        "Structure": 317
+      },
+      "top_tokens": [
+        {
+          "token": " the",
+          "task": "NL",
+          "count": 86
+        },
+        {
+          "token": ".",
+          "task": "NL",
+          "count": 51
+        },
+        {
+          "token": ",",
+          "task": "NL",
+          "count": 50
+        },
+        {
+          "token": " amino",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": "-",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": "acid",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " sequence",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " in",
+          "task": "NL",
+          "count": 43
+        },
+        {
+          "token": " to",
+          "task": "NL",
+          "count": 41
+        },
+        {
+          "token": " of",
+          "task": "NL",
+          "count": 38
+        },
+        {
+          "token": " a",
+          "task": "NL",
+          "count": 36
+        },
+        {
+          "token": "P",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": "style",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": " and",
+          "task": "NL",
+          "count": 21
+        },
+        {
+          "token": " DSS",
+          "task": "Structure",
+          "count": 21
+        }
+      ]
+    }
+  },
+  "Cell": {
+    "E100": {
+      "total_hits_L11_13": 9822,
+      "task_distribution": {
+        "DNA": 109,
+        "Protein": 440,
+        "StdHomology": 1144,
+        "RemHomology": 1683,
+        "NL": 750,
+        "Cell": 1804,
+        "Mol": 2119,
+        "Structure": 1773
+      },
+      "top_tokens": [
+        {
+          "token": " Sequence",
+          "task": "StdHomology",
+          "count": 200
+        },
+        {
+          "token": " Sequence",
+          "task": "RemHomology",
+          "count": 200
+        },
+        {
+          "token": ":",
+          "task": "RemHomology",
+          "count": 199
+        },
+        {
+          "token": ":",
+          "task": "StdHomology",
+          "count": 183
+        },
+        {
+          "token": "C",
+          "task": "Mol",
+          "count": 172
+        },
+        {
+          "token": ")",
+          "task": "Mol",
+          "count": 150
+        },
+        {
+          "token": "###",
+          "task": "Structure",
+          "count": 150
+        },
+        {
+          "token": ":",
+          "task": "Structure",
+          "count": 145
+        },
+        {
+          "token": ",",
+          "task": "Cell",
+          "count": 128
+        },
+        {
+          "token": "(",
+          "task": "Mol",
+          "count": 112
+        },
+        {
+          "token": "\\n",
+          "task": "Cell",
+          "count": 107
+        },
+        {
+          "token": "1",
+          "task": "Cell",
+          "count": 102
+        },
+        {
+          "token": " below",
+          "task": "Structure",
+          "count": 100
+        },
+        {
+          "token": "\\n",
+          "task": "StdHomology",
+          "count": 100
+        },
+        {
+          "token": "1",
+          "task": "RemHomology",
+          "count": 100
+        }
+      ]
+    },
+    "E6": {
+      "total_hits_L11_13": 1151,
+      "task_distribution": {
+        "NL": 715,
+        "Cell": 75,
+        "Mol": 104,
+        "Structure": 147,
+        "DNA": 23,
+        "StdHomology": 46,
+        "RemHomology": 41
+      },
+      "top_tokens": [
+        {
+          "token": "Predict",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " ",
+          "task": "StdHomology",
+          "count": 46
+        },
+        {
+          "token": " ",
+          "task": "RemHomology",
+          "count": 41
+        },
+        {
+          "token": ":",
+          "task": "Structure",
+          "count": 30
+        },
+        {
+          "token": " the",
+          "task": "NL",
+          "count": 29
+        },
+        {
+          "token": "P",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": "G",
+          "task": "DNA",
+          "count": 23
+        },
+        {
+          "token": "seek",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " to",
+          "task": "NL",
+          "count": 18
+        },
+        {
+          "token": " that",
+          "task": "NL",
+          "count": 17
+        },
+        {
+          "token": " ",
+          "task": "Structure",
+          "count": 17
+        },
+        {
+          "token": " is",
+          "task": "Mol",
+          "count": 15
+        },
+        {
+          "token": " of",
+          "task": "NL",
+          "count": 14
+        },
+        {
+          "token": " of",
+          "task": "Mol",
+          "count": 14
+        },
+        {
+          "token": " Sanders",
+          "task": "NL",
+          "count": 13
+        }
+      ]
+    },
+    "E97": {
+      "total_hits_L11_13": 949,
+      "task_distribution": {
+        "NL": 387,
+        "Structure": 120,
+        "DNA": 2,
+        "Protein": 6,
+        "StdHomology": 51,
+        "RemHomology": 20,
+        "Cell": 181,
+        "Mol": 182
+      },
+      "top_tokens": [
+        {
+          "token": " cell",
+          "task": "Cell",
+          "count": 39
+        },
+        {
+          "token": "-",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": " structural",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " Fold",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " the",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " the",
+          "task": "NL",
+          "count": 18
+        },
+        {
+          "token": " identity",
+          "task": "Cell",
+          "count": 16
+        },
+        {
+          "token": " the",
+          "task": "Cell",
+          "count": 15
+        },
+        {
+          "token": " molecular",
+          "task": "Mol",
+          "count": 13
+        },
+        {
+          "token": " a",
+          "task": "NL",
+          "count": 12
+        },
+        {
+          "token": " is",
+          "task": "Mol",
+          "count": 12
+        },
+        {
+          "token": " this",
+          "task": "Mol",
+          "count": 12
+        },
+        {
+          "token": " in",
+          "task": "NL",
+          "count": 11
+        },
+        {
+          "token": " of",
+          "task": "NL",
+          "count": 11
+        },
+        {
+          "token": " type",
+          "task": "Cell",
+          "count": 11
+        }
+      ]
+    }
+  },
+  "Mol": {
+    "E6": {
+      "total_hits_L11_13": 1151,
+      "task_distribution": {
+        "NL": 715,
+        "Cell": 75,
+        "Mol": 104,
+        "Structure": 147,
+        "DNA": 23,
+        "StdHomology": 46,
+        "RemHomology": 41
+      },
+      "top_tokens": [
+        {
+          "token": "Predict",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " ",
+          "task": "StdHomology",
+          "count": 46
+        },
+        {
+          "token": " ",
+          "task": "RemHomology",
+          "count": 41
+        },
+        {
+          "token": ":",
+          "task": "Structure",
+          "count": 30
+        },
+        {
+          "token": " the",
+          "task": "NL",
+          "count": 29
+        },
+        {
+          "token": "P",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": "G",
+          "task": "DNA",
+          "count": 23
+        },
+        {
+          "token": "seek",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " to",
+          "task": "NL",
+          "count": 18
+        },
+        {
+          "token": " that",
+          "task": "NL",
+          "count": 17
+        },
+        {
+          "token": " ",
+          "task": "Structure",
+          "count": 17
+        },
+        {
+          "token": " is",
+          "task": "Mol",
+          "count": 15
+        },
+        {
+          "token": " of",
+          "task": "NL",
+          "count": 14
+        },
+        {
+          "token": " of",
+          "task": "Mol",
+          "count": 14
+        },
+        {
+          "token": " Sanders",
+          "task": "NL",
+          "count": 13
+        }
+      ]
+    },
+    "E100": {
+      "total_hits_L11_13": 9822,
+      "task_distribution": {
+        "DNA": 109,
+        "Protein": 440,
+        "StdHomology": 1144,
+        "RemHomology": 1683,
+        "NL": 750,
+        "Cell": 1804,
+        "Mol": 2119,
+        "Structure": 1773
+      },
+      "top_tokens": [
+        {
+          "token": " Sequence",
+          "task": "StdHomology",
+          "count": 200
+        },
+        {
+          "token": " Sequence",
+          "task": "RemHomology",
+          "count": 200
+        },
+        {
+          "token": ":",
+          "task": "RemHomology",
+          "count": 199
+        },
+        {
+          "token": ":",
+          "task": "StdHomology",
+          "count": 183
+        },
+        {
+          "token": "C",
+          "task": "Mol",
+          "count": 172
+        },
+        {
+          "token": ")",
+          "task": "Mol",
+          "count": 150
+        },
+        {
+          "token": "###",
+          "task": "Structure",
+          "count": 150
+        },
+        {
+          "token": ":",
+          "task": "Structure",
+          "count": 145
+        },
+        {
+          "token": ",",
+          "task": "Cell",
+          "count": 128
+        },
+        {
+          "token": "(",
+          "task": "Mol",
+          "count": 112
+        },
+        {
+          "token": "\\n",
+          "task": "Cell",
+          "count": 107
+        },
+        {
+          "token": "1",
+          "task": "Cell",
+          "count": 102
+        },
+        {
+          "token": " below",
+          "task": "Structure",
+          "count": 100
+        },
+        {
+          "token": "\\n",
+          "task": "StdHomology",
+          "count": 100
+        },
+        {
+          "token": "1",
+          "task": "RemHomology",
+          "count": 100
+        }
+      ]
+    },
+    "E97": {
+      "total_hits_L11_13": 949,
+      "task_distribution": {
+        "NL": 387,
+        "Structure": 120,
+        "DNA": 2,
+        "Protein": 6,
+        "StdHomology": 51,
+        "RemHomology": 20,
+        "Cell": 181,
+        "Mol": 182
+      },
+      "top_tokens": [
+        {
+          "token": " cell",
+          "task": "Cell",
+          "count": 39
+        },
+        {
+          "token": "-",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": " structural",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " Fold",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " the",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " the",
+          "task": "NL",
+          "count": 18
+        },
+        {
+          "token": " identity",
+          "task": "Cell",
+          "count": 16
+        },
+        {
+          "token": " the",
+          "task": "Cell",
+          "count": 15
+        },
+        {
+          "token": " molecular",
+          "task": "Mol",
+          "count": 13
+        },
+        {
+          "token": " a",
+          "task": "NL",
+          "count": 12
+        },
+        {
+          "token": " is",
+          "task": "Mol",
+          "count": 12
+        },
+        {
+          "token": " this",
+          "task": "Mol",
+          "count": 12
+        },
+        {
+          "token": " in",
+          "task": "NL",
+          "count": 11
+        },
+        {
+          "token": " of",
+          "task": "NL",
+          "count": 11
+        },
+        {
+          "token": " type",
+          "task": "Cell",
+          "count": 11
+        }
+      ]
+    }
+  },
+  "DNA": {
+    "E81": {
+      "total_hits_L11_13": 2444,
+      "task_distribution": {
+        "DNA": 7,
+        "Protein": 20,
+        "StdHomology": 188,
+        "RemHomology": 189,
+        "NL": 163,
+        "Mol": 619,
+        "Structure": 919,
+        "Cell": 339
+      },
+      "top_tokens": [
+        {
+          "token": "-",
+          "task": "Structure",
+          "count": 58
+        },
+        {
+          "token": ".",
+          "task": "Mol",
+          "count": 54
+        },
+        {
+          "token": ":",
+          "task": "Structure",
+          "count": 54
+        },
+        {
+          "token": " Sequence",
+          "task": "StdHomology",
+          "count": 50
+        },
+        {
+          "token": ":",
+          "task": "StdHomology",
+          "count": 50
+        },
+        {
+          "token": " Sequence",
+          "task": "RemHomology",
+          "count": 50
+        },
+        {
+          "token": ":",
+          "task": "RemHomology",
+          "count": 50
+        },
+        {
+          "token": "\\n",
+          "task": "Mol",
+          "count": 50
+        },
+        {
+          "token": "Predict",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " for",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " sequence",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " below",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": ".",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": "\\n\\n",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " Sequence",
+          "task": "Structure",
+          "count": 50
+        }
+      ]
+    },
+    "E59": {
+      "total_hits_L11_13": 17537,
+      "task_distribution": {
+        "DNA": 8074,
+        "Protein": 4530,
+        "StdHomology": 1212,
+        "RemHomology": 1338,
+        "NL": 180,
+        "Cell": 114,
+        "Mol": 470,
+        "Structure": 1619
+      },
+      "top_tokens": [
+        {
+          "token": "AT",
+          "task": "DNA",
+          "count": 811
+        },
+        {
+          "token": "CT",
+          "task": "DNA",
+          "count": 670
+        },
+        {
+          "token": "AG",
+          "task": "DNA",
+          "count": 617
+        },
+        {
+          "token": "TT",
+          "task": "DNA",
+          "count": 467
+        },
+        {
+          "token": "AC",
+          "task": "DNA",
+          "count": 439
+        },
+        {
+          "token": "GG",
+          "task": "DNA",
+          "count": 312
+        },
+        {
+          "token": "CC",
+          "task": "DNA",
+          "count": 308
+        },
+        {
+          "token": "TC",
+          "task": "DNA",
+          "count": 290
+        },
+        {
+          "token": "GC",
+          "task": "DNA",
+          "count": 281
+        },
+        {
+          "token": "CG",
+          "task": "DNA",
+          "count": 272
+        },
+        {
+          "token": "V",
+          "task": "Protein",
+          "count": 266
+        },
+        {
+          "token": "GT",
+          "task": "DNA",
+          "count": 253
+        },
+        {
+          "token": "CA",
+          "task": "DNA",
+          "count": 249
+        },
+        {
+          "token": "G",
+          "task": "DNA",
+          "count": 203
+        },
+        {
+          "token": "ATT",
+          "task": "DNA",
+          "count": 201
+        }
+      ]
+    },
+    "E117": {
+      "total_hits_L11_13": 22805,
+      "task_distribution": {
+        "DNA": 7931,
+        "Protein": 5575,
+        "StdHomology": 2929,
+        "RemHomology": 2310,
+        "NL": 61,
+        "Cell": 62,
+        "Mol": 856,
+        "Structure": 3081
+      },
+      "top_tokens": [
+        {
+          "token": "AG",
+          "task": "DNA",
+          "count": 684
+        },
+        {
+          "token": "AT",
+          "task": "DNA",
+          "count": 644
+        },
+        {
+          "token": "CT",
+          "task": "DNA",
+          "count": 540
+        },
+        {
+          "token": "TT",
+          "task": "DNA",
+          "count": 506
+        },
+        {
+          "token": "GG",
+          "task": "DNA",
+          "count": 472
+        },
+        {
+          "token": "GC",
+          "task": "DNA",
+          "count": 444
+        },
+        {
+          "token": "GT",
+          "task": "DNA",
+          "count": 396
+        },
+        {
+          "token": "AC",
+          "task": "DNA",
+          "count": 387
+        },
+        {
+          "token": "CC",
+          "task": "DNA",
+          "count": 292
+        },
+        {
+          "token": "TC",
+          "task": "DNA",
+          "count": 281
+        },
+        {
+          "token": "CA",
+          "task": "DNA",
+          "count": 229
+        },
+        {
+          "token": "CG",
+          "task": "DNA",
+          "count": 208
+        },
+        {
+          "token": "1",
+          "task": "Mol",
+          "count": 181
+        },
+        {
+          "token": "2",
+          "task": "Mol",
+          "count": 180
+        },
+        {
+          "token": "G",
+          "task": "DNA",
+          "count": 164
+        }
+      ]
+    }
+  },
+  "Protein": {
+    "E57": {
+      "total_hits_L11_13": 3931,
+      "task_distribution": {
+        "StdHomology": 97,
+        "RemHomology": 94,
+        "NL": 3404,
+        "DNA": 40,
+        "Protein": 1,
+        "Cell": 83,
+        "Mol": 112,
+        "Structure": 100
+      },
+      "top_tokens": [
+        {
+          "token": ",",
+          "task": "NL",
+          "count": 155
+        },
+        {
+          "token": " the",
+          "task": "NL",
+          "count": 115
+        },
+        {
+          "token": ".",
+          "task": "NL",
+          "count": 97
+        },
+        {
+          "token": " ",
+          "task": "StdHomology",
+          "count": 96
+        },
+        {
+          "token": " ",
+          "task": "RemHomology",
+          "count": 91
+        },
+        {
+          "token": " to",
+          "task": "NL",
+          "count": 77
+        },
+        {
+          "token": " of",
+          "task": "NL",
+          "count": 66
+        },
+        {
+          "token": " a",
+          "task": "NL",
+          "count": 64
+        },
+        {
+          "token": " in",
+          "task": "NL",
+          "count": 63
+        },
+        {
+          "token": " and",
+          "task": "NL",
+          "count": 53
+        },
+        {
+          "token": " the",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " ",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " that",
+          "task": "NL",
+          "count": 46
+        },
+        {
+          "token": " is",
+          "task": "NL",
+          "count": 44
+        },
+        {
+          "token": "s",
+          "task": "NL",
+          "count": 39
+        }
+      ]
+    },
+    "E78": {
+      "total_hits_L11_13": 105316,
+      "task_distribution": {
+        "NL": 276,
+        "Cell": 1366,
+        "Mol": 2352,
+        "Structure": 14260,
+        "DNA": 20126,
+        "Protein": 38392,
+        "StdHomology": 15549,
+        "RemHomology": 12995
+      },
+      "top_tokens": [
+        {
+          "token": "AT",
+          "task": "DNA",
+          "count": 1962
+        },
+        {
+          "token": "AG",
+          "task": "DNA",
+          "count": 1466
+        },
+        {
+          "token": "V",
+          "task": "Protein",
+          "count": 1450
+        },
+        {
+          "token": "CT",
+          "task": "DNA",
+          "count": 1370
+        },
+        {
+          "token": "TT",
+          "task": "DNA",
+          "count": 1110
+        },
+        {
+          "token": "AC",
+          "task": "DNA",
+          "count": 1094
+        },
+        {
+          "token": "K",
+          "task": "Protein",
+          "count": 1044
+        },
+        {
+          "token": "GC",
+          "task": "DNA",
+          "count": 884
+        },
+        {
+          "token": "GG",
+          "task": "DNA",
+          "count": 840
+        },
+        {
+          "token": "G",
+          "task": "Protein",
+          "count": 804
+        },
+        {
+          "token": "GT",
+          "task": "DNA",
+          "count": 774
+        },
+        {
+          "token": "Y",
+          "task": "Protein",
+          "count": 742
+        },
+        {
+          "token": "CC",
+          "task": "DNA",
+          "count": 704
+        },
+        {
+          "token": "TC",
+          "task": "DNA",
+          "count": 634
+        },
+        {
+          "token": "CG",
+          "task": "DNA",
+          "count": 598
+        }
+      ]
+    },
+    "E9": {
+      "total_hits_L11_13": 37974,
+      "task_distribution": {
+        "DNA": 9331,
+        "RemHomology": 2942,
+        "NL": 286,
+        "Cell": 14,
+        "Mol": 108,
+        "Protein": 17081,
+        "StdHomology": 5048,
+        "Structure": 3164
+      },
+      "top_tokens": [
+        {
+          "token": "AT",
+          "task": "DNA",
+          "count": 951
+        },
+        {
+          "token": "AG",
+          "task": "DNA",
+          "count": 709
+        },
+        {
+          "token": "V",
+          "task": "Protein",
+          "count": 702
+        },
+        {
+          "token": "CT",
+          "task": "DNA",
+          "count": 679
+        },
+        {
+          "token": "TT",
+          "task": "DNA",
+          "count": 539
+        },
+        {
+          "token": "AC",
+          "task": "DNA",
+          "count": 523
+        },
+        {
+          "token": "K",
+          "task": "Protein",
+          "count": 509
+        },
+        {
+          "token": "GC",
+          "task": "DNA",
+          "count": 425
+        },
+        {
+          "token": "GG",
+          "task": "DNA",
+          "count": 398
+        },
+        {
+          "token": "GT",
+          "task": "DNA",
+          "count": 367
+        },
+        {
+          "token": "G",
+          "task": "Protein",
+          "count": 358
+        },
+        {
+          "token": "CC",
+          "task": "DNA",
+          "count": 347
+        },
+        {
+          "token": "Y",
+          "task": "Protein",
+          "count": 346
+        },
+        {
+          "token": "TC",
+          "task": "DNA",
+          "count": 312
+        },
+        {
+          "token": "CG",
+          "task": "DNA",
+          "count": 293
+        }
+      ]
+    }
+  },
+  "StdHomology": {
+    "E9": {
+      "total_hits_L11_13": 37974,
+      "task_distribution": {
+        "DNA": 9331,
+        "RemHomology": 2942,
+        "NL": 286,
+        "Cell": 14,
+        "Mol": 108,
+        "Protein": 17081,
+        "StdHomology": 5048,
+        "Structure": 3164
+      },
+      "top_tokens": [
+        {
+          "token": "AT",
+          "task": "DNA",
+          "count": 951
+        },
+        {
+          "token": "AG",
+          "task": "DNA",
+          "count": 709
+        },
+        {
+          "token": "V",
+          "task": "Protein",
+          "count": 702
+        },
+        {
+          "token": "CT",
+          "task": "DNA",
+          "count": 679
+        },
+        {
+          "token": "TT",
+          "task": "DNA",
+          "count": 539
+        },
+        {
+          "token": "AC",
+          "task": "DNA",
+          "count": 523
+        },
+        {
+          "token": "K",
+          "task": "Protein",
+          "count": 509
+        },
+        {
+          "token": "GC",
+          "task": "DNA",
+          "count": 425
+        },
+        {
+          "token": "GG",
+          "task": "DNA",
+          "count": 398
+        },
+        {
+          "token": "GT",
+          "task": "DNA",
+          "count": 367
+        },
+        {
+          "token": "G",
+          "task": "Protein",
+          "count": 358
+        },
+        {
+          "token": "CC",
+          "task": "DNA",
+          "count": 347
+        },
+        {
+          "token": "Y",
+          "task": "Protein",
+          "count": 346
+        },
+        {
+          "token": "TC",
+          "task": "DNA",
+          "count": 312
+        },
+        {
+          "token": "CG",
+          "task": "DNA",
+          "count": 293
+        }
+      ]
+    },
+    "E57": {
+      "total_hits_L11_13": 3931,
+      "task_distribution": {
+        "StdHomology": 97,
+        "RemHomology": 94,
+        "NL": 3404,
+        "DNA": 40,
+        "Protein": 1,
+        "Cell": 83,
+        "Mol": 112,
+        "Structure": 100
+      },
+      "top_tokens": [
+        {
+          "token": ",",
+          "task": "NL",
+          "count": 155
+        },
+        {
+          "token": " the",
+          "task": "NL",
+          "count": 115
+        },
+        {
+          "token": ".",
+          "task": "NL",
+          "count": 97
+        },
+        {
+          "token": " ",
+          "task": "StdHomology",
+          "count": 96
+        },
+        {
+          "token": " ",
+          "task": "RemHomology",
+          "count": 91
+        },
+        {
+          "token": " to",
+          "task": "NL",
+          "count": 77
+        },
+        {
+          "token": " of",
+          "task": "NL",
+          "count": 66
+        },
+        {
+          "token": " a",
+          "task": "NL",
+          "count": 64
+        },
+        {
+          "token": " in",
+          "task": "NL",
+          "count": 63
+        },
+        {
+          "token": " and",
+          "task": "NL",
+          "count": 53
+        },
+        {
+          "token": " the",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " ",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " that",
+          "task": "NL",
+          "count": 46
+        },
+        {
+          "token": " is",
+          "task": "NL",
+          "count": 44
+        },
+        {
+          "token": "s",
+          "task": "NL",
+          "count": 39
+        }
+      ]
+    },
+    "E107": {
+      "total_hits_L11_13": 1770,
+      "task_distribution": {
+        "NL": 96,
+        "Structure": 369,
+        "DNA": 457,
+        "Protein": 84,
+        "StdHomology": 538,
+        "RemHomology": 130,
+        "Cell": 43,
+        "Mol": 53
+      },
+      "top_tokens": [
+        {
+          "token": "AT",
+          "task": "DNA",
+          "count": 90
+        },
+        {
+          "token": "AG",
+          "task": "DNA",
+          "count": 64
+        },
+        {
+          "token": " ",
+          "task": "StdHomology",
+          "count": 50
+        },
+        {
+          "token": " ",
+          "task": "RemHomology",
+          "count": 50
+        },
+        {
+          "token": " the",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": " ",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": "G",
+          "task": "DNA",
+          "count": 43
+        },
+        {
+          "token": "Q",
+          "task": "StdHomology",
+          "count": 38
+        },
+        {
+          "token": " the",
+          "task": "Mol",
+          "count": 36
+        },
+        {
+          "token": "CT",
+          "task": "DNA",
+          "count": 30
+        },
+        {
+          "token": "AC",
+          "task": "DNA",
+          "count": 21
+        },
+        {
+          "token": "GC",
+          "task": "DNA",
+          "count": 20
+        },
+        {
+          "token": "TT",
+          "task": "DNA",
+          "count": 19
+        },
+        {
+          "token": "CG",
+          "task": "DNA",
+          "count": 19
+        },
+        {
+          "token": ">",
+          "task": "Cell",
+          "count": 19
+        }
+      ]
+    }
+  },
+  "RemHomology": {
+    "E114": {
+      "total_hits_L11_13": 62245,
+      "task_distribution": {
+        "DNA": 10105,
+        "Protein": 19251,
+        "StdHomology": 8816,
+        "RemHomology": 7494,
+        "NL": 1642,
+        "Cell": 2148,
+        "Mol": 3003,
+        "Structure": 9786
+      },
+      "top_tokens": [
+        {
+          "token": "AT",
+          "task": "DNA",
+          "count": 982
+        },
+        {
+          "token": "AG",
+          "task": "DNA",
+          "count": 734
+        },
+        {
+          "token": "V",
+          "task": "Protein",
+          "count": 729
+        },
+        {
+          "token": "CT",
+          "task": "DNA",
+          "count": 685
+        },
+        {
+          "token": "TT",
+          "task": "DNA",
+          "count": 555
+        },
+        {
+          "token": "AC",
+          "task": "DNA",
+          "count": 547
+        },
+        {
+          "token": "K",
+          "task": "Protein",
+          "count": 523
+        },
+        {
+          "token": "GC",
+          "task": "DNA",
+          "count": 442
+        },
+        {
+          "token": "GG",
+          "task": "DNA",
+          "count": 420
+        },
+        {
+          "token": "G",
+          "task": "Protein",
+          "count": 407
+        },
+        {
+          "token": "GT",
+          "task": "DNA",
+          "count": 389
+        },
+        {
+          "token": "Y",
+          "task": "Protein",
+          "count": 372
+        },
+        {
+          "token": "CC",
+          "task": "DNA",
+          "count": 352
+        },
+        {
+          "token": "G",
+          "task": "DNA",
+          "count": 326
+        },
+        {
+          "token": "TC",
+          "task": "DNA",
+          "count": 317
+        }
+      ]
+    },
+    "E48": {
+      "total_hits_L11_13": 1046,
+      "task_distribution": {
+        "Mol": 118,
+        "Structure": 20,
+        "Protein": 4,
+        "StdHomology": 2,
+        "RemHomology": 1,
+        "NL": 721,
+        "Cell": 180
+      },
+      "top_tokens": [
+        {
+          "token": " to",
+          "task": "NL",
+          "count": 32
+        },
+        {
+          "token": ",",
+          "task": "NL",
+          "count": 23
+        },
+        {
+          "token": " the",
+          "task": "NL",
+          "count": 20
+        },
+        {
+          "token": "Di",
+          "task": "Structure",
+          "count": 19
+        },
+        {
+          "token": " of",
+          "task": "NL",
+          "count": 18
+        },
+        {
+          "token": "B",
+          "task": "Cell",
+          "count": 14
+        },
+        {
+          "token": ",",
+          "task": "Mol",
+          "count": 13
+        },
+        {
+          "token": "s",
+          "task": "NL",
+          "count": 13
+        },
+        {
+          "token": " and",
+          "task": "NL",
+          "count": 12
+        },
+        {
+          "token": " a",
+          "task": "NL",
+          "count": 12
+        },
+        {
+          "token": "3",
+          "task": "Cell",
+          "count": 12
+        },
+        {
+          "token": " in",
+          "task": "NL",
+          "count": 11
+        },
+        {
+          "token": " it",
+          "task": "NL",
+          "count": 10
+        },
+        {
+          "token": " T",
+          "task": "Mol",
+          "count": 9
+        },
+        {
+          "token": "BD",
+          "task": "Mol",
+          "count": 9
+        }
+      ]
+    },
+    "E72": {
+      "total_hits_L11_13": 1092,
+      "task_distribution": {
+        "DNA": 32,
+        "Protein": 1,
+        "NL": 381,
+        "Cell": 290,
+        "Mol": 159,
+        "Structure": 229
+      },
+      "top_tokens": [
+        {
+          "token": " ",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": "G",
+          "task": "DNA",
+          "count": 32
+        },
+        {
+          "token": " secondary",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": "structure",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": " DSS",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": "P",
+          "task": "Structure",
+          "count": 29
+        },
+        {
+          "token": " cell",
+          "task": "Cell",
+          "count": 27
+        },
+        {
+          "token": "cell",
+          "task": "Cell",
+          "count": 23
+        },
+        {
+          "token": " structural",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " alphabet",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " amino",
+          "task": "Structure",
+          "count": 21
+        },
+        {
+          "token": " from",
+          "task": "Cell",
+          "count": 19
+        },
+        {
+          "token": " marker",
+          "task": "Cell",
+          "count": 17
+        },
+        {
+          "token": " identity",
+          "task": "Cell",
+          "count": 16
+        },
+        {
+          "token": " genes",
+          "task": "Cell",
+          "count": 16
+        }
+      ]
+    }
+  },
+  "Structure": {
+    "E22": {
+      "total_hits_L11_13": 25624,
+      "task_distribution": {
+        "StdHomology": 5685,
+        "NL": 316,
+        "Cell": 1154,
+        "Mol": 1348,
+        "Structure": 6660,
+        "DNA": 1828,
+        "RemHomology": 4765,
+        "Protein": 3868
+      },
+      "top_tokens": [
+        {
+          "token": "V",
+          "task": "StdHomology",
+          "count": 190
+        },
+        {
+          "token": "V",
+          "task": "Protein",
+          "count": 181
+        },
+        {
+          "token": "V",
+          "task": "Structure",
+          "count": 172
+        },
+        {
+          "token": "CT",
+          "task": "DNA",
+          "count": 163
+        },
+        {
+          "token": "AT",
+          "task": "DNA",
+          "count": 158
+        },
+        {
+          "token": "Q",
+          "task": "Structure",
+          "count": 151
+        },
+        {
+          "token": "v",
+          "task": "RemHomology",
+          "count": 150
+        },
+        {
+          "token": "q",
+          "task": "RemHomology",
+          "count": 146
+        },
+        {
+          "token": "(",
+          "task": "Mol",
+          "count": 139
+        },
+        {
+          "token": "Q",
+          "task": "StdHomology",
+          "count": 134
+        },
+        {
+          "token": "K",
+          "task": "StdHomology",
+          "count": 132
+        },
+        {
+          "token": "1",
+          "task": "Mol",
+          "count": 128
+        },
+        {
+          "token": "AG",
+          "task": "DNA",
+          "count": 126
+        },
+        {
+          "token": "\\n",
+          "task": "Structure",
+          "count": 121
+        },
+        {
+          "token": "CG",
+          "task": "DNA",
+          "count": 118
+        }
+      ]
+    },
+    "E56": {
+      "total_hits_L11_13": 6892,
+      "task_distribution": {
+        "DNA": 273,
+        "Protein": 298,
+        "StdHomology": 1088,
+        "RemHomology": 1013,
+        "NL": 575,
+        "Cell": 947,
+        "Mol": 940,
+        "Structure": 1758
+      },
+      "top_tokens": [
+        {
+          "token": ":",
+          "task": "Structure",
+          "count": 205
+        },
+        {
+          "token": "\\n",
+          "task": "Structure",
+          "count": 200
+        },
+        {
+          "token": " Sequence",
+          "task": "StdHomology",
+          "count": 199
+        },
+        {
+          "token": " Sequence",
+          "task": "RemHomology",
+          "count": 173
+        },
+        {
+          "token": ":",
+          "task": "StdHomology",
+          "count": 150
+        },
+        {
+          "token": ":",
+          "task": "RemHomology",
+          "count": 150
+        },
+        {
+          "token": "###",
+          "task": "Structure",
+          "count": 150
+        },
+        {
+          "token": "G",
+          "task": "DNA",
+          "count": 132
+        },
+        {
+          "token": "\\n",
+          "task": "Cell",
+          "count": 103
+        },
+        {
+          "token": "###",
+          "task": "StdHomology",
+          "count": 100
+        },
+        {
+          "token": " ",
+          "task": "StdHomology",
+          "count": 100
+        },
+        {
+          "token": "1",
+          "task": "StdHomology",
+          "count": 100
+        },
+        {
+          "token": "\\n",
+          "task": "StdHomology",
+          "count": 100
+        },
+        {
+          "token": "###",
+          "task": "RemHomology",
+          "count": 100
+        },
+        {
+          "token": " ",
+          "task": "RemHomology",
+          "count": 100
+        }
+      ]
+    },
+    "E110": {
+      "total_hits_L11_13": 254,
+      "task_distribution": {
+        "NL": 97,
+        "Cell": 10,
+        "Mol": 52,
+        "Structure": 78,
+        "DNA": 17
+      },
+      "top_tokens": [
+        {
+          "token": " Instruction",
+          "task": "Structure",
+          "count": 50
+        },
+        {
+          "token": "style",
+          "task": "Structure",
+          "count": 28
+        },
+        {
+          "token": "G",
+          "task": "DNA",
+          "count": 17
+        },
+        {
+          "token": " provided",
+          "task": "Mol",
+          "count": 10
+        },
+        {
+          "token": " the",
+          "task": "NL",
+          "count": 9
+        },
+        {
+          "token": " given",
+          "task": "Cell",
+          "count": 8
+        },
+        {
+          "token": " question",
+          "task": "Mol",
+          "count": 7
+        },
+        {
+          "token": " a",
+          "task": "Mol",
+          "count": 7
+        },
+        {
+          "token": " general",
+          "task": "Mol",
+          "count": 7
+        },
+        {
+          "token": "ize",
+          "task": "Mol",
+          "count": 5
+        },
+        {
+          "token": " this",
+          "task": "Mol",
+          "count": 5
+        },
+        {
+          "token": " key",
+          "task": "Mol",
+          "count": 4
+        },
+        {
+          "token": " describe",
+          "task": "Mol",
+          "count": 4
+        },
+        {
+          "token": " that",
+          "task": "NL",
+          "count": 3
+        },
+        {
+          "token": " to",
+          "task": "NL",
+          "count": 3
+        }
+      ]
+    }
+  }
+}
