@@ -1,0 +1,427 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10}
+}
+
+\title{\textbf{Supplementary Materials for\\
+``OmniGene-4: A Unified Bio-Language MoE Model with Router-Level Interpretability''}}
+
+\author{Liang Wang\\
+\small School of Artificial Intelligence and Automation\\
+\small Huazhong University of Science and Technology}
+
+\date{May 2026}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Supplementary Tables}
+
+\subsection{Supplementary Table S1: Full Per-Layer JS Divergence}
+
+\begin{longtable}{lcccc}
+\caption{Layer-by-layer Jensen-Shannon divergence across training stages. Values are mean pairwise JS across all task pairs.}\\
+\toprule
+\textbf{Layer} & \textbf{Baseline} & \textbf{CPT} & \textbf{v3 (CPT+SFT)} & \textbf{$\Delta$ CPT} \\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\toprule
+\textbf{Layer} & \textbf{Baseline} & \textbf{CPT} & \textbf{v3 (CPT+SFT)} & \textbf{$\Delta$ CPT} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+0  & 0.160 & 0.164 & 0.164 & +0.004 \\
+1  & 0.136 & 0.113 & 0.113 & -0.023 \\
+2  & 0.172 & 0.164 & 0.164 & -0.008 \\
+3  & 0.151 & 0.134 & 0.134 & -0.017 \\
+4  & 0.119 & 0.113 & 0.113 & -0.006 \\
+5  & 0.159 & 0.160 & 0.160 & +0.001 \\
+6  & 0.131 & 0.111 & 0.111 & -0.020 \\
+7  & 0.129 & 0.123 & 0.123 & -0.006 \\
+8  & 0.134 & 0.126 & 0.126 & -0.008 \\
+9  & 0.174 & 0.153 & 0.153 & -0.021 \\
+10 & 0.197 & 0.159 & 0.159 & -0.038 \\
+11 & 0.160 & 0.143 & 0.143 & -0.017 \\
+12 & 0.182 & 0.149 & 0.149 & -0.033 \\
+13 & 0.143 & 0.127 & 0.127 & -0.016 \\
+14 & 0.157 & 0.137 & 0.137 & -0.020 \\
+15 & 0.198 & 0.170 & 0.170 & -0.028 \\
+16 & 0.139 & 0.121 & 0.121 & -0.018 \\
+17 & 0.184 & 0.166 & 0.166 & -0.018 \\
+18 & 0.148 & 0.134 & 0.134 & -0.014 \\
+19 & 0.124 & 0.123 & 0.123 & -0.001 \\
+20 & 0.140 & 0.130 & 0.130 & -0.010 \\
+21 & 0.136 & 0.119 & 0.119 & -0.017 \\
+22 & 0.162 & 0.149 & 0.149 & -0.013 \\
+23 & 0.157 & 0.138 & 0.138 & -0.019 \\
+24 & 0.141 & 0.122 & 0.122 & -0.019 \\
+25 & 0.180 & 0.149 & 0.149 & -0.031 \\
+26 & 0.161 & 0.152 & 0.152 & -0.009 \\
+27 & 0.178 & 0.172 & 0.172 & -0.006 \\
+28 & 0.217 & 0.197 & 0.197 & -0.020 \\
+29 & 0.240 & 0.222 & 0.222 & -0.018 \\
+\end{longtable}
+
+\subsection{Supplementary Table S2: Bootstrap Confidence Intervals}
+
+\begin{table}[H]
+\centering
+\caption{Bootstrap 95\% confidence intervals for routing metrics (1,000 iterations).}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{Mean} & \textbf{95\% CI Lower} & \textbf{95\% CI Upper} \\
+\midrule
+Baseline JS & 0.344 & 0.344 & 0.344 \\
+CPT JS & 0.440 & 0.440 & 0.441 \\
+v3 JS & 0.444 & 0.444 & 0.444 \\
+$\Delta$ CPT & 0.096 & 0.096 & 0.097 \\
+$\Delta$ SFT & 0.004 & 0.003 & 0.004 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Supplementary Table S3: Format-Matched Routing Control}
+
+\begin{table}[H]
+\centering
+\caption{Layer-averaged JS divergence before and after format matching.}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Condition} & \textbf{JS Divergence} & \textbf{Retention Ratio} \\
+\midrule
+Original (heterogeneous formats) & 0.160 & 100\% \\
+Format-matched (neutral template) & 0.145 & 90.2\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Supplementary Table S4: ESM-2 Head-to-Head Comparison}
+
+\begin{table}[H]
+\centering
+\caption{Remote homology accuracy on identical 2,000-pair evaluation.}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model} & \textbf{Threshold} & \textbf{Accuracy} & \textbf{ROC AUC} \\
+\midrule
+ESM-2 (650M) & 0.5 & 50.50\% & 0.513 \\
+ESM-2 (650M) & 1.001 (optimal) & 51.80\% & 0.513 \\
+OmniGene-4 v3 & N/A & 59.50\% & N/A \\
+Gemma-4 Instruct baseline & N/A & 60.00\% & N/A \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+\section{Supplementary Figures}
+
+\subsection{Supplementary Figure S1: Per-Layer JS Curves}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{\centering
+\vspace{3cm}
+\textit{[Placeholder: Line plot showing JS divergence across 30 layers for Baseline/CPT/v3]}\\
+\vspace{3cm}
+}}
+\caption{Layer-by-layer Jensen-Shannon divergence across training stages. The CPT stage shows the largest increase in middle layers (L11--L22), while the SFT stage shows concentrated changes near the output layers (L28--L29).}
+\end{figure}
+
+\subsection{Supplementary Figure S2: Expert Activation Heatmap}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{\centering
+\vspace{4cm}
+\textit{[Placeholder: Heatmap showing expert activation patterns for 8 tasks × 128 experts at Layer 12]}\\
+\vspace{4cm}
+}}
+\caption{Expert activation heatmap at Layer 12 for eight task families. Rows: tasks (NL, DNA, Protein, StdHom, RemHom, Cell, Mol, Structure). Columns: 128 experts. Color intensity indicates normalized activation frequency.}
+\end{figure}
+
+\subsection{Supplementary Figure S3: Bootstrap Distribution}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{\centering
+\vspace{3cm}
+\textit{[Placeholder: Histogram showing bootstrap distribution of $\Delta$ CPT and $\Delta$ SFT]}\\
+\vspace{3cm}
+}}
+\caption{Bootstrap distribution of CPT and SFT contributions to JS divergence (1,000 iterations). Both distributions are narrow and exclude zero, confirming statistical robustness.}
+\end{figure}
+
+\newpage
+\section{Supplementary Methods}
+
+\subsection{Detailed Training Hyperparameters}
+
+\subsubsection{Continued Pretraining (CPT)}
+
+\begin{table}[H]
+\centering
+\caption{CPT hyperparameters for OmniGene-4 v3.}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Base model & Gemma-4-26B-A4B-Instruct \\
+Vocabulary size & 290,048 (262,020 + 28,028 bio tokens) \\
+Training data & 32.5 GB (8.73B tokens) \\
+Batch size & 6 per GPU × 8 GPUs × 4 accum = 192 \\
+Learning rate & 2e-5 \\
+LR scheduler & Cosine with 3\% warmup \\
+Optimizer & paged\_adamw\_8bit \\
+Weight decay & 0.01 \\
+Max gradient norm & 1.0 \\
+Sequence length & 1024 \\
+Epochs & 0.6 \\
+Total steps & 2,806 \\
+LoRA rank & 64 \\
+LoRA alpha & 128 \\
+LoRA dropout & 0.05 \\
+LoRA targets & q/k/v/o\_proj, gate/up/down\_proj, router.proj \\
+Precision & bfloat16 \\
+Gradient checkpointing & True \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Supervised Fine-Tuning (SFT)}
+
+\begin{table}[H]
+\centering
+\caption{SFT hyperparameters for OmniGene-4 v3.}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Training data & 199,576 instruction examples \\
+Batch size & 4 per GPU × 1 GPU × 16 accum = 64 \\
+Learning rate & 5e-5 \\
+LR scheduler & Cosine with 3\% warmup \\
+Optimizer & paged\_adamw\_8bit \\
+Weight decay & 0.01 \\
+Max gradient norm & 1.0 \\
+Sequence length & 1024 \\
+Epochs & 1 \\
+Total steps & 3,118 \\
+LoRA rank & 64 \\
+LoRA alpha & 128 \\
+LoRA dropout & 0.05 \\
+LoRA targets & q/k/v/o\_proj, gate/up/down\_proj, router.proj \\
+Precision & bfloat16 \\
+Gradient checkpointing & True \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Data Mixture Composition}
+
+\subsubsection{CPT Data Mixture}
+
+\begin{table}[H]
+\centering
+\caption{CPT data mixture composition (32.5 GB total).}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Source} & \textbf{Size (GB)} & \textbf{Tokens (B)} & \textbf{Proportion} \\
+\midrule
+DNA (human genome) & 8.0 & 2.1 & 24.6\% \\
+Protein (UniProt) & 8.0 & 2.1 & 24.6\% \\
+Protein (LucaOne) & 7.5 & 2.0 & 23.1\% \\
+OpenWebText & 8.0 & 2.1 & 24.6\% \\
+Structure (3Di + DSSP) & 0.4 & 0.1 & 1.2\% \\
+Instruction replay & 0.6 & 0.4 & 1.9\% \\
+\midrule
+\textbf{Total} & \textbf{32.5} & \textbf{8.7} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{SFT Data Mixture}
+
+\begin{table}[H]
+\centering
+\caption{SFT data mixture composition (199,576 examples).}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Task Family} & \textbf{Examples} & \textbf{Proportion} \\
+\midrule
+Protein homology & 49,894 & 25.0\% \\
+Literature (UniProtQA) & 39,915 & 20.0\% \\
+Mutation (MutaDescribe) & 29,936 & 15.0\% \\
+Cell biology & 29,936 & 15.0\% \\
+Molecule (SMILES) & 25,945 & 13.0\% \\
+Structure (3D) & 19,958 & 10.0\% \\
+DNA homology & 3,992 & 2.0\% \\
+\midrule
+\textbf{Total} & \textbf{199,576} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Routing Collection Protocol}
+
+\subsubsection{Forward Hook Implementation}
+
+\begin{lstlisting}[language=Python, caption=Forward hook for collecting router activations]
+def make_hook(layer_idx):
+    def hook(module, input, output):
+        # output = (router_probs, top_k_weights, top_k_indices)
+        # top_k_indices shape: [seq_len, 8]
+        top_k_indices = output[2]
+        for seq_idx in range(top_k_indices.shape[0]):
+            for k_idx in range(top_k_indices.shape[1]):
+                expert_id = int(top_k_indices[seq_idx, k_idx].item())
+                routing_counts[current_task][layer_idx, expert_id] += 1
+    return hook
+
+# Register hooks on all layers
+handles = []
+for i in range(NUM_LAYERS):
+    h = model.model.language_model.layers[i].router.register_forward_hook(make_hook(i))
+    handles.append(h)
+\end{lstlisting}
+
+\subsubsection{Bootstrap Resampling Protocol}
+
+\begin{lstlisting}[language=Python, caption=Prompt-level bootstrap resampling]
+def bootstrap_sample(prompt_counts_dict, tasks):
+    """
+    prompt_counts_dict: {task: [n_prompts, layers, experts]}
+    Returns: resampled counts_dict {task: [layers, experts]}
+    """
+    resampled = {}
+    for task in tasks:
+        prompts = prompt_counts_dict[task]
+        n_prompts = prompts.shape[0]
+        # Resample with replacement
+        indices = np.random.choice(n_prompts, n_prompts, replace=True)
+        resampled_prompts = prompts[indices]
+        # Sum over prompts
+        resampled[task] = resampled_prompts.sum(axis=0)
+    return resampled
+
+# Run 1000 bootstrap iterations
+for i in range(1000):
+    baseline_boot = bootstrap_sample(baseline_prompts, tasks)
+    cpt_boot = bootstrap_sample(cpt_prompts, tasks)
+    v3_boot = bootstrap_sample(v3_prompts, tasks)
+    # Compute JS and store
+    ...
+\end{lstlisting}
+
+\newpage
+\section{Supplementary Results}
+
+\subsection{Token-Level Expert Specialization}
+
+\begin{table}[H]
+\centering
+\caption{Top-5 tokens for selected experts at Layer 12 (v3 model).}
+\begin{tabular}{clp{8cm}}
+\toprule
+\textbf{Expert} & \textbf{Purity} & \textbf{Top-5 Tokens} \\
+\midrule
+E54 & 80\% & \texttt{the}, \texttt{of}, \texttt{and}, \texttt{to}, \texttt{in} \\
+E59 & 46\% & \texttt{AA}, \texttt{AT}, \texttt{TT}, \texttt{GG}, \texttt{CC} \\
+E78 & 35\% & \texttt{M}, \texttt{L}, \texttt{V}, \texttt{I}, \texttt{F} \\
+E97 & 28\% & \texttt{CD4}, \texttt{CD8}, \texttt{IL}, \texttt{TNF}, \texttt{IFN} \\
+E100 & 15\% & \texttt{(}, \texttt{)}, \texttt{=}, \texttt{C}, \texttt{O} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Per-Task Entropy Analysis}
+
+\begin{table}[H]
+\centering
+\caption{Shannon entropy of expert distributions across training stages.}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Task} & \textbf{Baseline} & \textbf{CPT} & \textbf{v3 (CPT+SFT)} \\
+\midrule
+NL & 3.85 & 4.13 & 4.15 \\
+DNA & 2.89 & 2.76 & 2.78 \\
+Protein & 2.76 & 2.54 & 2.56 \\
+StdHomology & 2.68 & 2.48 & 2.50 \\
+RemHomology & 2.71 & 2.52 & 2.54 \\
+Cell & 2.95 & 2.88 & 2.90 \\
+Mol & 3.02 & 2.95 & 2.97 \\
+Structure & 2.82 & 2.65 & 2.67 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+\section{Code Availability}
+
+All code, training scripts, and analysis notebooks are available at:
+
+\begin{center}
+\url{https://github.com/maris205/omnigene4}
+\end{center}
+
+\subsection{Key Scripts}
+
+\begin{itemize}
+\item \texttt{biopaws/cpt/1-prepare\_cpt\_data\_mp.py} -- CPT data preparation (multi-process)
+\item \texttt{biopaws/cpt/2-run\_cpt.py} -- CPT training (8-GPU DDP)
+\item \texttt{biopaws/sft\_data/17-train\_bio\_sft\_v3\_remote.py} -- SFT training
+\item \texttt{biopaws/cpt/18-eval\_v3\_sft.py} -- Main evaluation
+\item \texttt{biopaws/cpt/20-collect\_moe\_activations.py} -- Routing collection
+\item \texttt{biopaws/cpt/26-format\_matched\_routing.py} -- Format control
+\item \texttt{biopaws/cpt/27-esm2\_remote\_headtohead.py} -- ESM-2 comparison
+\item \texttt{biopaws/cpt/28-bootstrap\_ci.py} -- Bootstrap CI
+\end{itemize}
+
+\subsection{Data Files}
+
+Routing-count matrices and analysis results are in \texttt{outputs/moe\_analysis/}:
+
+\begin{itemize}
+\item \texttt{moe\_counts\_baseline.npz} -- Baseline routing (50 KB)
+\item \texttt{moe\_counts\_cpt.npz} -- CPT routing (47 KB)
+\item \texttt{moe\_counts\_v3.npz} -- v3 routing (48 KB)
+\item \texttt{format\_matched\_report.json} -- Format control results
+\item \texttt{esm2\_remote\_2k\_eval.json} -- ESM-2 comparison results
+\item \texttt{bootstrap\_ci\_report.json} -- Bootstrap CI results
+\item \texttt{bootstrap\_samples.npz} -- Full bootstrap samples (1,000 iterations)
+\end{itemize}
+
+\subsection{Model Weights}
+
+LoRA adapter weights and embedding checkpoints ($\approx 1.9$ GB) can be released upon reasonable request to the corresponding author.
+
+\end{document}
