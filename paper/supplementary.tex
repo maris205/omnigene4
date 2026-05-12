@@ -149,11 +149,7 @@ Gemma-4 Instruct baseline & N/A & 60.00\% & N/A \\
 
 \begin{figure}[H]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering
-\vspace{3cm}
-\textit{[Placeholder: Line plot showing JS divergence across 30 layers for Baseline/CPT/v3]}\\
-\vspace{3cm}
-}}
+\includegraphics[width=0.95\textwidth]{figures/supp_fig_s1_per_layer_js.pdf}
 \caption{Layer-by-layer Jensen-Shannon divergence across training stages. The CPT stage shows the largest increase in middle layers (L11--L22), while the SFT stage shows concentrated changes near the output layers (L28--L29).}
 \end{figure}
 
@@ -161,24 +157,16 @@ Gemma-4 Instruct baseline & N/A & 60.00\% & N/A \\
 
 \begin{figure}[H]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering
-\vspace{4cm}
-\textit{[Placeholder: Heatmap showing expert activation patterns for 8 tasks × 128 experts at Layer 12]}\\
-\vspace{4cm}
-}}
-\caption{Expert activation heatmap at Layer 12 for eight task families. Rows: tasks (NL, DNA, Protein, StdHom, RemHom, Cell, Mol, Structure). Columns: 128 experts. Color intensity indicates normalized activation frequency.}
+\includegraphics[width=0.95\textwidth]{figures/supp_fig_s2_expert_heatmap.pdf}
+\caption{Expert activation heatmap at Layer 12 for eight task families. Rows: tasks (NL, DNA, Protein, StdHom, RemHom, Cell, Mol, Structure). Columns: 128 experts. Color intensity indicates normalized activation frequency. Blue dashed lines mark key experts (E54: English function words, E59: DNA 2-mers, E78: amino acids, E97: cell markers, E100: SMILES punctuation).}
 \end{figure}
 
 \subsection{Supplementary Figure S3: Bootstrap Distribution}
 
 \begin{figure}[H]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering
-\vspace{3cm}
-\textit{[Placeholder: Histogram showing bootstrap distribution of $\Delta$ CPT and $\Delta$ SFT]}\\
-\vspace{3cm}
-}}
-\caption{Bootstrap distribution of CPT and SFT contributions to JS divergence (1,000 iterations). Both distributions are narrow and exclude zero, confirming statistical robustness.}
+\includegraphics[width=0.95\textwidth]{figures/supp_fig_s3_bootstrap_dist.pdf}
+\caption{Bootstrap distribution of CPT and SFT contributions to JS divergence (1,000 iterations). Both distributions are narrow and exclude zero, confirming statistical robustness. Left: $\Delta$ CPT = 0.096 [0.096, 0.097]. Right: $\Delta$ SFT = 0.004 [0.003, 0.004].}
 \end{figure}
 
 \newpage
