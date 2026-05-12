@@ -1,0 +1,106 @@
+\documentclass[11pt]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\signature{Liang Wang, Ph.D.\\
+School of Artificial Intelligence and Automation\\
+Huazhong University of Science and Technology}
+
+\address{Liang Wang\\
+School of Artificial Intelligence and Automation\\
+Huazhong University of Science and Technology\\
+Wuhan, Hubei 430070, P.R. China\\
+Email: wangliang.f@gmail.com}
+
+\begin{document}
+
+\begin{letter}{Editor-in-Chief\\
+BMC Bioinformatics\\
+(or PLOS Computational Biology)}
+
+\opening{Dear Editor,}
+
+I am writing to submit our manuscript titled \textbf{``OmniGene-4: Mixture-of-Experts Routing Reveals a 96\%/4\% CPT/SFT Decomposition in Biological Foundation Models''} for consideration as a Research Article in \emph{BMC Bioinformatics} (or \emph{PLOS Computational Biology}).
+
+\section*{Significance and Novelty}
+
+Mixture-of-Experts (MoE) architectures are increasingly adopted in large language models, yet their internal routing mechanisms remain poorly understood, particularly in biological applications. Our work makes three novel contributions:
+
+\begin{enumerate}
+\item \textbf{First systematic MoE routing analysis in biological foundation modeling.} We introduce a forward-hook-based framework to collect token-level expert activations across eight biological task families (DNA, protein, structure, cell, molecule, literature), revealing task-specific expert specialization that emerges during training.
+
+\item \textbf{Quantitative CPT/SFT decomposition with statistical rigor.} Through prompt-level bootstrap resampling (1,000 iterations), we demonstrate that continued pretraining (CPT) accounts for 96.2\% [95\% CI: 95.9\%, 96.6\%] of cross-task routing differentiation, while supervised fine-tuning (SFT) contributes only 3.7\% [3.4\%, 4.1\%]. This is the first such measurement reported for a biological MoE and challenges the conventional wisdom that task-specific fine-tuning is the primary driver of model specialization.
+
+\item \textbf{Robustness validation through format control and external benchmarking.} We address two critical confounds: (a) format-matched routing control confirms 90.2\% of routing signal is content-driven rather than prompt-format artifact; (b) head-to-head comparison on identical 2,000-pair remote homology evaluation shows OmniGene-4 (59.5\%) outperforms ESM-2 650M (50.5\%) by 9 percentage points, demonstrating that instruction-tuned general LLMs with biological CPT can match or exceed specialist protein-embedding models.
+\end{enumerate}
+
+\section*{Methodological Rigor}
+
+Our work adheres to high standards of reproducibility and statistical transparency:
+\begin{itemize}
+\item All training, evaluation, and analysis scripts are publicly available in the project repository (\url{https://github.com/maris205/omnigene4}).
+\item Bootstrap confidence intervals quantify uncertainty in all routing measurements.
+\item Limitations are explicitly disclosed, including single-model-family constraint, modest remote-homology ceiling, and benchmark ownership.
+\end{itemize}
+
+\section*{Target Audience and Impact}
+
+This work is directly relevant to the bioinformatics community for three reasons:
+\begin{enumerate}
+\item \textbf{Practitioners} building biological foundation models can use our routing-analysis framework to audit expert specialization and diagnose catastrophic forgetting.
+\item \textbf{Researchers} studying model interpretability gain a discrete, auditable observable (router activations) that complements continuous probes like sparse autoencoders.
+\item \textbf{Computational biologists} seeking to understand when CPT vs.\ SFT is more effective can use our decomposition as a guide for resource allocation.
+\end{enumerate}
+
+\section*{Why This Journal}
+
+We believe \emph{BMC Bioinformatics} (or \emph{PLOS Computational Biology}) is the ideal venue for this work because:
+\begin{itemize}
+\item The journal values methodological innovation and reproducibility, which are central to our contribution.
+\item The readership includes both machine learning practitioners and computational biologists, matching our interdisciplinary approach.
+\item The open-access model aligns with our commitment to making biological foundation models accessible to the broader research community.
+\end{itemize}
+
+\section*{Suggested Reviewers}
+
+We respectfully suggest the following experts as potential reviewers:
+
+\begin{enumerate}
+\item \textbf{Dr.\ Zeming Lin} (Meta AI / MIT)\\
+Email: zeminl@mit.edu\\
+Expertise: ESM-2, protein language models\\
+Reason: Co-author of ESM-2, directly relevant to our external benchmarking.
+
+\item \textbf{Dr.\ Sergey Ovchinnikov} (MIT)\\
+Email: so@mit.edu\\
+Expertise: Protein structure prediction, deep learning\\
+Reason: Expert in protein foundation models and interpretability.
+
+\item \textbf{Dr.\ Jian Peng} (University of Illinois Urbana-Champaign)\\
+Email: jianpeng@illinois.edu\\
+Expertise: Computational biology, deep learning\\
+Reason: Broad expertise in biological sequence modeling.
+
+\item \textbf{Dr.\ Jinbo Xu} (Toyota Technological Institute at Chicago)\\
+Email: jinboxu@gmail.com\\
+Expertise: Protein structure prediction, machine learning\\
+Reason: Expert in protein homology detection and deep learning methods.
+\end{enumerate}
+
+\section*{Conflicts of Interest}
+
+The author declares no conflicts of interest. The BioPAWS benchmark used in this study was developed by the author, which is disclosed in the Limitations section of the manuscript.
+
+\section*{Data and Code Availability}
+
+All code, training scripts, and analysis notebooks are available at \url{https://github.com/maris205/omnigene4}. The routing-count matrices and token-level activation database are in the \texttt{outputs/moe\_analysis/} directory. LoRA adapter weights ($\approx 1.9$ GB) can be released upon reasonable request.
+
+\vspace{1em}
+
+Thank you for considering our manuscript. We look forward to your response.
+
+\closing{Sincerely,}
+
+\end{letter}
+
+\end{document}
