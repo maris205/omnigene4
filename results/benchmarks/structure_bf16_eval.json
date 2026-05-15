@@ -1,0 +1,410 @@
+{
+  "model": "OmniGene-4-SFT-v3 (BF16 unquantized)",
+  "task": "Structure (3Di/DSSP prediction)",
+  "n_samples": 50,
+  "avg_char_overlap_with_ref": 0.041239764279243675,
+  "avg_diversity": 0.7070000000000001,
+  "collapse_rate": 0.12,
+  "samples": [
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nHVLQLESASDKAHYILSKDGNRNNWYIGRGSDNNNDCTFHSYVHGTTLTLKQDYAVVNKHFHV",
+      "ref": "<SEQ_3Di>DDDDDDDDPQAWDKDWDADPNRGAWIWARHGGNAHKTKTAGPVVRWIWIDHDPDIDIDAWDQDPNWIQGPVRWIADVVLVRDIVVVSVVVPDDDPQPDKDWFFFAWAAAFRKDFTNDQQAQWWKWWQWPDPDTHIDGHHWF",
+      "pred": "0<Assistant>\n### Answer:\nThe sequence provided is a complex protein structure. The sequence provided is a complex protein structure. The sequence prov",
+      "diversity": 0.95,
+      "char_overlap": 0.020833333333333332
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMSFPEGKDILFMGNEAAKLAEAFQKSLRKPGHKRSQSIIGKHHHHHH\n\n### Answer:",
+      "ref": "<SEQ_2D>CCCCCGGGTSCCSHHHHHHHHHHHHHTCCCCCCCCCCCCCCCCCCCC</SEQ_2D>",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assis",
+      "diversity": 0.25,
+      "char_overlap": 0.01818181818181818
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nAVLMVGPNFRVGKKIGCFGELRLGKNLYNNEHVAIKMEPMKSKAPQLHLEYRFYKLLGSHADN",
+      "ref": "<SEQ_3Di>DFKDWDPFKTWDDFPDDQFTKTWIAGPVPRDIKIKTKDFLPDDDDQPVVQVVLCVLLDLDQPDADAQEWHWDDWGAIDDRMTMTIIHDAAAFQVVVCVVLVLAFDLLQLLLVVLQVLVVLVSSVVSQKDQQADDRRQWTFG",
+      "pred": "### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### An",
+      "diversity": 0.3,
+      "char_overlap": 0.025806451612903226
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nMSGDFAAAFLPTIFVPLVGLGLPAVLMSLLFTYIESEA\n\n### Answer:",
+      "ref": "<SEQ_3Di>DQDPDPPSCVCVVVVCCVVPVCVVVVVVVVVCVVVDDD</SEQ_3Di>",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assis",
+      "diversity": 0.25,
+      "char_overlap": 0.0
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nMKKIILTIGCPGSGKSTWAREFIAKNPGFYNINRDDYRQSIMAHEERDEYKYTKKKEGIVTGM",
+      "ref": "<SEQ_3Di>DAEEEEEAAFPLLCLVVVQVVVCVVDFQEEEQELVVQQCVVVVHDLQDDGDDDPVSVVVSVVVRLVVQCVSVPDDPRHRYYYYRDNPLDPVSVVVVQVSCVVVPYYYDYHYRDDDPVVSVVRLVVVPRVRDDVVVRLVSVL",
+      "pred": "|-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-T-",
+      "diversity": 0.05,
+      "char_overlap": 0.0
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nGFKQDIATIRGDLRTYAQDIFLAFLNKYPDERRYFKNYVGKSDQELKSMAKFGDHTEKVFNLM",
+      "ref": "<SEQ_2D>CHHHHHHHHHHTHHHHHHHHHHHHHHHCGGGGGGCCCCTTCCHHHHHTSSSHHHHHHHHHHHHHHHHHHCBTTBCCHHHHHHHHHCGGGTTCCHHHHHHHHHHHHHHHHHSSSCCCHHHHHHHHHHHHHHHHHTTCC</SEQ",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assis",
+      "diversity": 0.25,
+      "char_overlap": 0.0
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nHHHATIKQRTLKNIIRATGVGLHSGEKVYLTLKPAPVDTGIVFCRTDLDPVVEIPARAENVGE",
+      "ref": "<SEQ_3Di>DDFAWAFAKWFQDKFWDWAAFQQQRDIKIKIKFTDDPPAFEWEWQVLDVVIDIHHLALVQFDDFPPATWGDDVPAIATHQQQLLLLCLQQRHQDIYMYMNDRYDGLQQQFQQVVNVRRVVRNMDGDDHHAKAKFFAAKFKD",
+      "pred": "thought\nThe provided sequence is a complex biological string, likely representing a protein or a genomic region. To understand its structure, we can b",
+      "diversity": 1.25,
+      "char_overlap": 0.025889967637540454
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMSKVCEISGKRPIVANSIQRRGKAKREGGVGKKTTGISKRRQYPNLQKVRVRVAGQEITFRVA",
+      "ref": "<SEQ_2D>CCCCCTTTCCCCEEEEEECCCSCCSSSSSSCCCCCCEEEEEECCCCEEEEECCSSSCEEEEECSSSHHHHHHHHHHTTSSCCCSSCHHHHHHHCCCCC</SEQ_2D>",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assis",
+      "diversity": 0.25,
+      "char_overlap": 0.07547169811320754
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nGSCKGRCFELQCRCDNLCKSYTSCCHDFDELCLKTARGWECTKDRCGEVRNEENACHCSEDCL",
+      "ref": "<SEQ_3Di>DACVVPAQAFDCDHHQCCVVVVRPDPCNCQQQVAQPPHQEDALVQAQDDDDRNHRFHLHPVCLLLQTHRLCSCVHHVVDDFPLVDDQDDQQFQPDDPLPPALFEEEEEEEQFALVVCVVDCVQFSLVNCLQQWFEWESFAF",
+      "pred": "### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### An",
+      "diversity": 0.4,
+      "char_overlap": 0.047619047619047616
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nFNKELDPVQKLFVDKIREYRTKRQTSGGPVDAGPEYQQDLDRELFKLKQMYGKADMNTFPNFT",
+      "ref": "<SEQ_2D>CCCCCCCHHHHHHHHHHHHHHHHTTCCTTTTTCHHHHHHHHHHHHHHHHHTTTCCSSSCCCCCCCCCCCCCCCCCCC</SEQ_2D>",
+      "pred": "```python\n# Sequence 1D:\n# FNKELDPVQKLFVDKIREYRTKRQTSGGPVDAGPEYQQDLDRELFKLKQMYGKADMNTFPNFTFEDPKFEVVEKPQS\n\n# Sequence 1D:\n# FNKELDPVQKLFVDKIREYRTK\n\n# S",
+      "diversity": 1.05,
+      "char_overlap": 0.011764705882352941
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nKLPTNLAYERSIDPSDVCFFVVWPRKTPLTYNSRTLLGQMEAASLAYDVSGQPIKSATAEALA",
+      "ref": "<SEQ_3Di>DFALWFWFDAQKFKAKKFKWFAACDIDGFAKDKDKDKDFQPDPCVFAPPPHRTDPPPDPPNRGDIDMFIAIFTWHDFRTFWMKIKIKMKGAQRLQAIPDDPDPVLRVLSNLLVVLCCVFVRCLVVLLLLVCLVFLCLLQPV",
+      "pred": "thought\nThe provided sequence is a large protein fragment. Based on the context of the request, the \"Answer\" is the identification or processing of th",
+      "diversity": 1.2,
+      "char_overlap": 0.043731778425655975
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nTLSNSIRMLGSQSPLIQAYGLVILQQPDIKVNAMSSLTNHQKFAKANVREWIDEYNPKLIDLN",
+      "ref": "<SEQ_3Di>DLPQLLLLLQLLPQVLVQLLVLLVPFDQDADPLFRCPNVLSVVSNVLSVCCVPPQVVLSLVLLVLLLVLLVVCVVCVVVLLVCLQVVCPVPNLVVLVVSLVSLVVSLVSLVVSLVVLVVSLVVLVVSLVVLVVSLVVSQVV",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assis",
+      "diversity": 0.25,
+      "char_overlap": 0.0744047619047619
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nEKIIYFAAYVITSVDEEMRHNELSTLEAEMAVERKAVEDQRDGELEARAQKLEADLAELEAEG",
+      "ref": "<SEQ_3Di>DPDDFDDKKFFAAFQVVVCVVCVVVVVVVLVVVLVVLVVVLVVVLVVLVVVLVVVLVVCVVVVHDPVVNVVSVVVSVVVNVVSVVVSVVVVVVSVVLVVCVVPPDGRDMDGYVVSVVVCCVSPVPRTDIGD</SEQ_3Di>",
+      "pred": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
+      "diversity": 0.0,
+      "char_overlap": 0.0
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nSMNPPPPETSNPNKPKRQTNQLQYLLRVVLKTLWKHQFAWPFQQPVDAVKLNLPDYYKIIKTP",
+      "ref": "<SEQ_2D>CCCCCCCCCCCTTSCCCCCHHHHHHHHTHHHHHHTSTTCGGGSSCCCTTTTTCTTHHHHCSSCCCHHHHHHHHHTTCCSSHHHHHHHHHHHHHHHHHHSCTTSHHHHHHHHHHHHHHHHHHTCCCCC</SEQ_2D>",
+      "pred": "```\n\n| Sequence 1D:\nSMNPPPPETSNPNKPKRQTNQLQYLLRVVLKTLWKHQFAWPFQQPVDAVKLNLPDYYKIIKTPMDMGTIKKRLENNYYWNAQECIQDFNTMFTNCYIYNKPGDDIVLMAEALEKLFLQKINELPTEE\n\n#",
+      "diversity": 1.05,
+      "char_overlap": 0.044444444444444446
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nENLYFQGAMSRSYNDELQFLEKINKNCWRIKKGFVPNMQVEGVFYVNDALEKLMFEELRNACR",
+      "ref": "<SEQ_3Di>DADDPVLLQAAALVVLCVQKAADDQFKIKRHPSSHPQQQEIEMEGAHPVLVVVLSVQNNVCNVVVLGRQVSLLRLVSRQPQWPDGWYAAHQWGCDQSHTQRIKTKGFLVPQSTWDFLSLQDLQQFWWKWKWFWPDFLVVCQ",
+      "pred": "### Answer:\nThe provided sequence is a complex protein structure. The sequence is as follows:\nENLYFQGAMSRSYNDELQFLEKINKNCWRIKKGFVPNMQVEGVFYNDALEKLMFEE",
+      "diversity": 1.15,
+      "char_overlap": 0.05465587044534413
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nMKDTITSLINPADEKGSYLDAAALEQLNRYFQSGNMRVKAAKTISSSASSIISKTVAKSLLYG",
+      "ref": "<SEQ_3Di>DAFLVRVQVVVCVVVVHDRDDVSVVVVVVVVVVPPQLVVLLVLCVVCVLVLLVQLCVPQPPDDCLDPPVHQCPDVVSVVVVSVLVSVLSVQLSVCSSRVHLPSVVVPPLDCNVVVCVVVVPDLVSVLRSLVSSLVSSCVRG",
+      "pred": "### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### An",
+      "diversity": 0.4,
+      "char_overlap": 0.047058823529411764
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nMGFFDRLKAGLAKTRERLLKAIPWGGNLEEVLEELEMALLAADVGLSATEEILQEVRASGLKE",
+      "ref": "<SEQ_3Di>DVCLVLLLLLQVLLQPPQLQVQPPPDDDCPSLVSVLVSLVSLLLDPVLSVVLSVQQVPDPHLVSSLVSQLVLLALVVADDDDFPFAEEEEDEAPPLQRLVVVLLVCLVVVVVVFQEAEEQLQQQDDCSRVVNCVSCVVRVH",
+      "pred": "<A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n<",
+      "diversity": 0.05,
+      "char_overlap": 0.0
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMGSSHHHHHHSSGLVPRGSHMWKIVFARIDDRLIHGQVMTRWMKGFPEASIVIIDDELAVDEF",
+      "ref": "<SEQ_2D>CCCCCCCCCCCCCCCCCCCBSEEEEEEEEETTCSCTTHHHHHHTTCTTCEEEEECHHHHHCHHHHHHHHHTSCTTCCEEEECHHHHHHHHHSBCSSCEEEEEEESSHHHHHHHHHTTCCCSEEEEEEBCCCTTSEECSSSBE",
+      "pred": "| Sequence 1D:\nMGSSHHHHHHSSGLVPRGSHMWKIVFARIDDRLIHGQVMTRWMKGFPEASIVIIDDELAVDEFMKNIYTMAAPPGVKVKVFGVDAALKEWSQKTSVEEKVFLLFKNIDTCKRVMDGGLPITTLIGGVAKTPQRKG",
+      "diversity": 1.05,
+      "char_overlap": 0.06666666666666667
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nTDRFKGDDDIPXXXXXXXXXXXXXDYYQQVQRGKQDKKISRKEAHKNAVIAAREGKLAELAEN",
+      "ref": "<SEQ_3Di>DDDPDPDDDDDDPVVVVVVVVVVDPVVVVVVVVVVVVVVVVVVVVVVVVVVVVPVVVVVVVVPDDPDPDDDDDPCVPVVDPDDDDDDPPVVDVVVVVVVVVVVVVVVVCVVDPDDDDDDDDDDDDDDVDDDDPDPPDDDDD",
+      "pred": "thought\nThe provided sequence is a complex string of characters, but it does not contain a specific, identifiable \"answer\" in the sense of a riddle or",
+      "diversity": 1.2,
+      "char_overlap": 0.019736842105263157
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nALLSFERKYRVPGGTLVGGNLFDFWVGPFYVGFFGVATFFFAALGIILIAWSAVLQGTWNPQL",
+      "ref": "<SEQ_2D>CCCTTTGGGCCSCCCSSSSSTTCCEETTEECCTHHHHHHHHHHHHHHHHHHHHHTTSCCCTTTCEECCSCSSSCSSCCCTTTTHHHHHHHHHHHHHHHHHHHHHHHHHHSSCCCCCSTTTHHHHHHHHHHTTTHHHHHHSCG",
+      "pred": "<A>\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n##",
+      "diversity": 0.3,
+      "char_overlap": 0.02768166089965398
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nEGQVLVLDGRGHLLGRLAAIVAKQVLLGRKVVVVRCEGINISGNFYRNKLKYLAFLRKRMNTN",
+      "ref": "<SEQ_3Di>DPAEAEAEQAQFALLQVLLVLLVCLLPHHLYEYEALQRHKHFAAPVVVLVVLVVVVPDADDVDRVVTDDSDQDSQVVSLVSSLVVFPCVDPSSVSSSVSYHYYHHADPVGLPDDHDYDLSGGCVNPDDPPTHMGGSNVSSV",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### An",
+      "diversity": 0.4,
+      "char_overlap": 0.02843601895734597
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMASGAARWLVLAPVRSGALRSGPSLRKDGDVSAAWSGSGRSLVPSRSVIVTRSGAILPKPVKM",
+      "ref": "<SEQ_2D>CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCTTSCCCCCCCCCTTCHHHHHHHHHHHHHHHHHHHHHHHHHHHTTCCCCCCCCCCCC</SEQ_2D>",
+      "pred": "| Sequence 1D:\nMASGAARWLVLAPVRSGALRSGPSLRKDGDVSAAWSGSGRSLVPSRSVIVTRSGAILPKPVKMSFGLLRVFSIVIPFLYVGTLISKNFAALLEEHDIFVPEDDDDDD\n\n### Answer:\n### Answer:\n<A",
+      "diversity": 1.05,
+      "char_overlap": 0.043478260869565216
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMFNSVLDTIGNTPLIRLSKASELTGCDIYGKAEFLNPGQSVKDRAALYIIRDAEKRGLLRPGG",
+      "ref": "<SEQ_2D>CBSSGGGGSSCCCEEECHHHHHHHTSEEEEEEGGGSTTSBTHHHHHHHHHHHHHHTTCCCTTCEEEEECSSHHHHHHHHHHHHHTCEEEEEEETTSCHHHHHHHHHHTCEEEEECCCCTTSTTSHHHHHHHHHHHHHTTCTT",
+      "pred": "| Sequence 1D:\nMFNSVLDTIGNTPLIRLSKASELTGCDIYGKAEFLNPGQSVKDRAALYIIRDAEKRGLLRPGGVIVEGTAGNTGIGLTMVAKALGYRTAIVIPETQSQEKKDALRLLGAELIEVPAAPYRNPNNYVRLSGRLAEQ",
+      "diversity": 1.05,
+      "char_overlap": 0.036312849162011177
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nSLVTCPICHAPYVEEDLLIQCRHCERWMHAGCESLFTEDDVEQAADEGFDCVSCQPYVVK\n\n#",
+      "ref": "<SEQ_3Di>DEQAAPLVGRPDDPPFDWAAAPVPRDIDGCVSVPQDDPVSRVVCVVCHHHDPVCVVPPDD</SEQ_3Di>",
+      "pred": "```\n\n### Sequence 1D:\nSLVTCPICHAPYVEEDLLIQCRHCERWMHAGCESLFTEDDVEQAADEGFDCVSCQPYVVK\n\n### Answer:\n### Answer:\n<Assistant>\n```\n\n### Sequence 1D:\nSLVTCPIC",
+      "diversity": 1.05,
+      "char_overlap": 0.08571428571428572
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nEVQLVESGAEVKKPGASVKVSCKASGYTFTNYAIHWVRQAPGQRLEWMGWINAGRGNTKYSQK",
+      "ref": "<SEQ_3Di>DWAKAKDAEAEEEAQAKDKIKIQTDDDQLQWWKKWKWWDAVPGDIGTAKIARSNPGDIDGDCVLVPQWDWGDDRVRSMIMIMGGRDDQVPFTWMKMFIFPTYCPDPPDTDGIHPTYTYGYHPDDFDAWDWDKQAPPVKIKI",
+      "pred": "thought\nThe provided sequence is a protein sequence, likely a component of a larger complex or a specific functional unit. Based on the sequence infor",
+      "diversity": 1.2,
+      "char_overlap": 0.026785714285714284
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nEAIVNAQPKCNPNLHYWTTQDEGAAIGLAWIPYFGPAAEGIYTEGLMHNQDGLICGLRQLANE",
+      "ref": "<SEQ_2D>CCCCCCSSCCCCCEEEEEECCCCCCSTTTTSTTSSCCTTTSEECCEECCCTTHHHHHHHHHHHHHHHHHHHHHHCCSSEECTHHHHHHHHHHHHTTCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC</SEQ_2D>",
+      "pred": "```\n\n### Sequence 1D:\nEAIVNAQPKCNPNLHYWTTQDEGAAIGLAWIPYFGPAAEGIYTEGLMHNQDGLICGLRQLANETTQALQLFLRATTELRTFSILNRKAIDFLLQRWGGTCHILGPDCCIEPHDWTKNITDKIDQIIHD",
+      "diversity": 1.05,
+      "char_overlap": 0.05755395683453238
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nGLLSTNFDMIQALPLNVKQRVCALKNLQMKTIQIESDFYKRVHELEIEFEGKFKSTFDQRKAI",
+      "ref": "<SEQ_3Di>DPPDPCPVVLVPDDPVVNVVVVVVVVVLLVVLQVVLVVQVVVLVVVQVCLVVVVVVQVVLLCQQQLNDDADPVRVPDQLDPPDDPVRSVCVVVVDDDDPPDRHNFLLQVQLQCLDPLSVVQADPLCSVQSSQFSHKDKHFD",
+      "pred": "|thought\n### Answer:\nThe provided sequence is a complex protein structure. Based on the sequence analysis, the protein structure is as follows:\n\n**Seq",
+      "diversity": 1.2,
+      "char_overlap": 0.048507462686567165
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nSIVTKSIVNADAEARYLSPGELDRIKAFVTGGAARLRIAETLTGSRETIVKQAGDRLFQKRPD",
+      "ref": "<SEQ_3Di>DLVVVQVVVCVVVVHDRDPVSVVVVVVCVVCLVVLVVLLVLLVVCLVPLLVQLLVVLCVVPVQCCPPPHLQPDPVSSVVLSVVSSVLSVLLSVCSNVVHCPSVCVPDQPCNVVVCVVSVHDLLSVLSSLVSSLVSSVVSDD",
+      "pred": "### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### An",
+      "diversity": 0.4,
+      "char_overlap": 0.041176470588235294
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMEGTGVVAVYGNGAITEAKKSPFSVKVGLAQMLRGGVIMDVVNAEQARIAEEAGACAVMALER",
+      "ref": "<SEQ_2D>CCCCCCCCCCCCCCCCCCCCCHHHHHHHHHGGGTTEEEEEESSHHHHHHHHHTTCSEEEECSSCHHHHHHHCSCCCCCCHHHHHHHHHHCSSCEEEEEETTCHHHHHHHHHHTCSEEEEETTSCCSCSSCCCCGGGCSSCEE",
+      "pred": "|-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-",
+      "diversity": 0.0,
+      "char_overlap": 0.0
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nMWVRGSGPSVLSRLQDAAVVRPGFLSTAEEETLSRELEPELRRRRYEYDHWDAAIHGFRETEK",
+      "ref": "<SEQ_3Di>DFKDWLDVVLCVVCVVQKDKDPQLDDPVLLVQVVVVCPVVQVVDDQDDDDPPAFKFQKDKDWAQDDDPSNVVVVVSQCVVAHCLADNTKIKMKHALQIKGHWDAPDPQFFDFKKKKAKADFKWKKKKAFPVHRSTIMIGIH",
+      "pred": "```python\n# Sequence 1D:\n# MWVRGSGPSVLSRLQDAAVVRPGFLSTAEEETLSRELEPELRRRRYEYDHWDAAIHGFRETEKSRWSEASRAILRRVQAAAFGTLLSSVHVXDLEARGYIKVDSIKFCGATIAGLSLLSPSVM",
+      "diversity": 1.15,
+      "char_overlap": 0.07575757575757576
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nDTELLSIKILNAGANGDKVVEGTIDEAKKTINFPRLDVETDFSALSIEAELSEGAALQSEVMD",
+      "ref": "<SEQ_3Di>DWDWPWKWFQQFDLRGGDIWTWDADVVQQEIETWATEPNTQQQWTFMDTDIDPFKDWPDRTDGFDDPPVDFKDWDWTWIDGPPDIDTGIYMYGHFDDAFDFDQVDKDKLDCFDVNPDVLLQALQWFEWEDAPQWIWTQGCA",
+      "pred": "| ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ ${ $",
+      "diversity": 0.0,
+      "char_overlap": 0.0
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMGSSHHHHHHSSGLVPRGSHMKLQFNLKAYFKTSADPTPAKDAIAALFEEANSTLLTRGAPEG",
+      "ref": "<SEQ_2D>CCCCCCCCCCCCCCCCCCCCCCCEEEEEEECCCCCCCCCCCCTTHHHHTTIIIIITCCCSSSSCSSBCCCCCCCCCCCCBCCEECSSSCTTTSTTHHHHHTCCCCCCCCCCCCCCCEEEEEEEEEECSSCCCCCCCTTEEEE",
+      "pred": "<E\n\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<A",
+      "diversity": 0.3,
+      "char_overlap": 0.052830188679245285
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMVKLILVRHAESEWNPVGRYQGLLDPDLSERGKKQAKLLAQELSREHLDVIYSSPLKRTYLTA",
+      "ref": "<SEQ_2D>CEEEEEEECCCBTTTTTTBCCTTCCCCBCHHHHHHHHHHHHHHTTSCCCEEEECSSHHHHHHHHHHHTTTTCCEEECGGGSCCCCGGGTTCBHHHHHHHSHHHHHHHHHCGGGCBCTTSCBHHHHHHHHHHHHHHHHHHTTT",
+      "pred": "<Answer>\n### Answer:\n<Assistant>\n<Answer>\n### Answer:\n<Assistant>\n<Answer>\n### Answer:\n<Assistant>\n<Answer>\n### Answer:\n<Assistant>\n<Answer>\n### Answe",
+      "diversity": 0.4,
+      "char_overlap": 0.0365296803652968
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nVVPNTVTWGPNVAIVMIICNLIAFAIGKQVIQIPDAGPAPGTFLGLGLPALLGVTSLGHAIGV",
+      "ref": "<SEQ_3Di>DDLQADDDDPVLVVLLVVLLVVLVVCLLPDPPFLVPPAQSCPPPRGGPVSNVVSNVVSNVSSVVVRSVCSSVVND</SEQ_3Di>",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assis",
+      "diversity": 0.25,
+      "char_overlap": 0.07058823529411765
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nPGSIPLIGERFPEMEVTTDHGVIKLPDHYVSQGKWFVLFSHPADFTPVCTTEFVSFARRYEDF",
+      "ref": "<SEQ_2D>CEEECCTTSBCCCEEEEETTEEEEETHHHHTTTCEEEEECCSCTTCHHHHHHHHHHHHTHHHHHHTTEEEEEEESSCHHHHHHHHHHHHHHTCCCCCSCEEECTTCHHHHHTTCCCTTCSSSCCEEEEEECTTSBEEEEEEE",
+      "pred": "```\n\n### Sequence 1D:\nPGSIPLIGERFPEMEVTTDHGVIKLPDHYVSQGKWFVLFSHPADFTPVCTTEFVSFARRYEDFQRLGVDLIGLSVDSVFSHIKWKEWIERHIGVRIPFPIIADPQGTVARRLGLLHAESATHTVRGVF",
+      "diversity": 1.05,
+      "char_overlap": 0.03501945525291829
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMTMHTTMATLTLTSLIPPILTTLVNPNKKNSYPHYVKSIVASTFIISLFPTTMFMCLDQEVII",
+      "ref": "<SEQ_2D>CHHHHHHHHHHHHTTSHHHHHHHHCCCCCTHHHHHHHHHHHHHHHHHHHHHHHHHHTCCCEEECCCBSSCCSSCCCBCCEECCHHHHHHHHHHHHHHHHHHHHHHHHTTTCSCHHHHHHHHHHHHHHHHHHHHBCSHHHHHH",
+      "pred": "<A>\nMTMHTTMATLTLTSLIPPILTTLVNPNKKNSYPHYVKSIVASTFIISLFPTTMFMCLDQEVIISNWHWATTQTTQLSLSFKREK\nMTMHTTMATLTLTSLIPPILTTLVNPNKKNSYPHYVKSIVASTFIISLFPTTMFMCLDQEV",
+      "diversity": 0.95,
+      "char_overlap": 0.049773755656108594
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nMTRGERVIAFIERFCIVPIGQPMRLDPFQKDFILAVYDNPAGTDMAILSIARKNGKTGLIAGI",
+      "ref": "<SEQ_3Di>DFPLVQLQVQQQPQFAPVPDHGDDDDPVLSVQSCLQRVLPVHAQEEEDAFFPQQCVLSSVLSVVVCCQANPVDAAPFEEEEEEADPVVLVSSLVSNVVSQVVGVVSVVQWDADPDARWIHRHPRRYIYHRDHNPDDDDDDA",
+      "pred": "### Answer:\nMTRGERVIAFIERFCIVPIGQPMRLDPFQKDFILAVYDNPAGTDMAILSIARKNGKTGLIAGILLAHLVGPEVQNTQIVSGALSREQAAIVFNLAVKMVNLNPKLQEIVHITPSGKKLIGLPCNVEYKALSAEGKTTH",
+      "diversity": 1.0,
+      "char_overlap": 0.06134969325153374
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMTTSQKHRDFVAEPMGEKPVGSLAGIGEVLGKKLEERGFDKAYVVLGQFLVLKKDEDLFREWL",
+      "ref": "<SEQ_2D>CCCCHHHHHHTTSCCTTCBGGGSTTCCHHHHHHHHHTTCCBHHHHHHHHHHTTTCHHHHHHHHHHHHCCCHHHHHHHHHHHHHHHHHHC</SEQ_2D>",
+      "pred": "| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n| \n",
+      "diversity": 0.0,
+      "char_overlap": 0.0
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nFNLPPGNYKKPKLLYCSNGGHFLRILPDGTVDGTRDRSDPHIQLQLIAESVGEVYIKSTETGQ",
+      "ref": "<SEQ_2D>CCCCCCCCCCCEEEEETTTTEEEEECTTSCEEEECCTTCGGGCEEEEESSTTEEEEEETTTCCEEEECTTSCEEEESSCCGGGCEEEEECTTSCEEEEESTTGGGTCBCCBCTTSBBCCGGGCCTTCGGGCEEEEECCCC</",
+      "pred": "| Sequence 1D:\nFNLPPGNYKKPKLLYCSNGGHFLRILPDGTVDGTRDRSDPHIQLQLIAESVGEVYIKSTETGQYLAMDTDGLLYGSQTPNEECLFLERLEENGYNTYISKKHAEKNWFVGLKKNGSCKRRGTYTISKKHAEKNWF",
+      "diversity": 1.05,
+      "char_overlap": 0.0945945945945946
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nRHMKVLLLGFEFLPVKVGGLAEALTAISEALASLGHEVLVFTPSHGRFQGEEIGKIRVFGEEV",
+      "ref": "<SEQ_2D>CCCEEEEECSCCTTSCSSSHHHHHHHHHHHHHHTTCEEEEEEECTTCSCCEEEEEEEETTEEEEEEEEEEEETTEEEEEEESGGGGCSSTTCSHHHHHHHHHHHHHHHHHHHHHHHTTTSCCCSEEEEESGGGHHHHHHHHH",
+      "pred": "<A>\nRHMKVLLLGFEFLPVKVGGLAEALTAISEALASLGHEVLVFTPSHGRFQGEEIGKIRVFGEEVQVKVSYEERGNLRIYRIGGGLLDSEDVYGPGWDGLIRKAVTFGRASVLLLNDLLREEPLPDVVHFHDWHTVFAGALIKKYFKI",
+      "diversity": 1.0,
+      "char_overlap": 0.035794183445190156
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nKQRTLSIIKPDALKKKVVGKIIDRFESNGLEVIAMKRLHLSVKDAENFYAIHRERPFFKDLIE",
+      "ref": "<SEQ_3Di>DAKKKKKQAVLCVVVVCPVVVVVLQVVPFKDWLDKDKAADDLVLLCVLVVVCPPPPCSVLLSCRRRVGIMMMTMIDGVVSLVVVDVQQFDLFLVPTCHQQVVRPDGSSGRGMDIDNDRVSRVVVCVSPDDPVSD</SEQ_3",
+      "pred": "thought\nThe provided sequence is a complex biological string. Based on the structure and the context of the request, the sequence can be analyzed as f",
+      "diversity": 1.25,
+      "char_overlap": 0.041666666666666664
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nEQADEDLLSQYENGEGLFSQKSFLVLGFSNENESNIANIIKENAGKIMSLLSRTVADYAVVPL",
+      "ref": "<SEQ_3Di>DVVVVVVVVVPDDDVAQQAPFEEEEDDDDPVVSVVVVVVCVVRNYDYADPVGPDEGQEYEAAQQGDDDPGDYNYYFYVLQVVVCVVVVHNDDCVVDPSGHHQDFDPPFQQCLVFEEEEPPDDDSRVVVVCVLNVRSNYDYD",
+      "pred": "thought\nThe provided sequence is a complex polypeptide. Based on the structural information and the sequence provided, the analysis is as follows:\n\n##",
+      "diversity": 1.2,
+      "char_overlap": 0.037037037037037035
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nMFHILRLESTVDLSEPLKDNGIIVFQSDKLDLEPSPNLGPTGIDNTNVNLINAKGDVLLHIGI",
+      "ref": "<SEQ_3Di>DKDKAFEFDKDFDPDFADAFKKKKKKFQAFALDQWPDCPPVNFWWKWKFFAFPVGWTQWIWIDGSVVQWIWIWIGGVPGDIDDTDIDGNPPQDDPDGIKMWMWTGHDFWIFIHIVPHTDDIGGTDDDHTGGMMHIYTPPPT",
+      "pred": "```\n\n### Answer:\nMFHILRLESTVDLSEPLKDNGIIVFQSDKLDLEPSPNLGPTGIDNTNVNLINAKGDVLLHIGIRRRENAFVFNSIPYGESRGPEERIPLEGTFGDRRDPSITIFDHPDRYQIMIDYKTVYYYKKRLEGRCEKV",
+      "diversity": 1.0,
+      "char_overlap": 0.03468208092485549
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nERGWFDILDDWLKRDRFVFVGWSGILLFPCAYLALGGWLTGTTFVTSWYTHGLASSYLEGCNF",
+      "ref": "<SEQ_2D>CCCHHHHHHHHHTBCCSSCCHHHHHHHHHHHHHHHHHHHHHHHHCCBTTTTSBCCSGGGTCCTTTCEECCCCGGGTTCCCCTTSTTTTTCHHHHHHHTHHHHHHHHHHHHHHHHHHHHHHHHHHHHTCCCHHHHHTHHHHHH",
+      "pred": "<A>\n### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n### Answer:\n### Answer:\n<Assistant>\n##",
+      "diversity": 0.4,
+      "char_overlap": 0.022857142857142857
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nSGPAKECEKDQFQCRNERCIPSVWRCDEDDDCLDHSDEDDCPKKTCADSDFTCDNGHCIHERW",
+      "ref": "<SEQ_2D>CCCCCCCCTTEEECTTSCEEEGGGTTSSCCCSSSSTTTTTCCSCSCCTTCEECSSCCEECGGGTTSSSCCSTTCGGGSSSSCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+      "pred": "| Sequence 1D:\nSGPAKECEKDQFQCRNERCIPSVWRCDEDDDCLDHSDEDDCPKKTCADSDFTCDNGHCIHERWKCDGEEECPDGSDESEATCTKQVCPAEKLSCGPTSHKCVPASWRCDGEKDCEGGADEAGCATSLGTGTCRGD",
+      "diversity": 1.05,
+      "char_overlap": 0.0970464135021097
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nMSKKVLLVDDSAVLRKIVSFNLKKEGYEVIEAENGQIALEKLSEFTPDLIVLDIMMPVMDGFT",
+      "ref": "<SEQ_2D>CCCEEEEECSCHHHHHHHHHHHHHTTCEEEEESSHHHHHHHTTTCCCSEEEECSCCSSSCHHHHHHHHHTCTTTTTSCEEEEESCCCHHHHHHHHHTTCSEEEESSCCHHHHHHHHHHHHCC</SEQ_2D>",
+      "pred": "```\n\n[The user is providing a sequence of 1D:\nMSKKVLLVDDSAVLRKIVSFNLKKEGYEVIEAENGQIALEKLSEFTPDLIVVLDIMMPVMDGFTVLKKLQEKEEWKRIPVIVLTAKGGEEDESLALSLGARKVM",
+      "diversity": 1.1,
+      "char_overlap": 0.023076923076923078
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nIKVRENEPFDVALRRFKRSCEKAGVLAEVRRREFYEKPTTERKRAKASAVK\n\n### Answer",
+      "ref": "<SEQ_3Di>DDDDDPDDDPDDPCCVVPPPDDPPNPVQPPDDDAVPNCVDVVVVVVVVVVD</SEQ_3Di>",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assis",
+      "diversity": 0.25,
+      "char_overlap": 0.01639344262295082
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nMIQTERAVQQVLEWGRSLTGFADEHAVEAVRGGQYILQRIHPSLRGTSARTGRDPQDETLIVT",
+      "ref": "<SEQ_3Di>DDDQVVLLVLLVVLQQLAQQQDSVLSNVLSVVLVLLLVLQVVQLVVCCVVQVFDSPDSLLSSLLSNVSSVLVRLLCCLVVVRDDPVQNVQLLCCQLVLDQRPDGRHRSSNVSLVSLCVQFSDNVLSNVLSVLSNLLNVLSN",
+      "pred": "| Sequence 1D:\nMIQTERAVQQVLEWGRSLTGFADEHAVEAVRGGQYILQRIHPSLRGTSARTGRDPQDETLIVTFYRELALLFWLCDCNDLGLISPEQLAAVEQALGQGVPCALPGFEGCAVLRASLATLAYDRRDYAQLLDDTRC",
+      "diversity": 1.0,
+      "char_overlap": 0.07326007326007326
+    },
+    {
+      "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DS",
+      "input": "### Sequence 1D:\nGPGSEFDPGLPSTEDVILKTEQVTKNIQELLRAAQEFKHDSFVPCSEKIHLAVTEMASLFPKR",
+      "ref": "<SEQ_2D>CCCCCCCCCCCCHHHHHHHHHHHHHHHHHHHHHHHHTCGGGHHHHHHHHHHHHHHHHTTSCSSCSSHHHHHHHHHHHHHHHHHHHHHGGGCCCCCCCCCCHHHHHHHHHHHHHHHHHHHHHHHHHHHHTCCC</SEQ_2D>",
+      "pred": "```python\nimport sys\n\ndef main():\n    # This is a placeholder for a given a specific a specific a specific a specific a specific a specific a specific",
+      "diversity": 0.9,
+      "char_overlap": 0.05
+    },
+    {
+      "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequenc",
+      "input": "### Sequence 1D:\nTYPIFTVRWLAIHGLAVPTVFFLGSISAMQFIQR\n\n### Answer:",
+      "ref": "<SEQ_3Di>DPDDDDPVVVVVCVPPVVVVVVVVVVVVVVPDDD</SEQ_3Di>",
+      "pred": "### Sequence 1D:\nTYPIFTVRWLAIHGLAVPTVFFLGSISAMQ\n\nTYPIFTVRWLAIHGLAVPTVFFLGSISAMQ\n\nTYPIFTVRWLAIHGLAVPTVFFLGSISAMQ\n\nTYPIFTVRWLAIHGLAVPTVFFLGSISAMQ\n\nTYPIF",
+      "diversity": 1.0,
+      "char_overlap": 0.18181818181818182
+    }
+  ]
+}

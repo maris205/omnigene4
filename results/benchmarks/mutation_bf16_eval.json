@@ -1,0 +1,219 @@
+{
+  "model": "OmniGene-4-SFT-v3 (BF16 unquantized)",
+  "task": "Mutation effect description",
+  "n_samples": 50,
+  "avg_keyword_score": 0.004,
+  "generic_rate": 0.0,
+  "samples": [
+    {
+      "instruction": "Describe the effect of mutation O75340-A47E on protein Programmed cell death protein 6.",
+      "ref": "Increases interaction with SEC31A and PLSCR3, and localization to the endoplasmic reticulum; when associated with A-114.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation C7E9W0-K101A on protein Antigenic protein SchS21.",
+      "ref": "Significant decrease in IgE-binding of the 91-V--P-102 and 94-M--G-105 peptides. mutation is a critical amino acid for IgE binding.",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assista",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q9LZJ3-N268A on protein Xyloglucan 6-xylosyltransferase 1.",
+      "ref": "No effect on activity.",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<-\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<\n<",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q2LKU9-R660H on protein NACHT, LRR and PYD domains-containing protei",
+      "ref": "In strain: AKR/J. Little is known about the functional changes caused by this mutation in the document.",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assista",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P42212-H145Y on protein Green fluorescent protein.",
+      "ref": "Increases mut1.3; shifts fluorescence lifetime from 2.78 to 3.03 ns. Decreases mut1.5; shifts fluorescence lifetime from 2.72 to 3.03 ns; when associated with A-193. Decreases mut1.27; shifts fluoresc",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assista",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P51787-V541I on protein Potassium voltage-gated channel subfamily KQ",
+      "ref": "In LQT1; unknown pathological significance.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n###Answer:\n<Assistant>\n###Answer:\n<Assistant>\n###Answer:\n<Assistant>\n###Answer:\n",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation O35627-F175N on protein Nuclear receptor subfamily 1 group I member ",
+      "ref": "Enhanced binding of coactivator NCOA2 in the absence of TCPOBOP.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q86VP1-Q114A on protein Tax1-binding protein 1.",
+      "ref": "Complete gain of TBK1 and RB1CC1 binding.",
+      "pred": "<A>\n### Answer:\n<Assistant>\n<A>\n### Answer:\n<Assistant>\n<A>\n### Answer:\n<Assistant>\n<A>\n### Answer:\n<Assistant>\n<A>\n### Answer:\n<Assistant>\n<A>\n### Answer:\n<Assistant>\n<A>\n### Answer:\n<Assistant>\n<A>\n",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q9Y3Q7-P170S on protein Disintegrin and metalloproteinase domain-con",
+      "ref": "In a cutaneous metastatic melanoma sample; somatic mutation.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Assistant:\n<Assistant>\n### Assistant:\n<Assistant>\n##",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P20591-A640R on protein Interferon-induced GTP-binding protein Mx1.",
+      "ref": "Sequesters viral nucleoproteins, has antiviral activity. The mutation in the MxA protein has been mentioned in the document. However, the functional changes caused by this mutation are not described.",
+      "pred": "<A>\nThe question is not a subject.\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n</A>\n",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q99558-T852I on protein Mitogen-activated protein kinase kinase kina",
+      "ref": "In an ovarian mucinous carcinoma sample; somatic mutation.",
+      "pred": "thought\nThe provided information contains three distinct sequences: a \"Wild-type\" sequence, a \"Mutant\" sequence, and a third sequence (which appears to be a variation of the Mutant). \n\nTo determine th",
+      "score": 0.2,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q16518-L510M on protein Retinoid isomerohydrolase.",
+      "ref": "Does not affect isomerohydrolase activity.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P23890-E461R on protein Transcriptional activator CadC.",
+      "ref": "Abolishes response to the external low pH signal. The mutation in the CadC protein is found to be crucial for pH detection. It is part of a cluster of negatively charged amino acids (D-198, D-200, E-4",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P60824-K101R on protein Cold-inducible RNA-binding protein.",
+      "ref": "Enhances translational repression. The mutation in the CIRP protein leads to a functional change in its ability to migrate into stress granules (SGs). This mutation affects the demethylation of argini",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P97275-K419R on protein Alkyldihydroxyacetonephosphate synthase, per",
+      "ref": "Strongly increased activity. The mutation in alkyl-dihydroxyacetonephosphate synthase results in a change in enzyme activity.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P41180-Q1011E on protein Extracellular calcium-sensing receptor.",
+      "ref": "iCa was higher in QQ genotype subjects than in the QE group (1. 227 +/- 0. 002 vs. 1. 255 +/- 0. 008 mmol/liter; P = 0. 002). After resolution of phase for the doubly heterozygous subjects, analysis w",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P18910-H213D on protein Atrial natriuretic peptide receptor 1.",
+      "ref": "Abolishes hormone binding.",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assista",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q14684-V684A on protein Ribosomal RNA processing protein 1 homolog B",
+      "ref": "Abolishes interaction with protein phosphatase PP1 subunits PPP1CB and PPP1CC; when associated with A-686.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q9JHE5-C279S on protein Sodium-coupled neutral amino acid symporter ",
+      "ref": "Does not affect amino acid transport activity. Significantly decreases alanine transport activity.",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assist",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q7Z4S6-D352E on protein Kinesin-like protein KIF21A.",
+      "ref": "In CFEOM1; de novo mutation. The mutation in the KIF21A gene leads to phenotypic characteristics of congenital fibrosis of the extraocular muscles (CFEOM) and M\u00f6bius syndrome.",
+      "pred": "### Answer:\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assista",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q9SXS3-Q106E on protein 2-hydroxyisoflavanone synthase.",
+      "ref": "No effect on catalytic activity.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P59047-R143P on protein NACHT, LRR and PYD domains-containing protei",
+      "ref": "Found in patients with female infertility; when associated in cis with C-462; unknown pathological significance.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P82610-Y660F on protein 5-methyltetrahydropteroyltriglutamate--homoc",
+      "ref": "No effect on catalytic activity. The document does not mention any functional changes caused by the mutation.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q9UJY1-K141N on protein Heat shock protein beta-8.",
+      "ref": "In HMN2A; strengthen interaction with HSPB1; no effect on cytoskeleton architecture; no effect on cytoplasmic location; increased interaction with BAG3. Both mutations target the same amino acid, whic",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q13325-K415E on protein Interferon-induced protein with tetratricope",
+      "ref": "Reduces binding to RNA and DNA and impairs antiviral activity; when associated with E-384.",
+      "pred": "### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q9BV86-W20Y on protein N-terminal Xaa-Pro-Lys N-methyltransferase 1.",
+      "ref": "Nearly abolishes methyltransferase activity with CENPA. This mutation may affect the substrate recognition and catalytic activity of NRMT1.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation B2GUB3-K24A on protein Tubulin tyrosine ligase 3.",
+      "ref": "Decreased monoglycylation activity; when associated with A-26. The site specificity of TTLL enzymes and their biochemical interplay remain largely unknown.",
+      "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assista",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation P77202-C129S on protein Thiol:disulfide interchange protein DsbG.",
+      "ref": "No loss of chaperone activity; when associated with S-126. This mutation may affect the protein's function as a molecular chaperone and its ability to prevent thermal aggregation of substrate proteins",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q13637-M91S on protein Ras-related protein Rab-32.",
+      "ref": "Impairs interaction with ANKRD27; when associated with S-93. The mutation in VARP affects its binding to Rab32:GTP, which in turn regulates VAMP7 participation in SNARE complex formation and membrane ",
+      "pred": "-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-",
+      "score": 0.0,
+      "is_generic": false
+    },
+    {
+      "instruction": "Describe the effect of mutation Q9SM23-Y171A on protein Acyl-CoA-binding domain-containing protein 1",
+      "ref": "Normal arachidonyl-CoA-binding activity. Replacement in ACBP1 did not affect arachidonyl-CoA binding.",
+      "pred": "### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answer:\n<Assistant>\n### Answ",
+      "score": 0.0,
+      "is_generic": false
+    }
+  ]
+}
