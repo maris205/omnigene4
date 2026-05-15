@@ -1,0 +1,181 @@
+{
+  "model": "OmniGene-4-SFT-v3 (4-bit NF4 \u2261 GGUF Q4_K_M precision)",
+  "n_per_category": 150,
+  "overall_avg_score": 0.5867222222222221,
+  "by_category": {
+    "Cell": {
+      "n_samples": 150,
+      "n_valid": 150,
+      "n_failed": 0,
+      "avg_keyword_overlap": 0.9666666666666667,
+      "samples": [
+        {
+          "instruction": "Describe the likely cell identity from the ranked expressed genes.",
+          "input": "<cell>\nFABP2 VIL1 ALPI APOB\n</cell>",
+          "ref": "This cell is most consistent with enterocyte, an intestinal enterocyte. Key markers such as FABP2, APOB, VIL1 support this identity.",
+          "pred": "This cell is most consistent with enterocyte, an intestinal enterocyte. Key markers such as FABP2, VIL1, ALPI support this identity.",
+          "score": 1.0
+        },
+        {
+          "instruction": "Given the expression strengths of marker genes, what cell type is this?",
+          "input": "<cell>\nAPOB:medium VIL1:low ALPI:medium\n</cell>",
+          "ref": "This cell is most consistent with enterocyte, an intestinal enterocyte. Key markers such as ALPI, APOB, VIL1 support this identity.",
+          "pred": "This cell is most consistent with enterocyte, an intestinal enterocyte. Key markers such as VIL1, ALPI, APOB support this identity.",
+          "score": 1.0
+        },
+        {
+          "instruction": "Based on the marker genes, describe the enriched biological pathway.",
+          "input": "GCG, IRX2, TTR",
+          "ref": "The marker profile suggests functional enrichment consistent with the typical biology of pancreatic alpha cell.",
+          "pred": "The marker profile suggests functional enrichment consistent with the typical biology of pancreatic alpha cell.",
+          "score": 1.0
+        }
+      ]
+    },
+    "Literature": {
+      "n_samples": 150,
+      "n_valid": 150,
+      "n_failed": 0,
+      "avg_keyword_overlap": 0.48033333333333333,
+      "samples": [
+        {
+          "instruction": "What are the official names of this protein?",
+          "input": "### Protein Sequence:\nSHO1_CANTT\n\n### Answer:",
+          "ref": "High osmolarity signaling protein SHO1, Osmosensor SHO1.",
+          "pred": "Protein SHO1 homolog, SHO1 protein.",
+          "score": 0.2
+        },
+        {
+          "instruction": "What is the protein family that this protein belongs to?",
+          "input": "### Protein Sequence:\nRK14_PHATC\n\n### Answer:",
+          "ref": "Belongs to the universal ribosomal protein uL14 family.",
+          "pred": "Belongs to the bacterial ribosomal protein bL14 family.",
+          "score": 0.8
+        },
+        {
+          "instruction": "What are the official names of this protein?",
+          "input": "### Protein Sequence:\nH4_DROYA\n\n### Answer:",
+          "ref": "Histone H4.",
+          "pred": "Histone H4.",
+          "score": 1.0
+        }
+      ]
+    },
+    "Mol": {
+      "n_samples": 150,
+      "n_valid": 150,
+      "n_failed": 0,
+      "avg_keyword_overlap": 0.9720000000000001,
+      "samples": [
+        {
+          "instruction": "Provide the compound name and basic info for this molecule.",
+          "input": "CC(C)C(NC(=O)Cn1c(-c2ccccc2)ncc(NC(=O)OCC(F)(F)F)c1=O)C(=O)C(F)(F)F",
+          "ref": "The SMILES represents an unnamed molecule with MW=522.4, LogP=3.29, TPSA=119.39. PubChem lookup would be required to retrieve a canonical compound name or synonyms.",
+          "pred": "The SMILES represents an unnamed molecule with MW=511.43, LogP=3.1, TPSA=110.39. PubChem lookup would be required to retrieve a canonical compound name or synonyms.",
+          "score": 1.0
+        },
+        {
+          "instruction": "Based on the evidence, describe the ligand-target relationship.",
+          "input": "Target: ALK\nLigand SMILES: CCCCCCCCCCCCCCCCC(=O)O\nEvidence: No specific activity evidence is provide",
+          "ref": "Without supporting bioactivity evidence, the relationship between this ligand and anaplastic lymphoma kinase (ALK) is best described as an uncharacterized or putative association rather than a confirm",
+          "pred": "Without supporting bioactivity evidence, the relationship between this ligand and anaplastic lymphoma kinase (ALK) is best described as an uncharacterized or putative association rather than a confirm",
+          "score": 1.0
+        },
+        {
+          "instruction": "List the chemically relevant functional groups of this molecule.",
+          "input": "CCCC(O)CC",
+          "ref": "The molecule contains the following functional groups: hydroxyl.",
+          "pred": "The molecule contains the following functional groups: hydroxyl.",
+          "score": 1.0
+        }
+      ]
+    },
+    "Mutation": {
+      "n_samples": 150,
+      "n_valid": 150,
+      "n_failed": 0,
+      "avg_keyword_overlap": 0.108,
+      "samples": [
+        {
+          "instruction": "Describe the effect of mutation Q9BTV5-D313S on protein Fibronectin type III and SPRY domain-contain",
+          "input": "### Wild-type:\nMEEQREALRKIIKTLAVKNEEIQSFIYSLKQMLLNVEANSAKVQEDLEAEFQSLFSLLEELKEGMLMKIKQDRASRTYELQNQLA",
+          "ref": "Increased ability to associate with microtubules; when associated with D-317; E-322 and D-324. Known functional changes.",
+          "pred": "In a breast cancer sample; somatic mutation.",
+          "score": 0.0
+        },
+        {
+          "instruction": "Describe the effect of mutation Q13435-K509R on protein Splicing factor 3B subunit 2.",
+          "input": "### Wild-type:\nMATEHPEPPKAELQLPPPPPPGHYGAWAAQELQAKLAEIGAPIQGNREELVERLQSYTRQTGIVLNRPVLRGEDGDKAAPPPMSA",
+          "ref": "Moderately diminished formation of omega-N monomethylarginine but greatly reduced formation of symmetrical dimethylarginine; when associated with R-507. Abolishes formation of omega-N monomethylargini",
+          "pred": "In a breast cancer sample; somatic mutation.",
+          "score": 0.0
+        },
+        {
+          "instruction": "Describe the effect of mutation Q86VP1-Q114A on protein Tax1-binding protein 1.",
+          "input": "### Wild-type:\nMTSFQEVPLQTSNFAHVIFQNVAKSYLPNAHLECHYTLTPYIHPHPKDWVGIFKVGWSTARDYYTFLWSPMPEHYVEGSTVNCVL",
+          "ref": "Complete gain of TBK1 and RB1CC1 binding.",
+          "pred": "Abolishes interaction with Tax1.",
+          "score": 0.0
+        }
+      ]
+    },
+    "Protein": {
+      "n_samples": 150,
+      "n_valid": 150,
+      "n_failed": 0,
+      "avg_keyword_overlap": 0.9933333333333333,
+      "samples": [
+        {
+          "instruction": "Judge if the following two protein sequences share an evolutionary origin.",
+          "input": "### Sequence 1:\nMARGNPRKRAAAAKDKWKMKEWYIVYAPDFFGSKEIGLTPADDPEKVIGRVIETTLKDLTGDFTKGHVKLYFQVYDVKGQNAYT",
+          "ref": "Homologous",
+          "pred": "Homologous",
+          "score": 1.0
+        },
+        {
+          "instruction": "Are these two protein sequences structurally related like paraphrases?",
+          "input": "### Sequence 1:\nMHKSSNFSGLNLVKSAPICLLDIFHRCVDSETALDTSLLYLIDMFGTAVFAVSGVLLAGRLKMDPFGVMVLASVTAIGGGTIRD",
+          "ref": "Non-Homologous",
+          "pred": "Non-Homologous",
+          "score": 1.0
+        },
+        {
+          "instruction": "Classify the pair below as homologous or non-homologous.",
+          "input": "### Sequence 1:\nMSEKHFILPSSMLMIVSAVFGGIGIITTIVFVILTVLHSKSAVCKPAGKEDMKKLNGIEGMQTIKEECGGSTETSSSKPKKKAK",
+          "ref": "Non-Homologous",
+          "pred": "Non-Homologous",
+          "score": 1.0
+        }
+      ]
+    },
+    "Structure": {
+      "n_samples": 150,
+      "n_valid": 150,
+      "n_failed": 0,
+      "avg_keyword_overlap": 0.0,
+      "samples": [
+        {
+          "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequence below.",
+          "input": "### Sequence 1D:\nDTELLSIKILNAGANGDKVVEGTIDEAKKTINFPRLDVETDFSALSIEAELSEGAALQSEVMDYSMDAETNEKTQVLRIINHN",
+          "ref": "<SEQ_3Di>DWDWPWKWFQQFDLRGGDIWTWDADVVQQEIETWATEPNTQQQWTFMDTDIDPFKDWPDRTDGFDDPPVDFKDWDWTWIDGPPDIDTGIYMYGHFDDAFDFDQVDKDKLDCFDVNPDVLLQALQWFEWEDAPQWIWTQGCADPPRGDHIFIAGVVCSVVVHGDTLDAACVVLDWAPASWHYWYQDLQKIKT",
+          "pred": "DFAEEEEEEQADQDPVLLVLLVVLLVLLVVLVVLLVLLVVLLVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVLLVVL",
+          "score": 0.0
+        },
+        {
+          "instruction": "Predict the secondary-structure string for the amino-acid sequence below. Use DSSP-style symbols.",
+          "input": "### Sequence 1D:\nRPMNQLYPIDLLTELPPPITDLTLPPPPLVIPPERMLVPSELSNASPDYIRSTLNAVPKNSSLLKKSKLPFGLVIRPYQHLYD",
+          "ref": "<SEQ_2D>CCCCCCCEEETTTSCSCCCSGGGSCCCCCCCCGGGSSSCSSSSSCCTTTEEESBSSEESBHHHHHHHTCCCEEEECSCCSSSTTSSCCCEECSCCCCBCSSSCCBCCTTCEEETTTTEEECTTTCCEEECCGGGTTTSTTCGGGGGGSHHHHCSEEEEECCGGGCSSCCCCCBEEEEEECSHHHHHSCHHHH",
+          "pred": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+          "score": 0.0
+        },
+        {
+          "instruction": "Predict the Foldseek 3Di structural alphabet sequence for the amino-acid sequence below.",
+          "input": "### Sequence 1D:\nEGKLVIWINGDKGYNGLAEVGKKFEKDTGIKVTVEHPDKLEEKFPQVAATGDGPDIIFWAHDRFGGYAQSGLLAEITPDKAFQ",
+          "ref": "<SEQ_3Di>DQAFEEEDAPLFLQVLLQVLQVVLCVVPVHHYDYDHDVVCVPVAVVQPVVQDDGFKYKDKLQQVQVCVVVVFFDFDDDDPVLLVQFDPVQQVSQFPLHTGFWDFWFKKWKWKKFFCVLPVDQAQAPVCQVVVQVVVLLVQAAAEAEALLFCLFLQLQLPFQPADQFDDDDSDTDLLHGRCQDPSNLVRLVS",
+          "pred": "DDPVLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVLLLVL",
+          "score": 0.0
+        }
+      ]
+    }
+  }
+}
