@@ -1,0 +1,127 @@
+{
+  "model": "OmniGene-4-SFT-v3 BF16",
+  "task": "Structure (3Di/DSSP) \u2014 decoding strategy comparison",
+  "n_samples": 50,
+  "configs": {
+    "A_chat_greedy": {
+      "avg_char_overlap": 0.041239764279243675,
+      "avg_diversity": 0.7070000000000001,
+      "collapse_count": 6,
+      "assistant_repeat_count": 16,
+      "n": 50,
+      "samples": [
+        {
+          "ref": "<SEQ_3Di>DDDDDDDDPQAWDKDWDADPNRGAWIWARHGGNAHKTKTAGPVVRWIWIDHDPDIDIDAWDQDPNWIQGPVRWIADVVLVRDIVVVSVVVPDDDPQPDKDWFFFAWAAAFR",
+          "pred": "0<Assistant>\n### Answer:\nThe sequence provided is a complex protein structure. The sequence provided is a complex protein structure. The sequence prov",
+          "overlap": 0.020833333333333332
+        },
+        {
+          "ref": "<SEQ_2D>CCCCCGGGTSCCSHHHHHHHHHHHHHTCCCCCCCCCCCCCCCCCCCC</SEQ_2D>",
+          "pred": "<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assistant>\n<Assis",
+          "overlap": 0.01818181818181818
+        },
+        {
+          "ref": "<SEQ_3Di>DFKDWDPFKTWDDFPDDQFTKTWIAGPVPRDIKIKTKDFLPDDDDQPVVQVVLCVLLDLDQPDADAQEWHWDDWGAIDDRMTMTIIHDAAAFQVVVCVVLVLAFDLLQLLL",
+          "pred": "### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### An",
+          "overlap": 0.025806451612903226
+        }
+      ]
+    },
+    "B_alpaca_greedy": {
+      "avg_char_overlap": 0.045595276684394025,
+      "avg_diversity": 0.6609999999999999,
+      "collapse_count": 1,
+      "assistant_repeat_count": 0,
+      "n": 50,
+      "samples": [
+        {
+          "ref": "<SEQ_3Di>DDDDDDDDPQAWDKDWDADPNRGAWIWARHGGNAHKTKTAGPVVRWIWIDHDPDIDIDAWDQDPNWIQGPVRWIADVVLVRDIVVVSVVVPDDDPQPDKDWFFFAWAAAFR",
+          "pred": "### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### An",
+          "overlap": 0.036458333333333336
+        },
+        {
+          "ref": "<SEQ_2D>CCCCCGGGTSCCSHHHHHHHHHHHHHTCCCCCCCCCCCCCCCCCCCC</SEQ_2D>",
+          "pred": "### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### An",
+          "overlap": 0.01818181818181818
+        },
+        {
+          "ref": "<SEQ_3Di>DFKDWDPFKTWDDFPDDQFTKTWIAGPVPRDIKIKTKDFLPDDDDQPVVQVVLCVLLDLDQPDADAQEWHWDDWGAIDDRMTMTIIHDAAAFQVVVCVVLVLAFDLLQLLL",
+          "pred": "AVLMVGPNFRVGKKIGCFGELRLGKNLYNNEHVAIKMEPMKSKAPQLHLEYRFYKLLGSHADNAPDGIPRIYHLGTCGGRYNAMVLELLGLSLEDLFNICARKFSLKTVLMIAKQLLHRIEYVHSRHLKTVLMIAKQLLHRIEYVHSRHL",
+          "overlap": 0.041935483870967745
+        }
+      ]
+    },
+    "C_alpaca_sampling": {
+      "avg_char_overlap": 0.042233009778285646,
+      "avg_diversity": 0.991,
+      "collapse_count": 2,
+      "assistant_repeat_count": 0,
+      "n": 50,
+      "samples": [
+        {
+          "ref": "<SEQ_3Di>DDDDDDDDPQAWDKDWDADPNRGAWIWARHGGNAHKTKTAGPVVRWIWIDHDPDIDIDAWDQDPNWIQGPVRWIADVVLVRDIVVVSVVVPDDDPQPDKDWFFFAWAAAFR",
+          "pred": "VLLESASDKAHYILSKDGNRNN\u25c6WYIGRGSDNNND\u25b6TCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCFHSYVHGTTLTL\u25c6KQDYAVVNKHFHVGQAVVATDGNIQGT\u25c6KWGGKWLDA",
+          "overlap": 0.03125
+        },
+        {
+          "ref": "<SEQ_2D>CCCCCGGGTSCCSHHHHHHHHHHHHHTCCCCCCCCCCCCCCCCCCCC</SEQ_2D>",
+          "pred": "The following is a natural response to one's content. The following is a natural response to one's content. The following is a natural response to one",
+          "overlap": 0.07272727272727272
+        },
+        {
+          "ref": "<SEQ_3Di>DFKDWDPFKTWDDFPDDQFTKTWIAGPVPRDIKIKTKDFLPDDDDQPVVQVVLCVLLDLDQPDADAQEWHWDDWGAIDDRMTMTIIHDAAAFQVVVCVVLVLAFDLLQLLL",
+          "pred": "\u25c6AVAV\u25c6LMVGPNFRVGKKIGCFGELRLGKNLYNNEHVAIKMEPMKSKAPQLHLEYRFYKLLGSHADNAPDGIPRIYHL\u25c6TCGGRYNAMVLELLGLSLEDLFNICARKFSLKTVLMIAKQLLHRIEYVHSRHLIVAJEMKSXURLIGHTED",
+          "overlap": 0.054838709677419356
+        }
+      ]
+    },
+    "D_alpaca_ban_tags": {
+      "avg_char_overlap": 0.045595276684394025,
+      "avg_diversity": 0.6609999999999999,
+      "collapse_count": 1,
+      "assistant_repeat_count": 0,
+      "n": 50,
+      "samples": [
+        {
+          "ref": "<SEQ_3Di>DDDDDDDDPQAWDKDWDADPNRGAWIWARHGGNAHKTKTAGPVVRWIWIDHDPDIDIDAWDQDPNWIQGPVRWIADVVLVRDIVVVSVVVPDDDPQPDKDWFFFAWAAAFR",
+          "pred": "### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### An",
+          "overlap": 0.036458333333333336
+        },
+        {
+          "ref": "<SEQ_2D>CCCCCGGGTSCCSHHHHHHHHHHHHHTCCCCCCCCCCCCCCCCCCCC</SEQ_2D>",
+          "pred": "### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### Answer:\n### An",
+          "overlap": 0.01818181818181818
+        },
+        {
+          "ref": "<SEQ_3Di>DFKDWDPFKTWDDFPDDQFTKTWIAGPVPRDIKIKTKDFLPDDDDQPVVQVVLCVLLDLDQPDADAQEWHWDDWGAIDDRMTMTIIHDAAAFQVVVCVVLVLAFDLLQLLL",
+          "pred": "AVLMVGPNFRVGKKIGCFGELRLGKNLYNNEHVAIKMEPMKSKAPQLHLEYRFYKLLGSHADNAPDGIPRIYHLGTCGGRYNAMVLELLGLSLEDLFNICARKFSLKTVLMIAKQLLHRIEYVHSRHLKTVLMIAKQLLHRIEYVHSRHL",
+          "overlap": 0.041935483870967745
+        }
+      ]
+    },
+    "E_bare_greedy": {
+      "avg_char_overlap": 0.03391890726361618,
+      "avg_diversity": 0.308,
+      "collapse_count": 1,
+      "assistant_repeat_count": 0,
+      "n": 50,
+      "samples": [
+        {
+          "ref": "<SEQ_3Di>DDDDDDDDPQAWDKDWDADPNRGAWIWARHGGNAHKTKTAGPVVRWIWIDHDPDIDIDAWDQDPNWIQGPVRWIADVVLVRDIVVVSVVVPDDDPQPDKDWFFFAWAAAFR",
+          "pred": "Answer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\n",
+          "overlap": 0.036458333333333336
+        },
+        {
+          "ref": "<SEQ_2D>CCCCCGGGTSCCSHHHHHHHHHHHHHTCCCCCCCCCCCCCCCCCCCC</SEQ_2D>",
+          "pred": "Answer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\n",
+          "overlap": 0.01818181818181818
+        },
+        {
+          "ref": "<SEQ_3Di>DFKDWDPFKTWDDFPDDQFTKTWIAGPVPRDIKIKTKDFLPDDDDQPVVQVVLCVLLDLDQPDADAQEWHWDDWGAIDDRMTMTIIHDAAAFQVVVCVVLVLAFDLLQLLL",
+          "pred": "Answer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\nAnswer: \n\n",
+          "overlap": 0.025806451612903226
+        }
+      ]
+    }
+  }
+}
