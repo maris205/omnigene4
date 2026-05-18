@@ -1,0 +1,58 @@
+{
+  "model": "OmniGene-4-SFT-v4 (4-bit NF4 + Alpaca prompt)",
+  "multi_task": {
+    "Cell": {
+      "n": 100,
+      "keyword_score": 0.9540000000000001,
+      "char_overlap": null,
+      "avg_unique_chars": null
+    },
+    "Literature": {
+      "n": 100,
+      "keyword_score": 0.5523333333333333,
+      "char_overlap": null,
+      "avg_unique_chars": null
+    },
+    "Mol": {
+      "n": 100,
+      "keyword_score": 0.9840000000000001,
+      "char_overlap": null,
+      "avg_unique_chars": null
+    },
+    "Mutation": {
+      "n": 100,
+      "keyword_score": 0.09483333333333334,
+      "char_overlap": null,
+      "avg_unique_chars": null
+    },
+    "Protein": {
+      "n": 100,
+      "keyword_score": 1.0,
+      "char_overlap": null,
+      "avg_unique_chars": null
+    },
+    "Structure": {
+      "n": 100,
+      "keyword_score": 0.0,
+      "char_overlap": 0.25695505742362257,
+      "avg_unique_chars": 2.63
+    }
+  },
+  "standard_homology": {
+    "acc": 0.995,
+    "correct": 995,
+    "valid": 1000,
+    "n": 1000
+  },
+  "remote_homology": {
+    "acc": 0.82,
+    "correct": 410,
+    "valid": 500,
+    "n": 500
+  },
+  "bixbench": {
+    "acc": 0.8926829268292683,
+    "correct": 183,
+    "total": 205
+  }
+}
