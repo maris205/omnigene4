@@ -1,0 +1,123 @@
+{
+  "model": "OmniGene-4-SFT-v5 (4-bit + Alpaca + classification heads)",
+  "multi_task": {
+    "Cell": {
+      "n": 100,
+      "keyword_score": 0.966,
+      "char_overlap": null,
+      "avg_unique_chars": null
+    },
+    "Literature": {
+      "n": 100,
+      "keyword_score": 0.5588333333333333,
+      "char_overlap": null,
+      "avg_unique_chars": null
+    },
+    "Mol": {
+      "n": 100,
+      "keyword_score": 0.98,
+      "char_overlap": null,
+      "avg_unique_chars": null
+    },
+    "Mutation": {
+      "n": 100,
+      "keyword_score": 0.11333333333333334,
+      "char_overlap": null,
+      "avg_unique_chars": null
+    },
+    "Protein": {
+      "n": 100,
+      "keyword_score": 1.0,
+      "char_overlap": null,
+      "avg_unique_chars": null
+    },
+    "Structure": {
+      "n": 100,
+      "keyword_score": 0.0,
+      "char_overlap": 0.2585909568878503,
+      "avg_unique_chars": 3.04
+    }
+  },
+  "classification_heads": {
+    "3Di": {
+      "per_residue_acc": [
+        0.717391304347826,
+        0.85,
+        0.7,
+        0.75,
+        0.8181818181818182,
+        0.8823529411764706,
+        1.0,
+        0.65,
+        0.8378378378378378,
+        0.6511627906976745,
+        0.9054054054054054,
+        0.8367346938775511,
+        0.875,
+        0.5217391304347826,
+        0.7575757575757576,
+        0.6818181818181818,
+        0.8571428571428571,
+        1.0,
+        0.6470588235294118
+      ],
+      "n": 19,
+      "mean_acc": 0.7862842916855566,
+      "chance": 0.05
+    },
+    "DSSP": {
+      "per_residue_acc": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "n": 30,
+      "mean_acc": 1.0,
+      "chance": 0.125
+    }
+  },
+  "standard_homology": {
+    "acc": 0.994,
+    "correct": 994,
+    "valid": 1000,
+    "n": 1000
+  },
+  "remote_homology": {
+    "acc": 0.826,
+    "correct": 413,
+    "valid": 500,
+    "n": 500
+  },
+  "bixbench": {
+    "acc": 0.9365853658536586,
+    "correct": 192,
+    "total": 205
+  }
+}
