@@ -25,7 +25,8 @@
 }
 
 \title{\textbf{Supplementary Materials for\\
-``OmniGene-4: A Unified Bio-Language MoE Model with Router-Level Interpretability''}}
+``OmniGene-4: A Unified Bio-Language MoE Model with Router-Level Interpretability''}\\
+\large (covering v3 routing analysis and v4-v5 SFT extensions)}
 
 \author{Liang Wang\\
 \small School of Artificial Intelligence and Automation\\
@@ -129,15 +130,17 @@ Format-matched (neutral template) & 0.145 & 90.2\% \\
 
 \begin{table}[H]
 \centering
-\caption{Remote homology accuracy on identical 2,000-pair evaluation.}
+\caption{Remote homology accuracy on identical 500-pair balanced evaluation (\texttt{protein\_pair\_remote}, seed 42). The Gemma-4 baseline and ESM-2 numbers were collected on the same pair set used for v4 and v5 evaluation.}
 \begin{tabular}{lccc}
 \toprule
 \textbf{Model} & \textbf{Threshold} & \textbf{Accuracy} & \textbf{ROC AUC} \\
 \midrule
 ESM-2 (650M) & 0.5 & 50.50\% & 0.513 \\
 ESM-2 (650M) & 1.001 (optimal) & 51.80\% & 0.513 \\
+Gemma-4-Instruct baseline & N/A & 60.00\% & N/A \\
 OmniGene-4 v3 & N/A & 59.50\% & N/A \\
-Gemma-4 Instruct baseline & N/A & 60.00\% & N/A \\
+OmniGene-4 v4 & N/A & 82.00\% & N/A \\
+\textbf{OmniGene-4 v5} & N/A & \textbf{82.60\%} & N/A \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -209,27 +212,28 @@ Gradient checkpointing & True \\
 
 \begin{table}[H]
 \centering
-\caption{SFT hyperparameters for OmniGene-4 v3.}
-\begin{tabular}{ll}
+\caption{SFT hyperparameters across all five stages. v2/v3 used a chat-style template; v4 switched to pure Alpaca with prompt-token loss masking and task-level oversampling (Structure x3, Mutation x2). v5 adds a dual-head architecture (3Di + DSSP per-residue classifiers) trained jointly with the generation head under a 0.5 / 0.5 loss split, on the Structure-only subset.}
+\begin{tabular}{lccc}
 \toprule
-\textbf{Parameter} & \textbf{Value} \\
+\textbf{Parameter} & \textbf{v2 / v3} & \textbf{v4} & \textbf{v5} \\
 \midrule
-Training data & 199,576 instruction examples \\
-Batch size & 4 per GPU × 1 GPU × 16 accum = 64 \\
-Learning rate & 5e-5 \\
-LR scheduler & Cosine with 3\% warmup \\
-Optimizer & paged\_adamw\_8bit \\
-Weight decay & 0.01 \\
-Max gradient norm & 1.0 \\
-Sequence length & 1024 \\
-Epochs & 1 \\
-Total steps & 3,118 \\
-LoRA rank & 64 \\
-LoRA alpha & 128 \\
-LoRA dropout & 0.05 \\
-LoRA targets & q/k/v/o\_proj, gate/up/down\_proj, router.proj \\
-Precision & bfloat16 \\
-Gradient checkpointing & True \\
+Init from & v2 / Gemma-bio & v3 LoRA + embed & v4 LoRA + embed \\
+Training data & 179K / 199K instr & 199K (resampled) & ~21K Structure subset \\
+Prompt template & chat tags & pure Alpaca & pure Alpaca \\
+Loss masking on prompt & no & yes (-100) & yes (-100) \\
+Joint loss & gen CE only & gen CE only & 0.5 gen + 0.5 cls \\
+Per-device batch size & 4 & 2 & 2 \\
+Gradient accumulation & 16 & 32 & 16 \\
+Effective batch size & 64 & 64 & 32 \\
+Learning rate & 5e-5 / 2e-5 & 2e-5 & 1e-5 \\
+LR scheduler & cosine, 3\% warm & cosine, 3\% warm & cosine, 5\% warm \\
+Optimizer & paged\_adamw\_8bit & paged\_adamw\_8bit & paged\_adamw\_8bit \\
+Sequence length & 1024 & 1536 & 1536 \\
+Epochs / Steps & 1 ep / 3,118 & ~ / 4,257 & 2 ep / 1,350 \\
+LoRA rank, alpha & 64, 128 & 64, 128 & 64, 128 \\
+LoRA dropout & 0.05 & 0.05 & 0.05 \\
+GPU-hours (single H20) & 11.8 / 13.2 & ~30 & ~5 \\
+Precision & bfloat16 & bfloat16 & bfloat16 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -372,6 +376,58 @@ Structure & 2.82 & 2.65 & 2.67 \\
 \end{tabular}
 \end{table}
 
+\subsection{Supplementary Table S5: Multi-task Generation Evaluation (v5)}
+
+\begin{table}[H]
+\centering
+\caption{Multi-task generation accuracy across six evaluation categories, 100 samples each, on a held-out split. Keyword-overlap is the standard text-overlap score; Structure additionally reports character-level overlap on the 3Di / DSSP output strings, which are not natural-language tokens. The low Mutation and Literature scores reflect known long-tail and abstract-language difficulties; the dual-head architecture in v5 specifically addresses Structure via the classification heads (Table S6) rather than via generation.}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Category} & \textbf{Keyword score} & \textbf{Char overlap} \\
+\midrule
+Protein     & 1.000 & --- \\
+Mol         & 0.980 & --- \\
+Cell        & 0.966 & --- \\
+Literature  & 0.559 & --- \\
+Mutation    & 0.113 & --- \\
+Structure (gen mode) & 0.000 & 0.259 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Supplementary Table S6: Per-residue Classification Head Accuracy (v5)}
+
+\begin{table}[H]
+\centering
+\caption{Per-residue accuracy of the two classification heads on a 50-protein held-out evaluation, under teacher-forced reference-residue inference. Scores are aggregated by averaging per-protein accuracy. Both heads operate on the same final-hidden-state representation as the generation head; the dual-head architecture trains them jointly with the generation objective ($\alpha = \beta = 0.5$) for 1{,}350 steps.}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Head} & \textbf{Classes} & \textbf{Chance} & \textbf{Accuracy} & \textbf{N proteins} \\
+\midrule
+3Di (Foldseek)        & 20 & 5.0\%  & 78.6\%  & 19 \\
+DSSP (secondary str.) & 8  & 12.5\% & 100.0\% & 31 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Supplementary Table S7: Standard / Remote Homology Updated Numbers}
+
+\begin{table}[H]
+\centering
+\caption{BioPAWS homology accuracy across all five stages on consistent evaluation samples. Standard uses 1{,}000 balanced pairs (\texttt{protein\_pair\_short}); Remote uses 500 balanced pairs (\texttt{protein\_pair\_remote}). The v3-to-v4 jump is the headline finding of the v4 recipe change (Alpaca + loss masking + task oversampling).}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Stage} & \textbf{Standard} & \textbf{Remote} & \textbf{BixBench} \\
+\midrule
+Gemma-4-Instruct (vocab-extended)  & 85.0\% & 60.0\% & 87.0\% \\
+v2 (CPT + Bio-SFT)                 & 100.0\% & 56.6\% & 91.0\% \\
+v3 (+20K remote pairs)             & 99.95\% & 59.5\% & 93.7\% \\
+v4 (Alpaca + loss-mask + oversamp) & 99.5\% & 82.0\% & 90.4\% \\
+\textbf{v5 (+ dual-head)}          & \textbf{99.4\%} & \textbf{82.6\%} & \textbf{93.7\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \newpage
 \section{Code Availability}
 
@@ -386,8 +442,13 @@ All code, training scripts, and analysis notebooks are available at:
 \begin{itemize}
 \item \texttt{biopaws/cpt/1-prepare\_cpt\_data\_mp.py} -- CPT data preparation (multi-process)
 \item \texttt{biopaws/cpt/2-run\_cpt.py} -- CPT training (8-GPU DDP)
-\item \texttt{biopaws/sft\_data/17-train\_bio\_sft\_v3\_remote.py} -- SFT training
-\item \texttt{biopaws/cpt/18-eval\_v3\_sft.py} -- Main evaluation
+\item \texttt{biopaws/sft\_data/17-train\_bio\_sft\_v3\_remote.py} -- SFT v3 training
+\item \texttt{biopaws/cpt/40-train\_bio\_sft\_v4.py} -- SFT v4 (Alpaca + loss-mask + oversampling)
+\item \texttt{biopaws/cpt/41-train\_bio\_sft\_v5\_classifier.py} -- SFT v5 (dual-head)
+\item \texttt{biopaws/cpt/18-eval\_v3\_sft.py} -- v3 evaluation
+\item \texttt{biopaws/cpt/42-eval\_v4\_full.py} -- v4 evaluation
+\item \texttt{biopaws/cpt/43-eval\_v5\_full.py} -- v5 evaluation (incl.\ classification heads)
+\item \texttt{biopaws/cpt/44-merge\_v5\_to\_full.py} -- v5 LoRA + heads -> BF16 merge
 \item \texttt{biopaws/cpt/20-collect\_moe\_activations.py} -- Routing collection
 \item \texttt{biopaws/cpt/26-format\_matched\_routing.py} -- Format control
 \item \texttt{biopaws/cpt/27-esm2\_remote\_headtohead.py} -- ESM-2 comparison
@@ -406,10 +467,20 @@ Routing-count matrices and analysis results are in \texttt{outputs/moe\_analysis
 \item \texttt{esm2\_remote\_2k\_eval.json} -- ESM-2 comparison results
 \item \texttt{bootstrap\_ci\_report.json} -- Bootstrap CI results
 \item \texttt{bootstrap\_samples.npz} -- Full bootstrap samples (1,000 iterations)
+\item \texttt{v4\_full\_eval.json}, \texttt{v5\_full\_eval.json} -- v4 / v5 multi-task and classification-head accuracy
 \end{itemize}
 
 \subsection{Model Weights}
 
-LoRA adapter weights and embedding checkpoints ($\approx 1.9$ GB) can be released upon reasonable request to the corresponding author.
+All model artefacts (LoRA adapters, classification heads, merged BF16 weights, tokenizer, chat template) are publicly released on the Hugging Face Hub under the \texttt{dnagpt} organization:
+
+\begin{itemize}
+\item \url{https://huggingface.co/dnagpt/OmniGene-4-CPT-v2-merged} -- Base + CPT only, BF16 (~50 GB)
+\item \url{https://huggingface.co/dnagpt/OmniGene-4-SFT-v3-merged} -- CPT + SFT v3, BF16 (~50 GB)
+\item \url{https://huggingface.co/dnagpt/OmniGene-4-SFT-v3-GGUF} -- v3 quantized GGUF Q4\_K\_M (~16 GB)
+\item \url{https://huggingface.co/dnagpt/OmniGene-4-SFT-v4} -- v4 LoRA + embedding (~1.9 GB)
+\item \url{https://huggingface.co/dnagpt/OmniGene-4-SFT-v5} -- v5 LoRA + embedding + classification heads (~1.9 GB)
+\item \url{https://huggingface.co/dnagpt/OmniGene-4-SFT-v5-merged} -- v5 final, BF16 with classification heads (~52 GB, 11 shards)
+\end{itemize}
 
 \end{document}
