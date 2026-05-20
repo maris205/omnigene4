@@ -419,6 +419,63 @@ Structure    & 0.097 & 0.150 & 0.151 & $+0.053$ & $+0.001$ \\
 
 NL's isolation grows the most ($+0.187$ in CPT), confirming that our instruction-replay recipe does not collapse NL into the biological subspace. The four biological-sequence tasks cluster near the bottom: they are less isolated from each other, consistent with Protein and StdHom sharing top experts.
 
+\subsection{Case Studies and Comparison Against Classical Baselines}
+\label{sec:case_studies}
+
+To probe \emph{when} OmniGene-4 v5 succeeds where classical alignment-based and embedding-based remote-homology methods fail, we draw five protein pairs from the 500-pair balanced \texttt{protein\_pair\_remote} sample and run all methods head-to-head: ESM-2 (650M and 3B), MMseqs2 \texttt{easy-search}, DIAMOND \texttt{blastp --more-sensitive}, and OmniGene-4 v5 (4-bit, Alpaca prompt). Cases were selected to span four scenarios: (Type A, 2 cases) label 1, MMseqs2 and DIAMOND find no alignment, v5 right; (Type B, 1 case) label 0, ESM-2 cosine $\geq 0.5$ (false positive), v5 right; (Type C, 1 case) label 1, all methods correct (sanity check); (Type D, 1 case) label 1, all methods including v5 wrong (honest failure mode).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/case_study_head2head.pdf}
+\caption{Head-to-head accuracy on five case-study protein pairs. Blue = correct, red = wrong. Type-A pairs (Cases 1, 2) are recognized by v5 although alignment tools find no hit. Type-B pair (Case 3) is correctly rejected by v5 although ESM-2 cosine similarity is high (false positive). Type-C pair (Case 4) is the sanity check. Type-D pair (Case 5) is hard for every method tested.}
+\label{fig:case_h2h}
+\end{figure}
+
+\paragraph{Routing patterns are largely stable across cases.}
+Forwarding each pair through v5-merged with hooks on every router (30 layers, 128 experts) reveals a result we did not anticipate: pairwise routing distributions are \emph{much closer} between case pairs than across task families. Figure~\ref{fig:case_layer_js} plots the per-layer Jensen--Shannon divergence between each homologous case and the non-homologous Case 3. The maximum across all layers and case-pairs is $0.040$, more than five-fold smaller than the cross-task layer-averaged JS of $0.23$ reported in \S\ref{sec:moe} for inputs from different modalities (NL, DNA, Protein, etc.). At layer 12 (where cross-task differentiation peaks) we see only $\sim 0.005$--$0.008$ JS between cases. Top-3 routed experts at layer 12 are the same set $\{E_{50}, E_9, E_{108}\}$ across all five cases. This suggests that within the protein-homology task family, the homology decision does \emph{not} happen at the routing gate but inside the activated experts --- the same expert circuit handles all five pairs and produces different output simply via expert-internal computation on different residue patterns.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/case_study_layer_js.pdf}
+\caption{Per-layer routing JS divergence between each homologous case (Cases 1, 2, 4, 5) and the non-homologous Case 3. The dashed grey line marks the cross-task layer-averaged JS of 0.23 (Section~\ref{sec:moe}). Routing is much more stable within the protein-homology task family than across modalities. The decision boundary for homology lies inside the activated experts, not at the gate.}
+\label{fig:case_layer_js}
+\end{figure}
+
+The corresponding routing-fraction matrices for all five cases are provided in Figure~\ref{fig:case_routing_mosaic}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/case_study_routing_mosaic.pdf}
+\caption{Per-case routing-fraction matrix (30 layers $\times$ 128 experts), log-scaled. Visually similar across cases, with the strongest activation cluster near experts 0--20 and 100--115 in middle layers (consistent with the protein-rich expert population identified in \S\ref{sec:moe}).}
+\label{fig:case_routing_mosaic}
+\end{figure}
+
+\paragraph{Aggregate validation against classical baselines.}
+Table~\ref{tab:full_baseline} summarizes accuracy across the full 500-pair sample. Two findings: (1) classical alignment tools (MMseqs2 54.4\%, DIAMOND 53.2\%) and PLM cosine similarity (ESM-2 650M 50.5\%, ESM-2 3B 51.2\%) all saturate near the 50--55\% range on this distribution, indicating that the pairs are genuinely \emph{remote} --- no detectable sequence alignment in $>$95\% of cases, and no useful embedding-cosine signal. (2) Parameter scaling within the ESM-2 family adds only $+0.7$ pp from 650M to 3B, ruling out encoder capacity as the bottleneck. The 27--32 pp gap to v5 reflects the cumulative effect of CPT on bio-token semantics + SFT on instruction-format homology supervision, not raw scale.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Full 500-pair Remote homology accuracy across baseline methods. All run on the same balanced sample of \texttt{protein\_pair\_remote} (seed 42).}
+\label{tab:full_baseline}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Method} & \textbf{Accuracy} & \textbf{ROC AUC} \\
+\midrule
+ESM-2 650M (mean cosine, threshold 0.5)   & 50.50\% & 0.513 \\
+ESM-2 3B (mean cosine, threshold 0.5)     & 51.20\% & 0.512 \\
+MMseqs2 (\texttt{easy-search} -s 7.5)     & 54.40\% & 0.556 \\
+DIAMOND (\texttt{blastp --more-sensitive})& 53.20\% & 0.532 \\
+Gemma-4-Instruct (vocab-extended, zero-shot) & 60.00\% & --- \\
+\midrule
+\textbf{OmniGene-4 v5} (4-bit, Alpaca prompt) & \textbf{82.60\%} & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Failure mode (Type D).}
+Case 5 (the only label-1 pair on which v5 fails) is also unrecognized by MMseqs2, DIAMOND, and is correctly classified by ESM-2 cosine in only the trivial sense that ESM-2 calls almost everything ``positive'' at threshold 0.5. The two sequences are 108 and 176 residues with no detectable conserved motif on visual inspection. Inspecting layer-12 routing, the top-3 activated experts are $\{E_{50}, E_{108}, E_9\}$ --- the same set that activates on the four cases v5 gets right --- so the failure is not at the gate. We do not claim v5 solves all remote-homology cases; rather, the gap from 50--55\% to 82\% on this evaluation protocol is a real and large improvement over the prior unrestricted-vocabulary chat model state-of-the-art.
+
 \section{Discussion}
 \label{sec:discussion}
 

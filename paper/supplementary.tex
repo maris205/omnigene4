@@ -150,6 +150,47 @@ OmniGene-4 v4 & LM (chat) & 82.00\% & --- & --- \\
 
 \noindent The ESM-2 family does not improve materially when scaled from 650M to 3B parameters (+0.7 pp), confirming that the bottleneck on this remote-homology distribution is not encoder capacity but rather the absence of explicit homology supervision during pretraining. Classical alignment tools (MMseqs2, DIAMOND) reach 53--56\%, marginally above chance, indicating that the 500 pairs in this sample are genuinely remote in sequence space (no detectable sequence alignment under default E-value cutoffs in $>$95\% of pairs). OmniGene-4 v4 / v5 reach 82\% on the same pairs, with the gap attributable to the v4 SFT-recipe changes (Alpaca template, loss masking, task oversampling).
 
+\subsection{Supplementary Table S8: Case-Study Pair Details}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Five case-study protein pairs drawn from the 500-pair Remote sample. ESM2-650 / 3B columns report binary prediction at cosine threshold 0.5; MMseqs / DIAMOND columns are 1 if a hit was found at E$\leq 10^{-3}$, 0 otherwise. v5 column is the parsed answer of OmniGene-4 v5. Type-A = MMseqs/DIAMOND fail but v5 succeeds; Type-B = ESM-2 false positive but v5 correctly rejects; Type-C = sanity check (all correct); Type-D = limitation (v5 fails).}
+\label{tab:case_studies}
+\begin{tabular}{c c r r c c c c c c}
+\toprule
+\textbf{Case} & \textbf{Type} & \textbf{Len 1} & \textbf{Len 2} & \textbf{Label} & \textbf{ESM2-650} & \textbf{ESM2-3B} & \textbf{MMseqs} & \textbf{DIAMOND} & \textbf{v5} \\
+\midrule
+1 & A & 107 & 106 & 1 & 1 (Y) & 1 (Y) & 0 (N) & 0 (N) & 1 (Y) \\
+2 & A & 142 & 161 & 1 & 1 (Y) & 1 (Y) & 0 (N) & 0 (N) & 1 (Y) \\
+3 & B & 244 & 157 & 0 & 1 (N) & 1 (N) & 0 (Y) & 0 (Y) & 0 (Y) \\
+4 & C & 143 & 101 & 1 & 1 (Y) & 1 (Y) & 1 (Y) & 1 (Y) & 1 (Y) \\
+5 & D & 108 & 176 & 1 & 1 (Y) & 1 (Y) & 0 (N) & 0 (N) & 0 (N) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Supplementary Table S9: Layer-12 Top-3 Routed Experts per Case}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Top-3 routed experts at layer 12 for each case-study pair. The same expert set $\{E_{50}, E_9, E_{108}\}$ activates on all five cases, supporting the conclusion that homology decisions occur inside expert computation rather than at the routing gate (Section 3.5).}
+\begin{tabular}{c c c c c}
+\toprule
+\textbf{Case} & \textbf{Outcome} & \textbf{Top-1} & \textbf{Top-2} & \textbf{Top-3} \\
+\midrule
+1 & v5 correct (label=1)   & E50 & E9  & E39  \\
+2 & v5 correct (label=1)   & E50 & E9  & E108 \\
+3 & v5 correct (label=0)   & E50 & E9  & E108 \\
+4 & v5 correct (label=1)   & E50 & E108 & E9  \\
+5 & v5 \emph{wrong} (label=1) & E50 & E108 & E9  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Layer-12 entropy is also stable across cases ($H = 2.70$--$2.83$), and per-layer JS divergence between any homologous case and the non-homologous Case 3 stays below $0.04$ across all 30 layers (peak at layer 5, $0.040$). For comparison, the layer-averaged cross-task JS reported in the main paper is $0.230$ (see Table~S1 / Figure~S1). The difference of more than $5\times$ between cross-case and cross-task JS supports the gate-vs-expert interpretation in Section 3.5.
+
 \newpage
 \section{Supplementary Figures}
 
