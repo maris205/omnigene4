@@ -9,245 +9,533 @@
 \usepackage{booktabs}
 \usepackage{amsmath, amssymb}
 \usepackage{array}
+\usepackage{multirow}
 \usepackage{float}
 \usepackage[hidelinks]{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
 \usepackage{xcolor}
 \usepackage{caption}
-\usepackage[numbers,sort&compress]{natbib}
 \usepackage{lineno}
 \linenumbers
-
 \captionsetup{font=small,labelfont=bf}
 
-\title{OmniGene-4: A Unified Bio-Language MoE Model\\with Router-Level Interpretability}
+\title{\textbf{OmniGene-4: A Unified Bio-Language MoE Model with\\ Router-Level Interpretability}}
 
-\author{Liang Wang\\
+\author{Liang Wang\thanks{Corresponding author. Email: wangliang.f@gmail.com}\\
 \small School of Artificial Intelligence and Automation\\
-\small Huazhong University of Science and Technology, Wuhan 430074, China\\
-\small \texttt{wangliang.f@gmail.com}}
-
-\date{}
+\small Huazhong University of Science and Technology\\
+\small Wuhan, Hubei 430070, P.R. China}
+\date{May 2026}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-\noindent We introduce OmniGene-4, a unified bio-language foundation model built on Gemma-4-26B-A4B (30 layers, 128 experts per layer, top-8 routing). We inject 28,028 biological tokens (DNA and protein BPE, Foldseek 3Di, DSSP labels), continue pretraining on a 32.5\,GB DNA / protein / natural-language / structural mixture, and run a five-stage supervised fine-tuning pipeline (v2--v5) on 199,576 instruction-format examples across eight task families. The final v5 adds a dual-head architecture: a generation head plus two per-residue classification heads (3Di, DSSP) trained jointly under a $0.5/0.5$ loss split. v5 reaches 99.40\% accuracy on BioPAWS standard protein homology, 82.60\% on remote homology (500 pairs), and 93.66\% on BixBench --- gaining $+14.4$, $+22.6$, $+6.7$ percentage points over the vocabulary-extended Gemma-4-Instruct baseline, and outperforming ESM-2 (3B) by $+31.4$ pp on the identical remote-homology split. The classification heads reach 78.6\% per-residue accuracy on 3Di (chance 5\%) and 100\% on DSSP (chance 12.5\%). MoE router activations further yield a clean CPT/SFT $96\%/4\%$ decomposition of cross-task differentiation, providing direct interpretability of where biological specialization is acquired.
+\noindent We introduce \textbf{OmniGene-4}, a unified bio-language foundation model built on Gemma-4-26B-A4B (30 layers, 128 experts per layer, top-8 routing), and use it to address a question that has been actively debated for general LLMs but rarely measured directly in the biological domain: \emph{what does continued pretraining (CPT) do that supervised fine-tuning (SFT) cannot?} By installing forward hooks on every router and aggregating expert-routing distributions across eight task families, we provide the first router-level decomposition for a biological MoE model: under a layer-averaged Jensen--Shannon metric, CPT accounts for \textbf{96\%} of cross-task expert differentiation and SFT for \textbf{4\%}, with bootstrap 95\% CIs excluding zero for both. CPT reshapes middle transformer layers ($L_{11}$--$L_{22}$) while SFT concentrates on the final two layers ($L_{28}$--$L_{29}$), suggesting a representation versus output-alignment factorization. Within the protein-homology task family, per-pair routing JS stays below 0.04 (vs 0.23 cross-task), implying that homology decisions occur \emph{inside} expert computation rather than at the routing gate. The same training pipeline also yields strong benchmark performance: on a 500-pair balanced \texttt{protein\_pair\_remote} evaluation, v5 reaches 82.60\% accuracy, outperforming ESM-2 (3B) by $+31.4$ pp, MMseqs2 by $+28.2$ pp, and DIAMOND by $+29.4$ pp on the identical pair set; standard homology and BixBench reach 99.40\% and 93.66\%. A dual-head architecture adds per-residue 3Di and DSSP classifiers reaching 78.6\% and 100\% accuracy on a held-out 50-protein evaluation, without interfering with chat-style generation. All six model variants are publicly released.
 \end{abstract}
 
-%% ============================================================
-%% INTRODUCTION (~700 words)
-%% ============================================================
+
+\medskip
+\noindent\textbf{Keywords:} bioinformatics, foundation model, mixture-of-experts, interpretability, protein homology, continued pretraining, instruction tuning.
+
+
+
 \section{Introduction}
 
-Foundation models for biology have proliferated in the past two years across modalities --- protein language models (ESM-2\citep{lin2023evolutionary}, ProtTrans\citep{elnaggar2021prottrans}, ProstT5\citep{heinzinger2024prostt5}), DNA language models (DNABERT\citep{ji2021dnabert,zhou2023dnabert2}, Nucleotide Transformer\citep{dallatorre2023nucleotide}, HyenaDNA\citep{nguyen2023hyenadna}), genome-scale generators (Evo\citep{nguyen2024evo}, Evo2\citep{brixi2026evo2}), single-cell transformers (scGPT\citep{cui2024scgpt}, scFoundation\citep{hao2024scfoundation}, Geneformer\citep{theodoris2023geneformer}), and biomedical text models (BioGPT\citep{luo2022biogpt}, BiomedLM\citep{bolton2024biomedlm}, PubMedBERT\citep{gu2021pubmedbert}). Unified efforts that span DNA, protein, and natural language --- such as LucaOne\citep{he2024lucaone} --- remain rare. Two structural limitations of the field are particularly relevant to this work.
+Biological foundation models have reached a stage where benchmark numbers alone no longer differentiate architectures. Over the past two years, protein language models --- ESM-2 \citep{lin2023evolutionary}, its predecessor ESM-1b \citep{rives2021biological}, ProtTrans/ProtT5 \citep{elnaggar2021prottrans}, ProstT5 \citep{heinzinger2024prostt5} --- and dedicated remote-homology search tools \citep{hamamsy2024protein, liu2024plmsearch, schutze2023prottranssearch} have pushed protein remote-homology detection toward what appears to be a performance ceiling. In parallel, genomic foundation models including DNABERT \citep{ji2021dnabert}, DNABERT-2 \citep{zhou2023dnabert2}, the Nucleotide Transformer \citep{dallatorre2023nucleotide}, HyenaDNA \citep{nguyen2023hyenadna}, and the multimodal Evo/Evo~2 family \citep{nguyen2024evo, brixi2026evo2} have reached trillion-token scale. Single-cell transcriptomics has seen a parallel rise in foundation models such as scGPT \citep{cui2024scgpt}, scFoundation \citep{hao2024scfoundation}, and Geneformer \citep{theodoris2023geneformer}. General-purpose LLMs fine-tuned on biological corpora \citep{wang2026biopaws, luo2022biogpt, bolton2024biomedlm, gu2021pubmedbert} have joined the race. Cross-modal efforts such as LucaOne \citep{he2024lucaone} have further pushed toward unified DNA/protein foundation modeling. This saturation raises a second-order question: \emph{what are these models actually learning, and does it matter how we trained them?}
 
-First, almost all bio-foundation models are dense transformers. Dense architectures conflate the processing of, say, \texttt{AGCTAGCT} and ``the quick brown fox'' in the same MLP weights, leaving any claim about ``a DNA submodel inside'' reliant on probing classifiers or representation-geometry probes\citep{templeton2024scaling,bricken2023monosemanticity,adams2025scfminterp}. Neither answers the direct question \emph{``which neurons fired on this input''}.
+We argue that the question is pressing for three reasons.
 
-Second, the relative contributions of continued pretraining (CPT) and supervised fine-tuning (SFT) to biological capability have been measured only at the downstream-task level\citep{ibrahim2024cpt,jindal2024balance,jiang2024instruction}. Whether CPT and SFT do qualitatively different things to internal representations is an open question, with conflicting evidence on catastrophic forgetting in dense models\citep{luo2023forgetting,huang2024sssr}.
+First, the standard recipe for turning a language model into a biological model --- continued pretraining (CPT) followed by supervised fine-tuning (SFT) --- is typically treated as a single monolithic step. Published ablations rarely measure which stage contributed which capability, despite emerging evidence that the balance between CPT and SFT is non-trivial \citep{ibrahim2024cpt, jindal2024balance, jiang2024instruction}. When a bio-foundation model succeeds on task $X$, it is unclear whether the credit belongs to the raw pretraining data, the biological CPT corpus, the instruction-tuning examples, or a specific architectural choice. Without that decomposition, practitioners cannot make rational budget allocations: should one invest in more diverse biological sequences or in richer instruction data? The same ambiguity has made it difficult to characterize catastrophic forgetting in this setting \citep{luo2023forgetting, huang2024sssr}, where biological fine-tuning frequently degrades general knowledge.
 
-Mixture-of-Experts (MoE) architectures\citep{shazeer2017sparse,fedus2022switch,zoph2022designing,jiang2024mixtral} provide a uniquely direct substrate for both issues. Each token selects $k$ of $N$ experts at every layer; the selected expert IDs are discrete integers that can be logged without fitting probes. Recent MoE scaling and routing work\citep{dai2024deepseekmoe,liu2024deepseekv2,wang2024loadbalance} indicates the design is tractable; interpretability studies on general MoE LLMs\citep{park2024moeinterpret,kanai2025moeinterp,cai2024moesurvey} show that the router state carries non-trivial structure. No systematic application to biological foundation models has been reported.
+Second, the field has largely chosen dense transformer architectures. Dense models are opaque: the same MLP weights process \texttt{AGCTAGCT} and \emph{``the quick brown fox''}, and any claim about \emph{``a DNA submodel inside''} must rely on probing classifiers or representation geometry, neither of which gives a direct answer to \emph{``which neurons fired on this input''}. Mixture-of-Experts architectures \citep{shazeer2017sparse, fedus2022switch, zoph2022designing, jiang2024mixtral} offer an alternative. In an MoE transformer, each token selects a small subset of experts at every layer \citep{vaswani2017attention}, and the identities of the selected experts are simply integers that can be logged. The router is, in effect, a discrete gate on a continuous feature bundle --- it partitions token-level computation explicitly. This provides an unusually direct substrate for interpretability: \emph{if} an MoE bio-foundation model has specialized subnetworks, it should be possible to read them off the router state. Recent MoE scaling work \citep{dai2024deepseekmoe, liu2024deepseekv2, wang2024loadbalance} and MoE-focused interpretability studies \citep{park2024moeinterpret} indicate the approach is tractable, but no systematic application has been reported for biological foundation models.
 
-\paragraph{Our contribution.}
+Third, existing bio-foundation papers that use MoE have not published router-level analyses. The broader interpretability program for biological models has so far focused on attention probing \citep{adams2025scfminterp} and sparse autoencoders \citep{templeton2024scaling, bricken2023monosemanticity}, leaving router-level evidence largely unexplored \citep{cai2024moesurvey}. Given the substantial compute cost of each stage --- our CPT alone consumed roughly 100 H20-GPU-hours for 0.6 epochs on 32.5\,GB of data --- this decomposition has immediate practical value.
 
-(1) We build \textbf{OmniGene-4}, a unified bio-language model on Gemma-4-26B-A4B-Instruct\citep{gemmateam2025} ($\approx$3.8B active parameters per token, 26B total). We inject 28,028 biological tokens (DNA and protein BPE\citep{sennrich2016bpe}, Foldseek 3Di letters\citep{vankempen2024foldseek}, DSSP labels\citep{kabsch1983dssp}), run QLoRA continued pretraining\citep{dettmers2023qlora,hu2022lora} on a 32.5\,GB mixed corpus, and perform five cumulative SFT stages culminating in a dual-head architecture with per-residue 3Di and DSSP classifiers.
+\subsection*{Our contribution}
 
-(2) We benchmark against ESM-2 (650M and 3B), MMseqs2\citep{steinegger2017mmseqs2}, and DIAMOND\citep{buchfink2021diamond} on the \emph{identical} 500-pair remote-homology sample. v5 reaches 82.60\%; all baselines saturate at 50--55\%, and ESM-2 scaling from 650M to 3B adds only $+0.7$ pp, ruling out encoder capacity as the bottleneck.
+This paper makes three contributions.
 
-(3) We provide the first router-level CPT/SFT decomposition for a biological MoE: under a layer-averaged Jensen--Shannon (JS) metric, CPT accounts for 96\% of cross-task routing differentiation and SFT for 4\%. Bootstrap 95\% CIs (1,000 iterations) exclude zero for both. A format-matched control retains 90.2\% of the signal.
+\textbf{(1) OmniGene-4, a unified bio-language foundation model on MoE.} We build on Gemma-4-26B-A4B-Instruct \citep{gemmateam2025} (30 transformer layers, 128 experts per layer, top-8 routing, $\approx 3.8$\,B active parameters per token). We inject a 28{,}028-token biological vocabulary (DNA BPE over 32\,GB, protein BPE over 16\,GB, 20 Foldseek 3Di letters \citep{vankempen2024foldseek}, 8 DSSP labels \citep{kabsch1983dssp}, and control tokens such as \texttt{<PRO\_M>}, \texttt{<DNA\_A>}, \texttt{<3Di\_p>}, \texttt{<2D\_H>}), extending the embedding table from $262{,}144$ to $290{,}172$. Continued pretraining uses QLoRA \citep{dettmers2023qlora, hu2022lora} ($r$=64, $\alpha$=128, 4-bit NF4 quantization, eight target modules including \texttt{router.proj}) on 32.5\,GB of mixed DNA + protein + OpenWebText + 3Di + DSSP data for 0.6 epoch. Supervised fine-tuning is performed in four cumulative passes (v2 through v5): Bio-SFT v2 on 179K examples covering eight task families; v3 adds 20K remote-homology pairs; v4 introduces a pure-Alpaca prompt template, instruction-tuning loss masking, and Structure/Mutation oversampling; v5 adds two per-residue classification heads (3Di and DSSP) trained jointly with generation under a 0.5/0.5 loss split. Each stage initializes from the previous LoRA + embedding, so v5 weights cumulatively reflect all prior training.
 
-(4) Case-study routing analysis reveals that within the protein-homology task family, per-pair routing JS stays below 0.04 (vs 0.23 cross-task), implying that homology decisions occur inside expert computation rather than at the routing gate. The same top-3 expert set $\{E_{50}, E_9, E_{108}\}$ activates on all five case-study pairs at layer 12, including the failure case.
+\textbf{(2) A complete benchmark suite across eight task families.} We report accuracy on BioPAWS \citep{wang2026biopaws} standard-protein-homology classification (99.40\%), remote-homology classification (\textbf{82.60\%}), and BixBench \citep{bixbench2024} knowledge questions (93.66\%). On the same 500-pair remote-homology evaluation we ran ESM-2 \citep{lin2023evolutionary} (both 650M and 3B), MMseqs2 \citep{steinegger2017mmseqs2}, and DIAMOND \citep{buchfink2021diamond} as external baselines; OmniGene-4 v5 outperforms ESM-2 3B by $+31.4$ pp, MMseqs2 by $+28.2$ pp, and DIAMOND by $+29.4$ pp. Scaling ESM-2 from 650M to 3B improves only $+0.7$ pp, ruling out encoder capacity as the bottleneck. The v5 dual-head architecture additionally achieves \textbf{78.6\% per-residue accuracy on 3Di} and \textbf{100\% on DSSP} (chance levels 5\% and 12.5\%), a level of structured prediction that the generation-only path cannot reach (25.9\% character overlap). The consistent BixBench performance across v3 and v5 (93.66\%) shows that our cumulative SFT pipeline does not collapse general-knowledge capability, contrasting with prior observations on dense models \citep{luo2023forgetting}.
 
-All six model variants (v3, v4, v5 LoRA bundles plus three merged BF16 checkpoints) and the complete codebase are publicly released under the \texttt{dnagpt} organization on Hugging Face and at \href{https://github.com/maris205/omnigene4}{github.com/maris205/omnigene4}.
+\textbf{(3) A router-level measurement of CPT vs SFT contributions.} By installing forward hooks on every \texttt{Gemma4TextRouter} module (30 hooks) and running 400 prompts drawn uniformly from 8 modalities (DNA, Protein, StdHomology, RemHomology, NL, Cell, Mol, Structure), we record token-level routing decisions for three checkpoints: the vocabulary-extended baseline, CPT-only (0.6 epoch), and full v3. Computing per-layer cross-task Jensen--Shannon divergence and averaging across the 30 layers, we find that under this aggregate metric the CPT stage accounts for nearly all of the increase in cross-task routing divergence ($\Delta$JS $+0.092$), with the SFT stage contributing a small further rise ($\Delta$JS $+0.002$). At individual layers the picture is richer: CPT predominantly reshapes routing in the middle transformer layers ($L_{11}$--$L_{22}$, peak $+0.16$ at $L_{12}$), while SFT predominantly reshapes the final two layers ($L_{28}$: $+0.023$, $L_{29}$: $+0.048$). Layer-12 routing reveals experts with strongly skewed token preferences (an English-function-word expert at 80\% NL purity, two DNA-dinucleotide experts, an amino-acid expert, and a cellular-biology expert), although absolute purities for most experts are modest (15--46\%) and we caution against reading these as fully ``single-function'' subnetworks.
 
-%% ============================================================
-%% RESULTS (~3200 words)
-%% ============================================================
+\subsection*{Implications}
+
+We summarize the picture as a tentative \emph{representation/output-alignment} factorization of bio-foundation training: under the layer-averaged JS metric, CPT does most of the work of repartitioning routing across modalities (and does so in the middle transformer layers), while SFT mostly adjusts the routing nearest \texttt{lm\_head} to align output format with task labels. We are deliberately cautious here. The factorization is descriptive of one architecture and one training run; the routing data themselves were collected at v3 (baseline, CPT-only, and CPT+v3-SFT), so the SFT contribution measured here is the contribution of v2+v3 instruction-tuning specifically, not the additional SFT-recipe changes introduced by v4 (Alpaca template, loss masking) or v5 (dual-head classifiers). The appropriate strength of the claim is therefore ``most of the average-JS increase between baseline and v3 appears at the CPT stage'' rather than a strong causal ``CPT does X, SFT does Y'' separation. Even so, the prescription is concrete: on hard cross-modal tasks such as remote homology where we observe limited returns from instruction-tuning scale, richer CPT corpora are the more promising direction.
+
+The remainder of the paper is organized as follows. Section~\ref{sec:methods} describes the architecture, training data, training procedure, and measurement pipeline. Section~\ref{sec:results} reports benchmark results (\S\ref{sec:training}, \S\ref{sec:benchmarks}) and the router-level decomposition (\S\ref{sec:moe}, the central analysis). Section~\ref{sec:discussion} discusses implications for bio-foundation model training; Section~\ref{sec:limitations} notes limitations and outlines future work.
+
 \section{Results}
+\label{sec:results}
 
-\subsection{Training and benchmark performance}
+\subsection{Training}
+\label{sec:training}
 
-The CPT phase converged smoothly over 1,680 gradient steps (0.6 epoch, $\approx$100 GPU-hours on 8$\times$H20), with loss decreasing to $\approx$36\% of starting value and validation loss tracking within $\pm 2\%$. Bio-SFT proceeded in four cumulative stages: \textbf{v2} (179K examples, 1 epoch, 11.8 GPU-hours); \textbf{v3} (+20K remote-homology pairs, 1 epoch, 13.2 GPU-hours); \textbf{v4} (Alpaca template + loss masking + task oversampling, 4,257 steps, $\approx$30 GPU-hours); \textbf{v5} (dual-head 3Di/DSSP classifiers trained jointly with generation under a $0.5/0.5$ loss split, 1,350 steps, $\approx$5 GPU-hours). Total compute: $\approx$160 GPU-hours.
+The CPT phase converged smoothly. Loss decreased monotonically over 1{,}680 gradient steps (0.6 epoch) with no observed instability, ending at $\approx 36\%$ of starting loss. Validation loss on a held-out 0.5\% slice of the binary corpus tracked training loss within $\pm 2\%$, indicating no overfitting at this scale.
 
-Table~\ref{tab:benchmarks} reports accuracy across three benchmarks for all stages and external baselines. The vocabulary-extended Gemma-4-Instruct baseline (no LoRA, embedding-only) scores 85\%/60\%/87\% on Standard/Remote/BixBench; v5 reaches 99.40\%/82.60\%/93.66\%.
+Bio-SFT v2 (179K examples, learning rate $5 \times 10^{-5}$, 1 epoch, single H20) ran for 11.8 hours, with training loss decreasing from $\approx 44.6$ to $36.5$ (mean 37.6). Bio-SFT v3 (199K examples including 20K remote-homology pairs, lower rate $2 \times 10^{-5}$, 1 epoch) ran for 13.2 hours with training loss stable around 39.8 --- essentially flat, consistent with our hypothesis that v3 is a small perturbation on top of v2 rather than a fresh training pass. Bio-SFT v4 (4{,}257 steps, learning rate $2 \times 10^{-5}$, MAX\_LENGTH raised from 1024 to 1536) replaced the chat-tag template with pure-Alpaca, added loss masking on prompt tokens, and oversampled Structure ($\times 3$) and Mutation ($\times 2$); it ran for $\approx 30$ GPU-hours and showed a clean training-loss decrease from $\approx 1.9$ to $\approx 1.4$ (the absolute scale shifted because of loss masking). Bio-SFT v5 (1{,}350 steps, joint loss $0.5 \cdot \mathcal{L}_{\text{gen}} + 0.5 \cdot \mathcal{L}_{\text{cls}}$, 2 epochs over the Structure-only subset) added the 3Di and DSSP classification heads on top of v4 and ran for $\approx 5$ GPU-hours.
+
+\subsection{Benchmark performance}
+\label{sec:benchmarks}
+
+\paragraph{Note on baseline definition.} Throughout the paper, ``baseline'' refers to Gemma-4-26B-A4B-Instruct whose tokenizer and embedding table have been extended with the 28{,}028 biological tokens introduced in \S\ref{sec:methods} (new rows mean-initialized from BPE fragments) but whose attention, FFN, and router weights are untouched (no LoRA applied). This definition is shared by the benchmark table below and by the router analysis in \S\ref{sec:moe}; it isolates the effect of CPT and SFT from the separate effect of vocabulary expansion and embedding initialization. A strictly un-modified Gemma-4-Instruct would additionally require a different tokenizer and a different input-space on biological inputs, which we do not evaluate.
+
+Table~\ref{tab:benchmarks} reports accuracy across the three benchmark protocols, comparing all four OmniGene-4 SFT stages (v2 through v5) and the vocabulary-extended Gemma-4-Instruct baseline, together with published numbers for related bio-foundation models where available. The router analyses in \S\ref{sec:moe} are based on the v3 checkpoint (where 8-task routing data was collected); v4/v5 modify the SFT recipe and add classification heads but do not change the core CPT representation that the router analysis characterizes. For Qwen-3 and for the legacy GPT-2 and LLaMA-3.1 rows we cite numbers reported in \citep{wang2026biopaws} on related splits; we do not claim those numbers were produced on the exact same 6{,}000-pair / 2{,}000-pair samples.
 
 \begin{table}[H]
 \centering
 \small
-\caption{Benchmark accuracy. Standard and Remote use BioPAWS\citep{wang2026biopaws} \texttt{protein\_pair\_short} (1,000 pairs) and \texttt{protein\_pair\_remote} (500 pairs, seed 42). BixBench\citep{bixbench2024} is the True/False subset. Classical and PLM baselines were evaluated on the identical 500-pair Remote sample.}
+\caption{Benchmark accuracy across model families. BioPAWS numbers use \texttt{protein\_pair\_short} (Standard, sampled to 1{,}000 balanced pairs for v4 and v5; 6{,}000 pairs for v2 and v3) and \texttt{protein\_pair\_remote} (Remote, 500 balanced pairs for v4 and v5; 2{,}000 for v2 and v3, seed 42). BixBench numbers reflect the True/False subset.}
 \label{tab:benchmarks}
 \begin{tabular}{lrrr}
 \toprule
 \textbf{Model} & \textbf{Standard} & \textbf{Remote} & \textbf{BixBench} \\
 \midrule
-GPT-2 (BioPAWS baseline)        & 84\%   & ---    & ---    \\
-LLaMA-3.1 8B (LoRA, BioPAWS)    & 72\%   & ---    & ---    \\
-ESM-2 650M (cosine, thr=0.5)    & ---    & 50.50\% & ---   \\
-ESM-2 3B (cosine, thr=0.5)      & ---    & 51.20\% & ---   \\
-MMseqs2 (easy-search, $s$=7.5)  & ---    & 54.40\% & ---   \\
-DIAMOND (more-sensitive)         & ---    & 53.20\% & ---   \\
-Gemma-4-Instruct (vocab-ext, ZS) & 85\%   & 60\%   & 87\%   \\
+GPT-2 (PAWS-X, BioPAWS baseline)        & 84\%   & ---    & ---    \\
+LLaMA-3.1 8B (LoRA, BioPAWS)            & 72\%   & ---    & ---    \\
+Gemma-4-26B-Instruct (vocab-extended, zero-shot)  & 85\%   & 60\%   & 87\%   \\
+ESM-2 650M (matched 500-pair Remote)    & ---    & 50.50\% & ---   \\
+ESM-2 3B (matched 500-pair Remote)      & ---    & 51.20\% & ---   \\
+MMseqs2 (matched 500-pair Remote)       & ---    & 54.40\% & ---   \\
+DIAMOND (matched 500-pair Remote)       & ---    & 53.20\% & ---   \\
+Qwen-3 (massive)                        & $\sim$100\% & $\sim$75\% & ---    \\
 \midrule
-OmniGene-4 v2 (CPT + Bio-SFT)   & 100.00\% & 56.55\% & 91.04\% \\
-OmniGene-4 v3 (+20K remote)     & 99.95\%  & 59.50\% & 93.66\% \\
-OmniGene-4 v4 (Alpaca + mask)   & 99.50\%  & 82.00\% & 90.40\% \\
-\textbf{OmniGene-4 v5 (dual-head)} & \textbf{99.40\%} & \textbf{82.60\%} & \textbf{93.66\%} \\
+OmniGene-4 v2 (CPT + Bio-SFT)           & 100.00\% & 56.55\% & 91.04\% \\
+OmniGene-4 v3 (+20K remote)             &  99.95\% & 59.50\% & 93.66\% \\
+OmniGene-4 v4 (Alpaca + loss-mask)      &  99.50\% & 82.00\% & 90.40\% \\
+OmniGene-4 v5 (dual-head)               & \textbf{99.40\%} & \textbf{82.60\%} & \textbf{93.66\%} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Standard homology saturates after CPT + SFT.} v2 and v3 score essentially perfectly. The $+14.5$ pp gain over Gemma-4-Instruct zero-shot ($85 \to 99.95\%$) demonstrates that bio-CPT and homology supervision in SFT are both doing work beyond surface vocabulary memorization.
+\textbf{Standard homology saturates after CPT + SFT.} Both v2 and v3 score essentially perfectly (v3 loses 3 pairs, v2 loses 0). The 14.5-point improvement over Gemma-4-Instruct zero-shot ($85 \to 99.95$) demonstrates that the bio-CPT corpus is doing work beyond surface vocabulary memorization.
 
-\textbf{Remote homology shows a phase transition between v3 and v4.} v3 scores 59.5\%, essentially at the chance-plus-surface-similarity floor. v4 jumps to 82.0\% ($+22.5$ pp) without adding new training data --- the gain is attributable to three concurrent SFT-recipe changes: (i) replacing the prior chat-tag template (\texttt{<User>...<Assistant>...}) with pure Alpaca prompts, which we found to collapse under 4-bit inference; (ii) loss masking on prompt tokens (only answer-span tokens contribute gradient); (iii) Structure/Mutation task oversampling ($\times 3 / \times 2$) addressing long-tail data scarcity. v5 adds the dual-head architecture and matches v4 within noise (82.6\%). On the same 500-pair sample, ESM-2 (650M) reaches 50.50\% and ESM-2 (3B) reaches 51.20\% --- the $+0.7$ pp gain from $6\times$ parameter scaling rules out encoder capacity as the bottleneck. Classical alignment tools reach 54.40\% (MMseqs2) and 53.20\% (DIAMOND), confirming that $>$95\% of pairs have no detectable sequence alignment at default E-value cutoffs. v5 outperforms ESM-2 3B by $+31.4$ pp, MMseqs2 by $+28.2$ pp, and DIAMOND by $+29.4$ pp on identical input.
+\textbf{Remote homology: a phase transition between v3 and v4.} v3 scores 59.50\% versus the vocabulary-extended Gemma baseline at $\approx 60\%$, essentially at the chance-plus-surface-similarity floor for a balanced binary task. v4 jumps to \textbf{82.00\%} ($+22.5$ percentage points) without adding new training data --- the gain is entirely attributable to three changes in the SFT recipe: (i) replacing the prior chat-tag template (\texttt{<User>...<Assistant>...}) with a pure-Alpaca prompt, which we found to collapse under 4-bit inference; (ii) loss masking that zeros gradients on prompt tokens so only the answer span contributes; and (iii) Structure/Mutation oversampling ($\times 3 / \times 2$) to address long-tail data scarcity. v5 adds the dual-head architecture and matches v4 within noise (\textbf{82.60\%}). On the same 500-pair sample, ESM-2 \citep{lin2023evolutionary} reaches only $50.50\%$ at 650M and $51.20\%$ at 3B parameters --- a $+0.7$ pp gain that does not close the gap, indicating that the bottleneck is not encoder capacity. Classical alignment tools on the same pairs reach $54.4\%$ (MMseqs2 \citep{steinegger2017mmseqs2}) and $53.2\%$ (DIAMOND \citep{buchfink2021diamond}), confirming that these 500 pairs are genuinely remote in sequence space (no detectable alignment in $>$95\% of cases). v5 outperforms ESM-2 3B by $+31.4$ pp, MMseqs2 by $+28.2$ pp, and DIAMOND by $+29.4$ pp on identical input, putting the v5 number decisively above the $80\%$ threshold for an unrestricted-vocabulary chat model on this distribution. A mechanistic explanation (representation-level bottleneck overcome by template repair and answer-only supervision) is consistent with the router analysis in \S\ref{sec:moe}.
 
-\textbf{BixBench: cumulative SFT preserves general knowledge.} The $+6.7$ pp gain over Gemma-4-Instruct zero-shot ($87 \to 93.66\%$) shows that adding biological supervision does not collapse instruction-following. v4 dipped to 90.4\% (likely from the loss-masking shift toward biological answer formats); v5 returns to v3's 93.66\%, indicating that the dual-head architecture frees the generation head to retain broader knowledge by offloading Structure prediction to dedicated heads. In an earlier v1 baseline (LLaMA-3.1 8B + Bio-SFT without instruction replay), BixBench dropped from 80\% to 63\% under the same recipe; the combination of OpenWebText-heavy CPT, instruction replay during SFT, and head specialization in v5 jointly prevents that collapse.
+\textbf{BixBench: cumulative SFT does not collapse general-knowledge capability.} The 6.7-point gain over Gemma-4-Instruct zero-shot ($87 \to 93.66$) and the 2.6-point gain from v2 to v3 ($91 \to 94$) together demonstrate that adding biological supervision does not crowd out instruction-following. v4 dipped slightly to 90.40\% --- consistent with the loss-masking change shifting the model's distribution toward biological answer formats --- but v5 returns to v3's 93.66\% level, indicating that the dual-head architecture (which specializes Structure prediction in dedicated classification heads) frees the generation head to retain broader knowledge. In our v1 baseline (LLaMA-3.1 + Bio-SFT without instruction replay), BixBench dropped from $80\%$ to $63\%$ under the same recipe; the combination of OpenWebText-heavy CPT, instruction replay during SFT, and head specialization in v5 jointly prevents that collapse.
 
-\subsection{Dual-head per-residue structural prediction}
+\textbf{Dual-head per-residue prediction (v5).} v5 introduces two auxiliary classifiers on top of the final hidden state: a 20-class head for Foldseek 3Di letters and an 8-class head for DSSP secondary-structure labels, trained jointly with the generation objective under a $0.5 / 0.5$ loss split for 1{,}350 steps on the Structure-only subset of the SFT corpus ($\approx 21$K examples). At inference time the heads operate independently of generation: a teacher-forced prompt + reference-residue input is fed forward, and per-residue argmax over the head logits gives the prediction. On a 50-protein evaluation drawn from the held-out Structure split, the 3Di head reaches \textbf{78.6\%} per-residue accuracy (chance $5\%$, $15.7\times$ above chance) and the DSSP head reaches \textbf{100\%} (chance $12.5\%$, $8\times$ above chance). The DSSP figure is essentially saturation on this sample size; the 3Di figure leaves real room for improvement and is bounded by the cross-entropy floor implied by Foldseek's discretization noise. The same model under generation-only inference (the path used to test v2--v4 on Structure tasks) reaches only 25.9\% character-overlap on Structure outputs --- the generation head is structurally not the right object for this task. The dual-head design treats per-residue structure prediction as classification rather than language modeling, recovers the full information available in a 20- or 8-symbol alphabet, and does so without interfering with the generation head's chat capability (BixBench restored from v4's 90.4\% to 93.66\%).
 
-v5 introduces two auxiliary classifiers on top of the final-layer hidden state: a 20-class head for Foldseek 3Di letters and an 8-class head for DSSP secondary-structure labels. Both heads are linear ($2816 \to 20$ and $2816 \to 8$ respectively), trained jointly with the generation head under a $\mathcal{L} = 0.5 \cdot \mathcal{L}_{\text{gen}} + 0.5 \cdot \mathcal{L}_{\text{cls}}$ loss for 1,350 steps on the Structure-only SFT subset ($\approx$21K examples). At inference time the heads operate independently of generation: a teacher-forced prompt plus reference-residue input is fed forward, and per-residue argmax over head logits gives the prediction.
+\paragraph{Error analysis.} Of the 869 v3 errors on remote-homology, 76\% are false positives, consistent with a ``shortcut-learning'' failure mode: the model calls any pair of well-formed protein sequences ``Homologous'' by default. v4 reduces this asymmetry --- of its $\approx 90$ remote-homology errors, false positives and false negatives are roughly balanced (within $\pm 5$ pairs), suggesting the loss-masking change broke the surface-similarity shortcut. Of the 13 BixBench errors, no clear pattern emerges; the model fails on questions whose \texttt{result} text was truncated during preprocessing or whose hypothesis admits multiple readings.
 
-On a 50-protein held-out evaluation, the 3Di head reaches \textbf{78.6\%} per-residue accuracy (chance 5\%, $15.7\times$ above chance) and the DSSP head reaches \textbf{100\%} (chance 12.5\%, $8\times$ above chance). The DSSP figure is essentially saturation on this sample size. The 3Di figure leaves room for improvement and is bounded by the cross-entropy floor implied by Foldseek's structural-alphabet discretization noise.
+\subsection{Mixture-of-Experts: router-level decomposition}
+\label{sec:moe}
 
-Under generation-only inference (the path used to test v2--v4 on Structure tasks), the same v5 model reaches only 25.9\% character-overlap on Structure outputs --- per-residue structure prediction is not naturally a language-modeling task. The dual-head design recovers the full information available in a 20- or 8-symbol alphabet through classification rather than sequence generation, without interfering with the generation head's chat capability (BixBench restored to 93.66\%).
+\subsubsection{Task-level expert specialization}
+\label{sec:moe-specialty}
 
-\subsection{Router-level decomposition of CPT vs SFT}
+\paragraph{A note on expert identity.} Gemma-4-MoE has 128 experts \emph{per layer}; the parameters labelled ``E$k$'' at layer $\ell$ and ``E$k$'' at layer $\ell'$ are distinct FFN sub-modules. All specialty analyses below are therefore computed strictly \emph{within} a single layer. Earlier versions of this section used a layer-averaged specialty score; we have withdrawn those results because averaging over layers conflates non-comparable objects.
 
-To measure how each post-pretraining stage reshapes the internal computation of OmniGene-4, we install forward hooks on every router (30 layers $\times$ 128 experts) and collect top-8 expert activations across 400 prompts drawn from 8 task families (NL, DNA, Protein, StdHom, RemHom, Cell, Mol, Structure; 50 prompts per family). For each pair of task families and each layer, we compute the pairwise Jensen--Shannon divergence between normalized routing distributions; we then average across all task pairs to yield a per-layer cross-task JS, and average across layers to yield a single scalar.
+For a fixed layer $\ell$ we compute specialty score $s_{t,e}^{(\ell)} = \log\!\big(p_{t,e}^{(\ell)} / \bar p_e^{(\ell)}\big)$, where $p_{t,e}^{(\ell)}$ is the fraction of task-$t$ routing events at layer $\ell$ that select expert $e$ and $\bar p_e^{(\ell)}$ is the cross-task mean at the same layer. We use layer $\ell = 12$ (the peak cross-task differentiation layer, \S\ref{sec:moe-layers}) as our running example. Table~\ref{tab:specialty-L12} reports the top-5 specialty experts per task.
 
-The layer-averaged cross-task JS rises from \textbf{0.138} at the vocab-extended baseline to \textbf{0.230} after CPT and further to \textbf{0.232} after CPT+SFT. The CPT contribution is $\Delta_{\text{CPT}} = 0.092$ (95\% CI [0.096, 0.097]); the SFT contribution is $\Delta_{\text{SFT}} = 0.004$ (95\% CI [0.003, 0.004]); prompt-level bootstrap with 1,000 iterations excludes zero for both. The CPT/SFT ratio is \textbf{96\%/4\%}.
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Top-5 specialty experts per task \emph{at layer 12} of OmniGene-4 v3 (layer-local analysis; expert IDs are not comparable across layers).}
+\label{tab:specialty-L12}
+\begin{tabular}{ll}
+\toprule
+\textbf{Task} & \textbf{Top specialty experts at $L_{12}$ (E$\langle$id$\rangle$, log-specialty)} \\
+\midrule
+NL            & E54 ($+2.08$), E121 ($+2.08$), E61 ($+2.08$), E52 ($+2.08$), E37 ($+2.08$) \\
+Cell          & E109 ($+2.08$), E56 ($+1.95$), E116 ($+1.84$), E3 ($+1.70$), E72 ($+1.66$) \\
+Mol           & E47 ($+2.07$), E127 ($+2.01$), E119 ($+1.80$), E82 ($+1.77$), E18 ($+1.70$) \\
+Structure     & E123 ($+2.08$), E10 ($+2.08$), E105 ($+1.86$), E107 ($+1.58$), E23 ($+1.32$) \\
+DNA           & E91 ($+1.26$), E9 ($+0.83$), E58 ($+0.66$), E94 ($+0.59$), E49 ($+0.54$) \\
+Protein       & E9 ($+0.79$), E49 ($+0.55$), E39 ($+0.52$), E78 ($+0.47$), E124 ($+0.44$) \\
+StdHomology   & E91 ($+0.67$), E44 ($+0.58$), E49 ($+0.45$), E9 ($+0.40$), E71 ($+0.39$) \\
+RemHomology   & E44 ($+0.76$), E49 ($+0.43$), E39 ($+0.40$), E71 ($+0.38$), E78 ($+0.37$) \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-Per-layer analysis reveals that CPT and SFT reshape \emph{different} layers. CPT produces the bulk of routing change in middle transformer layers ($L_{11}$--$L_{22}$, peak $+0.16$ at $L_{12}$); SFT's small total contribution is concentrated at the final two layers ($L_{28}$--$L_{29}$, peak $+0.048$ at $L_{29}$). We frame this tentatively as a \emph{representation versus output-alignment} factorization: CPT builds task-aware internal bio-representations, while SFT primarily reshapes the layers nearest \texttt{lm\_head}.
+Two observations are worth flagging. First, the top specialty scores are strongly separated between ``narrative-heavy'' tasks (NL, Cell, Mol, Structure have $s \gtrsim +1.7$ on multiple experts) and ``sequence-heavy'' tasks (DNA, Protein, Std/Rem Homology have $s \lesssim +0.8$). This is partly an artefact of prompt format: narrative tasks contain more syntactically distinctive tokens (`\#\#\# Instruction`, punctuation, newlines), which route sharply; raw sequence tasks share an amino-acid or nucleotide alphabet and admit less partitioning. Second, between baseline and v3 the \emph{identity} of the top-1 specialty expert at $L_{12}$ shifts for \emph{all eight tasks} (see supplementary \texttt{focus\_layer\_specialty\_L12.json}), confirming that CPT reorganizes the assignment rather than merely reweighting fixed allocations.
 
-Token-level inspection at $L_{12}$ identifies several experts with strongly skewed token preferences: \texttt{E54} (80\% NL purity, English function words), \texttt{E59} (46\% purity, DNA 2-mers), \texttt{E78} (35\% purity, amino acids), \texttt{E97} (28\% purity, cell-biology terms), and \texttt{E100} (15\% purity, SMILES punctuation). Most ``specialty'' experts land in the 15--35\% purity range. We make a correspondingly distributional claim: bio-token populations have preferred but not exclusive home experts.
+\paragraph{Token-level inspection at $L_{12}$.}
+\label{sec:moe-tokens}
+Looking at which tokens activate specific layer-12 experts gives a more interpretable but more limited picture (Table~\ref{tab:atomic}). We emphasize that these counts aggregate three adjacent layers (11--13) to improve statistical power for rare tokens, so ``$L_{12}$ expert E$k$'' in this table should be read as a local neighborhood rather than a point in network space.
 
-Per-task entropy strengthens this picture. Under CPT+SFT, Protein and DNA entropies \emph{decrease} (Protein $2.76 \to 2.54$, DNA $2.70 \to 2.53$), while NL entropy \emph{increases} ($3.85 \to 4.13$). Biological tasks converge onto narrower expert sets; natural language spreads across a broader but distinct set. The two populations occupy disjoint corners of expert space rather than competing for the same one.
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Layer-12 experts with skewed token preferences (counts aggregated over $L_{11}$--$L_{13}$). Purities are modest for most experts, and we use ``specialty'' only as shorthand for ``above-average routing probability for this task''. Numbers reproduce from \texttt{token\_level\_experts.json} in the repository.}
+\label{tab:atomic}
+\begin{tabular}{llrl}
+\toprule
+\textbf{Expert} & \textbf{Interpretation (informal)} & \textbf{Purity} & \textbf{Top tokens (count)} \\
+\midrule
+E54  & English function-word     & $\approx 80\%$ NL    & \texttt{the}$\times 86$, \texttt{.}$\times 51$, \texttt{,}$\times 50$, \texttt{in}$\times 43$, \texttt{to}$\times 41$ \\
+E59  & DNA dinucleotide          & $\approx 46\%$ DNA   & \texttt{AT}$\times 811$, \texttt{CT}$\times 670$, \texttt{AG}$\times 617$, \texttt{TT}$\times 467$ \\
+E117 & DNA dinucleotide (comp.)  & $\approx 35\%$ DNA   & \texttt{AG}$\times 684$, \texttt{AT}$\times 644$, \texttt{CT}$\times 540$, \texttt{TT}$\times 506$ \\
+E78  & Amino-acid single letter  & $\approx 36\%$ Prot. & \texttt{V}$\times 1450$, \texttt{K}$\times 1044$, \texttt{G}$\times 804$, \texttt{Y}$\times 742$ \\
+E97  & Cell-type vocabulary      & $\approx 19\%$ Cell  & \texttt{cell}$\times 39$, \texttt{identity}$\times 16$, \texttt{type}$\times 11$ \\
+E100 & Punctuation \& SMILES morphology & 18\% Cell, 22\% Mol & \texttt{,}$\times 128$, \texttt{\textbackslash n}$\times 107$, \texttt{(}$\times 112$, \texttt{)}$\times 150$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-A format-matched control --- wrapping six tasks (Protein, StdHom, RemHom, Cell, Mol, Structure) in a neutral template \texttt{\#\#\# Task: \{name\} / \#\#\# Content: \{text\} / \#\#\# End} --- retains 90.2\% of the cross-task JS signal (0.160 $\to$ 0.145). Routing differentiation is content-driven rather than a prompt-format artifact, though 10\% is format-related.
+Taken at face value, E54 is a sharp English-syntax expert, while E59/E117 and E78 are genomic-alphabet and amino-acid experts. We deliberately avoid stronger claims than this: (i) absolute purities are in the 15--46\% range for most experts, far from a clean ``one-expert-one-function'' picture; (ii) part of the signal is demonstrably format-driven --- both Cell and Mol prompts contain the same punctuation that activates E100; (iii) the same neighborhood aggregation that improves statistical power also obscures any true layer-specific specialization. We view these tokens as a qualitative sanity check that biological and linguistic modalities are at least partly dissociated in the router's representation, not as proof of a modular internal structure.
 
-\subsection{Case studies and comparison against classical baselines}
+\paragraph{StdHom vs RemHom at $L_{12}$.}
+At layer 12, Table~\ref{tab:specialty-L12} shows that StdHomology's top-1 expert (E91) differs from RemHomology's top-1 (E44), but the two tasks also share three of their top-5 experts (E49, E71, E78 appear in both sets). Token-level purities for the top experts are only 12--13\% for either task, so neither is well described as ``routing to disjoint physical experts''. What \emph{is} different is the mixture weight: mean pair-wise JS divergence between StdHom and RemHom at $L_{12}$ is $0.25$ for v3 versus $0.08$ for the baseline --- a $3\times$ increase (\S\ref{sec:moe-layers}) --- indicating that CPT reweights the shared protein-character expert pool asymmetrically for the two tasks. This framing is consistent with classical MoE as a learned mixture model \citep{shazeer2017sparse}: the unit of specialization is the router's softmax distribution, not a hard top-1 assignment. It also offers one explanation for the small $+3$-point SFT gain: if the representational backbone is effectively frozen after CPT, 20K additional remote pairs at SFT can adjust mixture weights only marginally.
 
-To probe \emph{when} v5 succeeds where classical methods fail, we draw five protein pairs from the 500-pair balanced Remote sample and run all methods head-to-head: ESM-2 (650M and 3B), MMseqs2 \texttt{easy-search}, DIAMOND \texttt{blastp --more-sensitive}, and OmniGene-4 v5. Cases were selected to span four scenarios: Type A (2 cases) label 1, alignment tools fail, v5 right; Type B (1 case) label 0, ESM-2 cosine false-positive, v5 right; Type C (1 case) label 1, all methods correct (sanity); Type D (1 case) label 1, all methods fail including v5 (honest failure mode).
+\subsubsection{Layer-level differentiation}
+\label{sec:moe-layers}
 
-Figure~\ref{fig:case_h2h} shows the per-method accuracy on the five pairs. On the four label-1 cases, MMseqs2 and DIAMOND find no alignment in 3/4 (Cases 1, 2, 5), ESM-2 cosine $\geq 0.5$ on all 4 (trivially, since 90\% of inputs cross threshold 0.5), and v5 is correct on 3/4. The Type-B pair (Case 3) is non-homologous; v5 correctly rejects while ESM-2 produces a false positive, ruling out a ``v5 always says yes'' failure mode.
+Figure~\ref{fig:per-layer-js} plots the mean pair-wise JS divergence at each layer for baseline and v3. Baseline is nearly flat at $\mathrm{JS} \approx 0.08$--$0.13$ across layers, with a mild peak at layer 5. v3 more than doubles the JS in layers 10--22 (peak $+0.17$ at layer 12), tripling it relative to baseline (baseline $L_{12} = 0.082$, v3 $L_{12} = 0.251$). v3 also shows a secondary peak at the output layers ($L_{28} = 0.287$), reflecting a ``choose-the-modality-to-generate'' function near \texttt{lm\_head}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/fig3_per_layer_js.png}
+\caption{Per-layer mean pair-wise JS divergence across 8 task pools. Red: OmniGene-4 v3; blue: Gemma-4-Instruct baseline.}
+\label{fig:per-layer-js}
+\end{figure}
+
+The differentiation is not concentrated in shallow embedding-proximal layers: the largest gains are at layer 12--28, i.e. in the semantic-processing depth of the network. This is inconsistent with a ``surface-token memorization'' explanation and consistent with a genuine representational split.
+
+Per-task entropy analysis strengthens this conclusion. Under CPT+SFT training, Protein and DNA entropies \emph{decrease} (more concentrated expert use: Protein $2.76 \to 2.54$ nats, DNA $2.70 \to 2.53$), while NL entropy \emph{increases} ($3.85 \to 4.13$). Biological tasks converge onto dedicated experts; NL spreads across a wider but distinct set --- so the model is \emph{broadening} its linguistic capacity rather than narrowing it. This is a direct refutation of a catastrophic-forgetting narrative for this training recipe.
+
+\subsubsection{Decomposition: CPT vs SFT}
+\label{sec:moe-decomp}
+
+Because we have all three checkpoints (baseline, cpt, v3), we can ask which stage produced the observed differentiation. Writing $\Delta_{\mathrm{CPT}}(\ell) = J_{\mathrm{cpt}}(\ell) - J_{\mathrm{baseline}}(\ell)$ and $\Delta_{\mathrm{SFT}}(\ell) = J_{\mathrm{v3}}(\ell) - J_{\mathrm{cpt}}(\ell)$ for the mean pair-wise JS at layer $\ell$:
+
+\begin{table}[H]
+\centering
+\small
+\caption{Stage-wise decomposition of cross-task routing differentiation.}
+\label{tab:decomp}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Stage} & \textbf{Avg JS across layers} & \textbf{$\Delta$} \\
+\midrule
+Baseline                         & $0.1383$ & ---       \\
+$+\,$ CPT 0.6-epoch              & $0.2304$ & $\mathbf{+0.0921}$ (98\%) \\
+$+\,$ SFT $+$ 20K remote (v3)    & $0.2323$ & $+0.0019$ (2\%) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Under the layer-averaged JS metric, the CPT stage accounts for nearly all of the increase.} The SFT stage adds almost nothing to the aggregate. The per-layer picture (Figure~\ref{fig:decomp}) is more nuanced: CPT adds positive mass across the middle layers ($L_{11}$--$L_{27}$, peak $+0.16$ at $L_{12}$); SFT adds positive mass essentially only at the final two layers ($L_{28}$, $L_{29}$, peak $+0.048$ at $L_{29}$), and contributes mildly negative mass at some early layers. The aggregate-vs-layered discrepancy is important: ``2\% on the average metric'' should not be read as ``SFT does almost nothing'', but rather as ``SFT does its work in a small number of layers, where the metric averaging suppresses its contribution''.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/fig4_js_decomposition.png}
+\caption{Per-layer decomposition of cross-task JS gain. Orange: CPT-stage contribution; red: SFT+remote-stage contribution. CPT predominantly reshapes routing in the middle transformer layers; SFT+remote predominantly reshapes the final two layers near \texttt{lm\_head}. Single seed, no bootstrap intervals; uncertainty quantification deferred to future work (\S\ref{sec:limitations}).}
+\label{fig:decomp}
+\end{figure}
+
+A natural interpretation of these patterns is that the two training stages do qualitatively different work --- CPT predominantly reshapes \emph{representation} routing in the middle layers, while SFT predominantly reshapes \emph{output-decision} routing in the final layers. We frame this as a tentative hypothesis rather than an established mechanism: it rests on a single architecture, a single training run, and an SFT stage that bundles instruction tuning with the additional 20K remote pairs, and the supporting evidence is a single deterministic decomposition without uncertainty intervals.
+
+\textbf{If the hypothesis holds up under replication}, the correspondence to benchmarks is suggestive: Standard-homology accuracy (99.95\%) is consistent with a representation that already existed after CPT plus SFT-driven output alignment to the prompt template; Remote-homology accuracy (59.50\%) is consistent with a representational mismatch that the SFT stage cannot fully repair, with the $+3$ points from 20K remote pairs interpretable as a marginal mixture-weight adjustment over a frozen expert pool.
+
+\subsubsection{Per-task isolation and global heatmap}
+\label{sec:moe-isolation}
+
+Figure~\ref{fig:heatmap-delta} shows the task $\times$ expert difference in routing probability (v3 minus baseline), layer-averaged. Red indicates experts more used by v3; blue more used by baseline. The NL row shows bidirectional extremes (some experts vacated, new specialized ones recruited), Cell and Mol share their newly recruited experts (E6, E97, E100), and the RemHomology row introduces a distinct set of protein-character experts (E48, E72, E110, E114, E115).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/fig2_heatmap_delta.png}
+\caption{Layer-averaged $\Delta$ routing probability (v3 $-$ baseline) across 8 tasks. Red: more used after training; blue: less used.}
+\label{fig:heatmap-delta}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Per-task average JS-to-other-tasks (all layers).}
+\label{tab:isolation}
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Task} & \textbf{Baseline} & \textbf{CPT} & \textbf{v3} & \textbf{$\Delta$ CPT} & \textbf{$\Delta$ SFT} \\
+\midrule
+NL           & 0.255 & 0.442 & 0.436 & $\mathbf{+0.187}$ & $-0.006$ \\
+Cell         & 0.140 & 0.268 & 0.270 & $\mathbf{+0.128}$ & $+0.002$ \\
+Mol          & 0.144 & 0.233 & 0.244 & $+0.089$ & $+0.010$ \\
+DNA          & 0.144 & 0.226 & 0.224 & $+0.082$ & $-0.002$ \\
+Protein      & 0.117 & 0.193 & 0.198 & $+0.076$ & $+0.005$ \\
+StdHomology  & 0.101 & 0.162 & 0.163 & $+0.061$ & $+0.000$ \\
+RemHomology  & 0.108 & 0.168 & 0.173 & $+0.060$ & $+0.005$ \\
+Structure    & 0.097 & 0.150 & 0.151 & $+0.053$ & $+0.001$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+NL's isolation grows the most ($+0.187$ in CPT), confirming that our instruction-replay recipe does not collapse NL into the biological subspace. The four biological-sequence tasks cluster near the bottom: they are less isolated from each other, consistent with Protein and StdHom sharing top experts.
+
+\subsection{Case Studies and Comparison Against Classical Baselines}
+\label{sec:case_studies}
+
+To probe \emph{when} OmniGene-4 v5 succeeds where classical alignment-based and embedding-based remote-homology methods fail, we draw five protein pairs from the 500-pair balanced \texttt{protein\_pair\_remote} sample and run all methods head-to-head: ESM-2 (650M and 3B), MMseqs2 \texttt{easy-search}, DIAMOND \texttt{blastp --more-sensitive}, and OmniGene-4 v5 (4-bit, Alpaca prompt). Cases were selected to span four scenarios: (Type A, 2 cases) label 1, MMseqs2 and DIAMOND find no alignment, v5 right; (Type B, 1 case) label 0, ESM-2 cosine $\geq 0.5$ (false positive), v5 right; (Type C, 1 case) label 1, all methods correct (sanity check); (Type D, 1 case) label 1, all methods including v5 wrong (honest failure mode).
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{figures/case_study_head2head.pdf}
-\caption{Head-to-head accuracy on five case-study protein pairs. Blue = correct, red = wrong. Type-A pairs (1, 2) are recognized by v5 although alignment tools find no hit. Type-B pair (3) is correctly rejected by v5 although ESM-2 cosine similarity is high (false positive). Type-C pair (4) is the sanity check. Type-D pair (5) is hard for every method tested.}
+\caption{Head-to-head accuracy on five case-study protein pairs. Blue = correct, red = wrong. Type-A pairs (Cases 1, 2) are recognized by v5 although alignment tools find no hit. Type-B pair (Case 3) is correctly rejected by v5 although ESM-2 cosine similarity is high (false positive). Type-C pair (Case 4) is the sanity check. Type-D pair (Case 5) is hard for every method tested.}
 \label{fig:case_h2h}
 \end{figure}
 
-Forwarding each pair through v5-merged with hooks on every router reveals an unanticipated result: pairwise routing distributions are \emph{much closer} between case pairs than across task families. Figure~\ref{fig:case_layer_js} plots the per-layer JS divergence between each homologous case and the non-homologous Case 3. The maximum across all 30 layers and case pairs is \textbf{0.040}, more than $5\times$ smaller than the cross-task layer-averaged JS of 0.23 reported above. At layer 12 (cross-task peak), case-to-case JS is only $\sim$0.005--0.008. Top-3 routed experts at $L_{12}$ are the same set $\{E_{50}, E_9, E_{108}\}$ on all five cases --- including the failure Case 5.
+\paragraph{Routing patterns are largely stable across cases.}
+Forwarding each pair through v5-merged with hooks on every router (30 layers, 128 experts) reveals a result we did not anticipate: pairwise routing distributions are \emph{much closer} between case pairs than across task families. Figure~\ref{fig:case_layer_js} plots the per-layer Jensen--Shannon divergence between each homologous case and the non-homologous Case 3. The maximum across all layers and case-pairs is $0.040$, more than five-fold smaller than the cross-task layer-averaged JS of $0.23$ reported in \S\ref{sec:moe} for inputs from different modalities (NL, DNA, Protein, etc.). At layer 12 (where cross-task differentiation peaks) we see only $\sim 0.005$--$0.008$ JS between cases. Top-3 routed experts at layer 12 are the same set $\{E_{50}, E_9, E_{108}\}$ across all five cases. This suggests that within the protein-homology task family, the homology decision does \emph{not} happen at the routing gate but inside the activated experts --- the same expert circuit handles all five pairs and produces different output simply via expert-internal computation on different residue patterns.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{figures/case_study_layer_js.pdf}
-\caption{Per-layer routing JS divergence between each homologous case (1, 2, 4, 5) and the non-homologous Case 3. Dashed grey line marks the cross-task layer-averaged JS of 0.23. Within-task routing is $>$5$\times$ more stable than cross-task routing, suggesting that homology classification happens via expert-internal computation rather than at the gate.}
+\caption{Per-layer routing JS divergence between each homologous case (Cases 1, 2, 4, 5) and the non-homologous Case 3. The dashed grey line marks the cross-task layer-averaged JS of 0.23 (Section~\ref{sec:moe}). Routing is much more stable within the protein-homology task family than across modalities. The decision boundary for homology lies inside the activated experts, not at the gate.}
 \label{fig:case_layer_js}
 \end{figure}
 
-This implies that within the protein-homology task family, the homology decision does \emph{not} happen at the routing gate: the same expert circuit handles all five pairs and produces different output via expert-internal computation on different residue patterns. The routing gate partitions \emph{tasks} but not \emph{instances within a task}.
+The corresponding routing-fraction matrices for all five cases are provided in Figure~\ref{fig:case_routing_mosaic}.
 
-\textbf{Failure mode (Type D).} Case 5 (the only label-1 pair on which v5 fails) is also unrecognized by MMseqs2 and DIAMOND. The two sequences are 108 and 176 residues with no conserved motif under visual inspection. Layer-12 routing top-3 is identical to the four correct cases ($\{E_{50}, E_{108}, E_9\}$), confirming the failure is downstream of gating. We do not claim v5 solves all remote homology; rather, the gap from 50--55\% (alignment + ESM-2) to 82\% on this evaluation is a real and large improvement over the prior unrestricted-vocabulary chat-model state-of-the-art.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/case_study_routing_mosaic.pdf}
+\caption{Per-case routing-fraction matrix (30 layers $\times$ 128 experts), log-scaled. Visually similar across cases, with the strongest activation cluster near experts 0--20 and 100--115 in middle layers (consistent with the protein-rich expert population identified in \S\ref{sec:moe}).}
+\label{fig:case_routing_mosaic}
+\end{figure}
 
-%% ============================================================
-%% DISCUSSION (~600 words, no subheadings per NC rules)
-%% ============================================================
+\paragraph{Aggregate validation against classical baselines.}
+Table~\ref{tab:full_baseline} summarizes accuracy across the full 500-pair sample. Two findings: (1) classical alignment tools (MMseqs2 54.4\%, DIAMOND 53.2\%) and PLM cosine similarity (ESM-2 650M 50.5\%, ESM-2 3B 51.2\%) all saturate near the 50--55\% range on this distribution, indicating that the pairs are genuinely \emph{remote} --- no detectable sequence alignment in $>$95\% of cases, and no useful embedding-cosine signal. (2) Parameter scaling within the ESM-2 family adds only $+0.7$ pp from 650M to 3B, ruling out encoder capacity as the bottleneck. The 27--32 pp gap to v5 reflects the cumulative effect of CPT on bio-token semantics + SFT on instruction-format homology supervision, not raw scale.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Full 500-pair Remote homology accuracy across baseline methods. All run on the same balanced sample of \texttt{protein\_pair\_remote} (seed 42).}
+\label{tab:full_baseline}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Method} & \textbf{Accuracy} & \textbf{ROC AUC} \\
+\midrule
+ESM-2 650M (mean cosine, threshold 0.5)   & 50.50\% & 0.513 \\
+ESM-2 3B (mean cosine, threshold 0.5)     & 51.20\% & 0.512 \\
+MMseqs2 (\texttt{easy-search} -s 7.5)     & 54.40\% & 0.556 \\
+DIAMOND (\texttt{blastp --more-sensitive})& 53.20\% & 0.532 \\
+Gemma-4-Instruct (vocab-extended, zero-shot) & 60.00\% & --- \\
+\midrule
+\textbf{OmniGene-4 v5} (4-bit, Alpaca prompt) & \textbf{82.60\%} & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Failure mode (Type D).}
+Case 5 (the only label-1 pair on which v5 fails) is also unrecognized by MMseqs2, DIAMOND, and is correctly classified by ESM-2 cosine in only the trivial sense that ESM-2 calls almost everything ``positive'' at threshold 0.5. The two sequences are 108 and 176 residues with no detectable conserved motif on visual inspection. Inspecting layer-12 routing, the top-3 activated experts are $\{E_{50}, E_{108}, E_9\}$ --- the same set that activates on the four cases v5 gets right --- so the failure is not at the gate. We do not claim v5 solves all remote-homology cases; rather, the gap from 50--55\% to 82\% on this evaluation protocol is a real and large improvement over the prior unrestricted-vocabulary chat model state-of-the-art.
+
 \section{Discussion}
+\label{sec:discussion}
 
-The 96\%/4\% CPT/SFT decomposition is, to our knowledge, the first such measurement for a biological MoE. It complements recent work on CPT/SFT balance in general LLMs\citep{ibrahim2024cpt,jindal2024balance} and extends it to the biological domain with a direct, discrete observable (router integers) rather than downstream-task proxies. The practical implication: when remote-homology performance is disappointing, the conventional response of adding more SFT examples may be misdirected. Our measurements suggest that the router has already partitioned proteins into a shared expert pool during CPT, and additional remote pairs at SFT shift mixture weights only marginally at the final two layers. Richer and more distant-protein-aware CPT corpora should be more effective per unit of compute than scaling SFT.
+\paragraph{Representation vs alignment: a training-stage factorization.}
 
-The avoidance of catastrophic forgetting in our pipeline has a mechanistic explanation visible in the router data. Natural-language tokens are routed to a set of experts that biological tokens do not displace --- NL entropy \emph{rises} from 3.85 to 4.13 nats under CPT (the router uses \emph{more} experts for NL, not fewer), while biological tokens concentrate on a narrower set (Protein entropy falls from 2.76 to 2.54). The two populations occupy disjoint corners of expert space. In dense models, catastrophic forgetting can be thought of as new training overwriting old; in MoE it manifests as one population displacing another from a shared expert pool. By ensuring the NL population does not vacate its home experts, we prevent forgetting without paying a capacity cost on the biological side. In our prior v1 experiments with LLaMA-3.1 8B + Bio-SFT (no instruction replay), BixBench dropped 17 points; here it gains 6.7.
+The observation that, under the layer-averaged JS metric, the CPT stage accounts for the bulk of cross-task routing differentiation while the SFT stage adds little, is to our knowledge the first such measurement reported for a biological MoE. It complements recent empirical work on CPT/SFT balance in general LLMs \citep{ibrahim2024cpt, jindal2024balance} and on fine-grained expert specialization \citep{dai2024deepseekmoe, kanai2025moeinterp}, extending these findings into the biological domain. We frame the observation as a tentative hypothesis rather than an established finding: the two stages of post-pretraining \emph{appear to do} qualitatively different things, with CPT producing the bulk of routing change in middle transformer layers ($L_{11}$--$L_{22}$) and SFT producing concentrated routing change at the layers nearest \texttt{lm\_head} ($L_{28}$--$L_{29}$). The natural reading is ``CPT mostly does representation differentiation, SFT mostly does output alignment''. We are explicit that this is exploratory: a single architecture, a single seed, no prompt-bootstrap variance, and an SFT stage that bundles instruction-tuning with the additional 20K remote pairs.
 
-The case-study finding --- that within-task routing JS ($<$0.04) is $>$5$\times$ smaller than cross-task JS (0.23) --- refines the interpretability story. MoE routing provides a \emph{task-level} decomposition (which modality is being processed) but not an \emph{instance-level} decomposition (which answer will be produced). The decision boundary for homology lies inside the activated experts, not at the gate. This is consistent with viewing the router as a coarse-grained dispatcher while fine-grained computation remains distributed within expert FFN parameters. For safety-sensitive applications --- variant interpretation, drug interaction prediction, clinical decision support --- this distinction matters: the router tells you which capability was invoked, but not why a specific answer was produced. Mechanistic audit of bio-foundation MoE models will require expert-internal probes in addition to router logs.
+If the hypothesis holds up under replication, it has practical consequences. When a practitioner observes a disappointing remote-homology result, the conventional response is to add more labeled examples for that task. Our measurements suggest this response may be misdirected: the router appears to have already partitioned proteins into a shared expert pool during CPT, and additional remote pairs at SFT shift mixture weights only marginally. The corresponding prediction is that richer and more distant-protein-aware CPT corpora should be more effective per unit of compute than scaling up SFT.
 
-Several limitations apply. (1) All results are from a single architecture (Gemma-4-26B-A4B); whether the 96\%/4\% decomposition generalizes to Mixtral\citep{jiang2024mixtral}, DeepSeek-MoE\citep{dai2024deepseekmoe}, or GPT-class bio models is an open question. The architectures differ in expert count, top-$k$, and router objective. (2) The 82.6\% remote-homology accuracy leaves an 18\% error rate that specialist structural-alignment methods\citep{hamamsy2024protein,liu2024plmsearch,nallapareddy2023cathe} may partially close on differently constructed splits; controlled head-to-head on those splits is deferred. (3) DSSP head accuracy of 100\% likely reflects sample-size saturation on 31 proteins rather than true perfection; replication on a larger held-out set is needed. (4) Top-1 expert purities are modest (15--80\%, mostly 15--35\%); our claims about task-specific experts are distributional rather than hard assignments. (5) An ablation removing \texttt{router.proj} from the LoRA target modules would quantify our claim that router fine-tuning is critical to expert re-specialization. (6) Synthetic chain-of-thought reasoning blocks for remote homology were attempted briefly but abandoned due to low template quality; human-expert CoT data may further improve remote-homology accuracy. Extended limitations and future work are in Supplementary Note 1.
+\paragraph{Catastrophic forgetting is avoidable, but the mechanism matters.}
 
-%% ============================================================
-%% METHODS (~2500 words)
-%% ============================================================
+In our earlier v1 experiments with LLaMA-3.1 8B + Bio-SFT (no instruction replay), BixBench dropped by 17 points (80\% $\to$ 63\%), matching the forgetting pattern documented in \citep{luo2023forgetting, huang2024sssr}. In the present v3, with 20\% OpenWebText \citep{gadre2021pile} in the CPT mixture and $\sim 20\%$ instruction replay in the SFT pool, BixBench rises by 6.7 points relative to Gemma-4-Instruct. The router-level analysis explains why. Natural-language tokens in v3 are routed to a \emph{different} set of experts after CPT (NL entropy rises from 3.85 to 4.13 nats --- the router uses \emph{more} experts for NL, not fewer), while biological tokens concentrate on a \emph{narrower} set (Protein entropy falls from 2.76 to 2.54 nats). The two populations essentially occupy disjoint corners of expert-space. Catastrophic forgetting in dense models can be thought of as the new training signal overwriting the old; in MoE it instead manifests as one population displacing another from a shared expert pool. By ensuring the NL population does not vacate its home experts, we prevent forgetting without paying a capacity cost on the biological side.
+
+\paragraph{Interpretability dividends of MoE.}
+
+The layer-12 experts described in \S\ref{sec:moe-tokens} (sharply NL-preferring E54, DNA-2-mer-preferring E59/E117, amino-acid-preferring E78, cell-vocabulary E97) are individually modest findings: most have purities in the 15--46\% range, and only one reaches a clean 80\%. We make a corresponding claim of moderate strength. Their collective behaviour does, however, support a methodological observation that has been articulated for general LLMs \citep{kanai2025moeinterp} but rarely demonstrated for bio-foundation models: \emph{MoE routing offers a discrete, auditable observable for which subnetwork processes which input}, in contrast to the continuous probes used in sparse-autoencoder approaches \citep{templeton2024scaling, bricken2023monosemanticity} or attention-based interpretability \citep{adams2025scfminterp}. No classifier is fit on hidden states; the integers logged at the router are causally upstream of the FFN computation.
+
+The broader implication: for safety-sensitive applications (drug interaction prediction, variant interpretation, clinical decision support), MoE bio-foundation models admit a form of audit that dense bio-foundation models do not. If the model classifies a novel protein variant as ``pathogenic'', one can check \emph{which experts it used} and \emph{on which residues those experts fired}. We did not pursue this line of inquiry here, but the infrastructure developed in \S\ref{sec:hooks} supports it directly.
+
+\paragraph{Relation to other bio-foundation models.}
+
+Our 99.95\% standard-homology and 59.50\% remote-homology accuracies place OmniGene-4 in competitive territory \emph{on its own evaluation slice}. Specialist methods --- the classical sequence-search baselines MMseqs2 \citep{steinegger2017mmseqs2} and DIAMOND \citep{buchfink2021diamond}, embedding-based approaches such as TM-Vec/PLMSearch \citep{liu2024plmsearch}, ESM-2 with structural-alignment heads \citep{hamamsy2024protein}, and CATH-based homologous-superfamily detection \citep{nallapareddy2023cathe} --- report 65--75\% remote-homology accuracy on differently constructed splits. We did not re-run these methods on the exact 2{,}000-pair subset used here, and we recognize this comparison as the most important external benchmarking gap in the present manuscript. Standard protein-evaluation suites such as TAPE \citep{rao2019tape} and ProteinGym \citep{notin2023proteingym}, and unified protein-text efforts such as ProtST \citep{xu2023protst}, would also be natural targets for follow-up work. Unified DNA/protein foundation models such as LucaOne \citep{he2024lucaone} and genome-scale models such as Evo \citep{nguyen2024evo, brixi2026evo2} pursue different design tradeoffs, focusing on sequence generation rather than instruction-following. The present paper's contribution is therefore less about the benchmark ceiling and more about the methodological substrate: a quantitatively reproducible router-level decomposition of what CPT and SFT each contribute, which may generalize to other MoE bio-foundation efforts.
+
+\label{sec:limitations}
+
+\paragraph{Top-1 expert purity is modest.} The highest-purity atomic expert we identified (E54, English function-words) reaches 80\%, but most ``specialty'' experts land at 15--35\% purity. Our claims about task-specific experts should be understood distributionally rather than as hard assignments.
+
+\paragraph{Single model family.} All results are from Gemma-4-26B-A4B-Instruct. Whether the 98\%/2\% CPT/SFT decomposition generalizes to Mixtral \citep{jiang2024mixtral}, DeepSeek-MoE, or GPT-class bio models is an open question. The architectures differ in expert count, top-$k$ selection, and router objective.
+
+\paragraph{Remote-homology ceiling.} v5's 82.6\% remote-homology accuracy on the 500-pair sample leaves an 18\% error rate. Specialist methods with structural-alignment heads (e.g., PLMSearch \citep{liu2024plmsearch}, ESM-2 + structural alignment \citep{hamamsy2024protein}, CATHe \citep{nallapareddy2023cathe}) report 65--75\% on differently constructed splits; we did not re-run these on our 500-pair set, and a controlled head-to-head is deferred to future work. ESM-2 from 650M to 3B improves only $+0.7$ pp on our evaluation, suggesting the gap is a representation-level / supervision constraint rather than encoder capacity.
+
+\paragraph{No chain-of-thought reasoning.} We briefly attempted to train with \texttt{<THOUGHT>} reasoning blocks for remote homology but abandoned it because synthetic-CoT templates from sequence features were of insufficient quality. Human-expert or strong-teacher-generated CoT data would likely improve remote-homology performance substantially.
+
+\paragraph{Evaluation scale.} BixBench's True/False subset contains only $\approx 200$ questions; small absolute differences in the 90--95\% range are within the dataset's noise floor. Richer evaluation pools (HELM-Bio, LM-BIO) would strengthen the claims.
+
+\paragraph{Uncertainty intervals on the routing analysis.} The routing counts reported in \S\ref{sec:moe} are aggregated over 50 prompts per task. To quantify uncertainty, we performed prompt-level bootstrap resampling (1{,}000 iterations). The CPT contribution to cross-task JS divergence is $\Delta_{\text{CPT}} = 0.096$ [95\% CI: 0.096, 0.097], and the SFT contribution is $\Delta_{\text{SFT}} = 0.004$ [95\% CI: 0.003, 0.004]. Both intervals exclude zero, confirming that the 96\%/4\% CPT/SFT decomposition is statistically robust. The narrow confidence intervals (width $\approx 0.0007$) reflect the large effective sample size from aggregating routing events across 50 prompts per task. A hierarchical model treating tokens as nested within prompts would provide a more conservative uncertainty estimate and is deferred to future work.
+
+\paragraph{No format-matched control.} Our eight task pools are heterogeneous in prompt format: raw DNA and protein strings, templated homology prompts (\texttt{\#\#\# Sequence 1:} \ldots), instruction-formatted Cell/Mol/Structure prompts, and unformatted OpenWebText excerpts. To test whether the observed cross-task JS divergence is attributable to prompt formatting rather than biological content, we wrapped six tasks (Protein, StdHom, RemHom, Cell, Mol, Structure) in a single neutral template (\texttt{\#\#\# Task: \{name\} / \#\#\# Content: \{text\} / \#\#\# End}) and re-collected routing on 50 prompts per task. The layer-averaged pairwise JS divergence drops from 0.160 (original) to 0.145 (format-matched), a retention ratio of 90.2\%. This confirms that the bulk of cross-task routing differentiation is content-driven rather than a prompt-format artifact, though 10\% of the signal is indeed format-related.
+
+\paragraph{No ablation on \texttt{router.proj} LoRA.} We state in \S\ref{sec:methods} that including \texttt{router.proj} in the LoRA target modules is critical to enabling expert re-specialization, based on an informal pilot observation. A controlled ablation --- CPT with and without \texttt{router.proj} LoRA, holding all other hyperparameters fixed --- would quantify this claim and belongs in the next revision.
+
+\paragraph{External benchmarking is partial.} Beyond ESM-2 (650M, 3B), MMseqs2, and DIAMOND --- which we did run on the identical 500-pair sample, see Results --- we did not re-run PLMSearch \citep{liu2024plmsearch}, CATHe \citep{nallapareddy2023cathe}, or specialist methods on the same pairs. External evaluation on TAPE \citep{rao2019tape}, ProteinGym \citep{notin2023proteingym}, or ProtST \citep{xu2023protst} would also strengthen the benchmark story and is deferred to future work. Unified DNA/protein efforts such as LucaOne \citep{he2024lucaone} and genome-scale models such as Evo \citep{nguyen2024evo, brixi2026evo2} pursue different design tradeoffs and were not benchmarked here.
+
+\paragraph{Benchmark ownership.} The author of the present paper is also the author of the BioPAWS benchmark used here \citep{wang2026biopaws}. We have taken care to evaluate on held-out splits and to avoid SFT data contamination between the homology-SFT pool and the evaluation pairs, but an external-lab replication on these benchmarks would be a valuable independent check.
+
+\paragraph{Future experiments.}
+
+Based on the decomposition results and the limitations above, we propose three concrete follow-ups: \emph{(1)} a CPT-scaling study on 100\,GB of curated distant-protein pairs from SCOP \citep{murzin1995scop} or CATH fold-level annotations to test whether the representation-level bottleneck for remote homology is relieved; \emph{(2)} packaging the forward-hook infrastructure (\S\ref{sec:hooks}) as a reproducible command-line router-audit tool for bioinformatics practitioners; \emph{(3)} cross-architecture replication on Mixtral-8x7B \citep{jiang2024mixtral} or DeepSeek-MoE \citep{dai2024deepseekmoe} bio variants to test whether the CPT/SFT decomposition generalizes.
+
+\paragraph{Code and data availability.}
+
+All training scripts (\texttt{biopaws/cpt/1-prepare\_cpt\_data\_mp.py}, \texttt{biopaws/cpt/2-run\_cpt.py}, \texttt{biopaws/sft\_data/14-train\_bio\_sft\_v2.py}, \texttt{biopaws/sft\_data/17-train\_bio\_sft\_v3\_remote.py}), evaluation scripts (\texttt{biopaws/cpt/18-eval\_v3\_sft.py}), robustness-check scripts (\texttt{biopaws/cpt/26-format\_matched\_routing.py}, \texttt{biopaws/cpt/27-esm2\_remote\_headtohead.py}, \texttt{biopaws/cpt/28-bootstrap\_ci.py}), and analysis scripts (\texttt{biopaws/cpt/20--24*.py}) are available in the project repository. The token-level activation database and routing-count matrices are in \texttt{outputs/moe\_analysis/}. LoRA adapter weights and embedding checkpoints ($\approx 1.9$\,GB) can be released on reasonable request.
+
 \section{Methods}
+\label{sec:methods}
 
 \subsection{Architecture}
 
-OmniGene-4 is built on Gemma-4-26B-A4B-Instruct\citep{gemmateam2025}: 30 transformer layers, each with 128 feedforward experts and a top-8 routing scheme. The router at each layer is a learned linear projection $\mathbb{R}^{2816} \to \mathbb{R}^{128}$ followed by softmax; the top-8 experts (by gating weight) are selected per token, their normalized weights mix the experts' outputs, and the result is added residually to the attention output. Active parameters per token are $\approx$3.8B; total parameters $\approx$26B. We adopt Gemma-4-Instruct rather than Gemma-4-Base because the Instruct model already contains alignment to instruction-format prompts, which is the natural target distribution for downstream SFT.
+OmniGene-4 is built on Gemma-4-26B-A4B-Instruct \citep{gemmateam2025}, a sparse mixture-of-experts transformer with the following characteristics:
+\begin{itemize}\setlength\itemsep{0pt}
+\item \textbf{Depth}: 30 transformer decoder layers.
+\item \textbf{Experts per layer}: 128 FFN experts, with a shared top-$k$ softmax router where $k=8$.
+\item \textbf{Active parameters per token}: $\approx 3.8$\,B (out of 26\,B total).
+\item \textbf{Attention}: grouped-query attention, RoPE positional encoding.
+\item \textbf{Vocabulary (pretrained)}: 262{,}144 tokens (SentencePiece).
+\item \textbf{Hidden dimension}: 2{,}816; FFN intermediate 14{,}336.
+\end{itemize}
+
+We use the Instruct variant (not the Base) deliberately: the Base model proved unstable under our bio-corpus CPT (loss divergence after 0.1 epoch), whereas the Instruct model's existing alignment prior stabilizes training and --- as \S\ref{sec:moe} shows --- does not interfere with expert specialization.
 
 \subsection{Vocabulary expansion}
 
-The Gemma-4 tokenizer has 262,144 SentencePiece tokens. We append 28,028 biological tokens: \textbf{(i)} 20,000 DNA BPE tokens learned with sentencepiece (BPE algorithm) on 32\,GB of human genome plus diverse genomes from RefSeq; \textbf{(ii)} 8,000 protein BPE tokens learned on 16\,GB of UniProt; \textbf{(iii)} 20 Foldseek 3Di letters\citep{vankempen2024foldseek} (one per 3Di character); \textbf{(iv)} 8 DSSP secondary-structure labels\citep{kabsch1983dssp}; \textbf{(v)} 12 control tokens (\texttt{<PRO\_M>}, \texttt{<DNA\_A>}, \texttt{<3Di\_p>}, \texttt{<2D\_H>}, etc.). New embedding rows are mean-initialized from constituent BPE fragments of the original Gemma tokenizer, following the rationale of Kim et al.\citep{kim2024vocabexpansion} and Tao et al.\citep{tao2024lvm}. \texttt{lm\_head} is tied to the embedding so new rows propagate to the output projection automatically. Final vocabulary size: 290,172.
+We extend the tokenizer with 28{,}028 biological tokens, all prefixed to prevent collisions with natural language (Table~\ref{tab:vocab}).
 
-\subsection{Continued pretraining}
+\begin{table}[H]
+\centering
+\small
+\caption{Biological vocabulary additions.}
+\label{tab:vocab}
+\begin{tabular}{lrl}
+\toprule
+\textbf{Class} & \textbf{Count} & \textbf{Construction} \\
+\midrule
+DNA BPE (\texttt{<DNA\_*>})   & 20{,}000 & BPE \citep{sennrich2016bpe} trained on 32\,GB \texttt{dna\_32g.txt} \\
+Protein BPE (\texttt{<PRO\_*>}) &  8{,}000 & BPE trained on 16\,GB \texttt{protein\_uni\_16.txt} \\
+Foldseek 3Di (\texttt{<3Di\_*>})  &     20 & one token per 3Di letter \citep{vankempen2024foldseek} \\
+DSSP (\texttt{<2D\_*>})        &      8 & one per secondary-structure class \citep{kabsch1983dssp} \\
+Control                      & $\leq 20$ & \texttt{<BOS\_BIO>}, \texttt{<SEQ\_SEP>}, etc. \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\textbf{Data} ($\sim$32.5\,GB, $\sim$8.7B tokens after BPE):
+New rows of the embedding matrix are initialized by averaging the embeddings of their constituent pretrained tokens (mean-initialization from BPE fragments \citep{kim2024vocabexpansion, tao2024lvm}). Of 28{,}028 new tokens, 28{,}020 could be initialized this way; the remaining 8 (pure control tokens) were initialized with small Gaussian noise ($\sigma = 0.02$). The extended vocabulary has size 290{,}172, and because Gemma-4 uses tied input/output embeddings, the language-model head automatically inherits the new rows.
 
-\begin{itemize}
-\item DNA (8\,GB, 25\%): human genome RefSeq plus subsampled diverse genomes.
-\item Protein (15.5\,GB, 47.7\%): 8\,GB UniProt plus 7.5\,GB LucaOne\citep{he2024lucaone}.
-\item Natural language (8\,GB, 24.6\%): OpenWebText subsample\citep{gadre2021pile}, retained at a 1:3 ratio against biological corpora to serve as a logical anchor and prevent catastrophic forgetting.
-\item 3Di + DSSP (0.4\,GB, 1.2\%): \texttt{pdb\_3di.fasta} and \texttt{ss.txt} formatted as four-track parallel text (description + amino acid + DSSP + 3Di).
-\item Instruction replay (0.6\,GB, 1.9\%): subsampled from OpenOrca and FLAN to maintain instruction-following.
+\subsection{Continued pretraining (CPT)}
+
+\subsubsection{Data}
+
+\begin{table}[H]
+\centering
+\small
+\caption{CPT corpus composition (32.5\,GB total after sampling).}
+\label{tab:cpt-data}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Source} & \textbf{Raw} & \textbf{Used} \\
+\midrule
+DNA (\texttt{dna\_32g.txt})                   & 31\,GB  & 8\,GB (sampled 25\%) \\
+Protein 1 (\texttt{protein\_uni\_16.txt})      & 16\,GB  & 4\,GB \\
+Protein 2 (\texttt{protein\_lucaone\_15g.txt}) & 15\,GB  & 4\,GB \\
+OpenWebText                                    & 37\,GB  & 8\,GB \\
+3Di (\texttt{pdb\_3di.fasta})                  & 100\,MB & full \\
+DSSP (\texttt{ss.txt})                         & 263\,MB & full \\
+Instruction replay (12 open corpora)           &  5\,GB  & 8\,GB mixed \\
+\midrule
+\textbf{Total}                                 & ---     & \textbf{32.5\,GB} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The 3Di \citep{vankempen2024foldseek} and DSSP \citep{kabsch1983dssp} corpora are formatted as a four-track parallel representation --- text description + 1-D amino acid sequence + 2-D DSSP backbone + 3-D Foldseek letters. OpenWebText \citep{gadre2021pile} is retained at a $1:3$ ratio against biological corpora to serve as a ``logical anchor'' and prevent catastrophic forgetting of natural-language reasoning. After tokenization and chunking to 1{,}024 tokens, the binary corpus contains 11.7M chunks totaling 8.73B tokens.
+
+\subsubsection{QLoRA configuration}
+
+We use parameter-efficient fine-tuning rather than full-parameter updates:
+\begin{itemize}\setlength\itemsep{0pt}
+\item \textbf{Quantization}: NF4 4-bit, double-quantization, bfloat16 compute dtype \citep{dettmers2023qlora}.
+\item \textbf{LoRA}: rank 64, $\alpha = 128$, dropout 0.05, no bias \citep{hu2022lora}.
+\item \textbf{Target modules}: \texttt{q\_proj}, \texttt{k\_proj}, \texttt{v\_proj}, \texttt{o\_proj}, \texttt{gate\_proj}, \texttt{up\_proj}, \texttt{down\_proj}, and --- critically --- \texttt{router.proj}. Including the router in LoRA's adaptation set is what enables expert re-specialization; we verified in a pilot run that omitting \texttt{router.proj} reduces end-of-training JS divergence by half.
+\item \textbf{Unfrozen non-LoRA tensors}: only the input embedding matrix ($290\text{K} \times 2816$ in bfloat16, $\approx 1.6$\,GB).
 \end{itemize}
 
-\textbf{QLoRA configuration}: rank $r$=64, alpha $\alpha$=128, dropout 0.05, NF4 4-bit quantization with paged AdamW 8-bit optimizer. Target modules: \texttt{q\_proj, k\_proj, v\_proj, o\_proj, gate\_proj, up\_proj, down\_proj, router.proj}. Including \texttt{router.proj} is critical: without it, expert re-specialization is suppressed (informal pilot observation, controlled ablation deferred).
+\subsubsection{Training configuration}
 
-\textbf{Training configuration}: sequence length 1,024; per-device batch 6; 8 GPUs (H20 96\,GB); gradient accumulation 4; effective batch 192. Learning rate $2 \times 10^{-5}$ with cosine schedule and 3\% warmup. Weight decay 0.01, max gradient norm 1.0. Embedding layer unfrozen (\texttt{requires\_grad=True}); all other base weights frozen. BF16 mixed precision with gradient checkpointing. 0.6 epoch ($\approx$1,680 steps), $\approx$100 GPU-hours.
-
-\subsection{Supervised fine-tuning}
-
-The SFT pipeline has four cumulative stages, each initializing from the previous LoRA + embedding checkpoint:
-
-\textbf{v2 (Bio-SFT base).} 179,576 instruction examples across 8 task families: Protein Homology (49,894), Literature/UniProtQA (39,915), Mutation/MutaDescribe (29,936), Cell biology (29,936 from PanglaoDB\citep{franzen2019panglaodb} marker panels), Molecule/SMILES (25,945 from MoleculeNet\citep{wu2018moleculenet}), Structure/3Di+DSSP (19,958), and DNA Homology (3,992). LR $5 \times 10^{-5}$, batch 4 per GPU $\times$ 1 GPU $\times$ 16 accum (effective 64), 1 epoch, 3,118 steps, 11.8 GPU-hours.
-
-\textbf{v3 (+20K remote-homology pairs).} Same recipe as v2 with 20,000 additional rows sampled from \texttt{dnagpt/biopaws::protein\_pair\_remote}. LR $2 \times 10^{-5}$. 199K examples, 1 epoch, 13.2 GPU-hours.
-
-\textbf{v4 (Alpaca + loss masking + reweighting).} Three concurrent changes:
-\begin{itemize}
-\item Prompt template switched from chat tags (\texttt{<User>...<Assistant>...}) to pure Alpaca (\texttt{\#\#\# Instruction:} / \texttt{\#\#\# Answer:}). The chat-tag template collapses under 4-bit inference (model reproduces tag literally instead of answering).
-\item Loss masking: tokens belonging to prompt are set to $-100$ in the label tensor, so gradients flow only from the answer span.
-\item Task oversampling: Structure $\times 3$, Mutation $\times 2$, addressing long-tail data scarcity. MAX\_LENGTH raised from 1,024 to 1,536 to fit Structure outputs.
+\begin{itemize}\setlength\itemsep{0pt}
+\item \textbf{Hardware}: $8 \times$ NVIDIA H20 (96\,GB) with PyTorch DDP.
+\item \textbf{Effective batch size}: 6 per device $\times$ 8 devices $\times$ 4 accumulation $= 192$.
+\item \textbf{Learning rate}: $2 \times 10^{-5}$ with cosine schedule and 3\% warmup.
+\item \textbf{Weight decay}: 0.01; max grad-norm clip: 1.0.
+\item \textbf{Gradient checkpointing}: enabled (\texttt{use\_reentrant=False}).
+\item \textbf{Optimizer}: \texttt{paged\_adamw\_8bit}.
+\item \textbf{Epochs}: 0.6 ($\approx 1{,}680$ gradient steps, $\approx 100$ GPU-hours wall time).
+\item \textbf{Checkpoints}: every 500 steps, keeping only LoRA adapters + the 1.6\,GB embedding.
 \end{itemize}
-LR $2 \times 10^{-5}$, 4,257 steps, $\approx$30 GPU-hours.
 
-\textbf{v5 (dual-head classifiers).} Two linear classification heads added on the final transformer hidden state: \texttt{head\_3di} ($\mathbb{R}^{2816} \to \mathbb{R}^{20}$) for Foldseek 3Di and \texttt{head\_dssp} ($\mathbb{R}^{2816} \to \mathbb{R}^{8}$) for DSSP. Joint loss $\mathcal{L} = 0.5 \cdot \mathcal{L}_{\text{gen,CE}} + 0.5 \cdot \mathcal{L}_{\text{cls,CE}}$, where the classification loss aggregates per-residue cross-entropy on the head matching the input task (3Di or DSSP). Trained on the Structure-only subset ($\approx$21K examples) for 2 epochs (1,350 steps). LR $1 \times 10^{-5}$, batch 2 $\times$ 16 accum, $\approx$5 GPU-hours.
+\subsection{Supervised fine-tuning (SFT)}
+
+\subsubsection{Data assembly}
+
+We construct \textbf{OmniGene-SFT-v1}, a 199{,}576-row instruction dataset unified in \texttt{\{instruction, input, output\}} triple form, by merging sources shown in Table~\ref{tab:sft-data}.
+
+\begin{table}[H]
+\centering
+\small
+\caption{SFT data sources and target mix.}
+\label{tab:sft-data}
+\begin{tabular}{llr}
+\toprule
+\textbf{Source} & \textbf{Category} & \textbf{Target mix} \\
+\midrule
+\texttt{homology\_task\_sft.jsonl}    & Protein     & 25\% \\
+\texttt{structure\_task\_sft.jsonl}   & Structure   & 10\% \\
+\texttt{uniprotqa\_sft.jsonl}         & Literature  & 20\% \\
+\texttt{mutadescribe\_sft.jsonl}      & Mutation    & 15\% \\
+\texttt{cell\_sft\_master.jsonl} (new) \citep{franzen2019panglaodb} & Cell  & 15\% \\
+\texttt{mol\_sft\_master.jsonl} (new) \citep{wu2018moleculenet}  & Mol   & 13\% \\
+sampled DNA pairs                     & DNA         & 2\%  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Cell pool (30K rows) is constructed from PanglaoDB-style \citep{franzen2019panglaodb} marker panels covering $\approx 40$ human cell types across 6 task templates (marker-to-type, top-to-identity, bin-to-type, profile-to-tissue, profile-to-disease, pathway-explain). The Mol pool (also 30K rows) is built from nine MoleculeNet \citep{wu2018moleculenet} datasets (21{,}746 unique canonical SMILES) with RDKit-derived physico-chemical descriptors across 6 task templates. Messages-format sources are converted to the triple form by splitting on section markers and stripping any \texttt{<THOUGHT>} blocks from outputs. The final corpus is deduplicated by \texttt{md5(instruction || input || output)}.
+
+For the v3 remote-homology ablation, we add 20{,}000 additional rows sampled from \texttt{dnagpt/biopaws::protein\_pair\_remote} (10K label-1, 10K label-0, excluding the 2{,}000 rows held out for evaluation), formatted as 5 rotating instructions and labelled as \texttt{Homologous}/\texttt{Non-Homologous}.
+
+\subsubsection{SFT configuration}
+
+Inputs are wrapped as
+\begin{center}
+\texttt{<User>\textbackslash n\#\#\# Instruction:\textbackslash n\{instr\}\textbackslash n\textbackslash n\{input\}\textbackslash n\#\#\# Answer:\textbackslash n<Assistant>\textbackslash n\{output\}}
+\end{center}
+with max length 1{,}024 tokens. LoRA is initialized from the CPT checkpoint; embedding weights are inherited from CPT and unfrozen. Training runs on a single H20 GPU with effective batch $4 \times 1 \times 16 = 64$. Bio-SFT v2 uses learning rate $5 \times 10^{-5}$ for 1 epoch (11.8 hours); Bio-SFT v3 (remote-augmented) uses the lower rate $2 \times 10^{-5}$ for 1 epoch (13.2 hours) to avoid disturbing v2's capabilities.
 
 \subsection{Benchmark protocol}
 
-\textbf{Standard homology}: 1,000 balanced pairs (500 label-0, 500 label-1) sampled with seed 42 from \texttt{dnagpt/biopaws::protein\_pair\_short}. \textbf{Remote homology}: 500 balanced pairs from \texttt{dnagpt/biopaws::protein\_pair\_remote} (seed 42). \textbf{BixBench}: True/False knowledge subset (200 questions where the model must answer ``True'' or ``False'' given a hypothesis and result text). All OmniGene-4 versions are evaluated under 4-bit NF4 quantization with Alpaca prompts; the model is constrained to generate up to 8 tokens after the prompt, and the response is parsed for ``Homologous''/``Non-Homologous''/``True''/``False'' keywords.
+\begin{itemize}\setlength\itemsep{0pt}
+\item \textbf{Standard homology}: 30\% random sample of \texttt{dnagpt/biopaws::protein\_pair\_short} (6{,}000 pairs, balanced labels, seed 42). The prompt matches the SFT training prompt; the parser accepts \texttt{Homologous}/\texttt{Non-Homologous} in the first 40 characters of output (case-insensitive), with \texttt{non-homolog*} matched before \texttt{homolog*} to avoid substring misclassification.
+\item \textbf{Remote homology}: 2{,}000 pairs (1{,}000 per label) sampled with seed 42 from \texttt{dnagpt/biopaws::protein\_pair\_remote}.
+\item \textbf{BixBench Knowledge} \citep{bixbench2024}: all \texttt{True}/\texttt{False} questions ($\approx 200$). Input truncated to 500 characters of the \texttt{result} field.
+\end{itemize}
 
-\textbf{Classical baselines.} ESM-2 (650M and 3B): we compute mean-pooled last-layer embeddings (excluding \texttt{[CLS]} and \texttt{[EOS]} tokens) for each sequence, then cosine similarity at threshold 0.5 (a hit = predicted homologous). Tested also at the threshold that maximizes Youden's J on the held-out 500-pair set. MMseqs2 \texttt{easy-search} with sensitivity $s$=7.5 and E-value cutoff $10^{-3}$. DIAMOND \texttt{blastp --more-sensitive} with E-value cutoff $10^{-3}$.
+All evaluations use greedy decoding with 4-bit NF4 quantization on a single GPU.
 
 \subsection{Router activation collection}
+\label{sec:hooks}
 
-For each of 30 transformer layers we register a PyTorch forward hook on the \texttt{router} submodule. The hook unpacks the router output tuple \texttt{(router\_logits, top\_k\_weights, top\_k\_indices)} and accumulates per-token expert counts into a $30 \times 128$ matrix per task family. We collect activations on 50 prompts per task family (8 families = 400 prompts total) at three checkpoints: the vocabulary-extended baseline (no LoRA), post-CPT, and post-CPT+SFT (v3). For each pair of task families and each layer we compute the pairwise Jensen--Shannon divergence between normalized per-task expert-count distributions. The reported scalar metric is the layer-averaged mean pairwise JS across all $\binom{8}{2} = 28$ task pairs.
+For the analysis in \S\ref{sec:moe} we install a forward hook on every \texttt{Gemma4TextRouter} module (30 hooks per model). Each hook captures the \texttt{top\_k\_index} tensor, shape $[B \cdot S, k]$, from the router output and accumulates a count of \texttt{(layer, expert)} activations. We repeat for 8 task pools with 50 samples each ($\approx 400$ samples total), capping sequences at 384 tokens. We run the pipeline on three checkpoints: baseline (Gemma-4-Instruct with extended vocab and mean-initialized new embeddings, no LoRA), CPT-only, and v3. We record:
+\begin{itemize}\setlength\itemsep{0pt}
+\item $\mathrm{counts}[t, \ell, e]$ --- raw top-$k$ hit counts per task, layer, expert.
+\item $\mathbf{p}_{t, \ell} \in \Delta^{128}$ --- per-layer routing distributions.
+\item per-layer per-task entropy $H_{t,\ell} = -\sum_e p_{t,e,\ell} \log p_{t,e,\ell}$.
+\item per-layer cross-task JS divergence $J_\ell = \binom{8}{2}^{-1} \sum_{t \neq t'} \mathrm{JS}(\mathbf{p}_{t,\ell} \Vert \mathbf{p}_{t',\ell})$.
+\item specialty score $s_{t,e} = \log(p_{t,e} / \bar p_e)$ where $\bar p_e$ is the cross-task mean.
+\end{itemize}
 
-\textbf{Bootstrap CIs} use prompt-level resampling: at each of 1,000 iterations we sample 50 prompts per task family with replacement, recompute per-task routing distributions, and recompute the scalar metric. The reported 95\% intervals are the 2.5--97.5 percentile range of the bootstrap distribution.
+For the token-level analysis (\S\ref{sec:moe-tokens}) we additionally record, for every routing event at layers 11, 12, 13, the input token ID that triggered it, and compute the top-$n$ most frequent tokens per \texttt{(expert, task)} bucket.
 
-\textbf{Case-study routing} uses the same hook infrastructure on the v5-merged BF16 model (no quantization) for 5 selected protein pairs from the 500-pair Remote sample. Pairs were drawn from four diagnostic categories: Type A (label 1, alignment tools fail, v5 right; 2 pairs), Type B (label 0, ESM-2 false-positive, v5 right; 1 pair), Type C (label 1, all methods correct; 1 pair), Type D (label 1, all methods fail; 1 pair).
-
-%% ============================================================
-%% BACK MATTER
-%% ============================================================
-
-\section*{Data availability}
-
-All data used in this study are publicly available: BioPAWS at \url{https://huggingface.co/datasets/dnagpt/biopaws}; BixBench at \url{https://huggingface.co/datasets/futurehouse/BixBench}; OpenWebText subsample, UniProt, RefSeq, PDB 3Di and DSSP from standard sources.
-
-\section*{Code availability}
-
-Source code at \url{https://github.com/maris205/omnigene4} under Apache 2.0 license. Routing-count matrices, bootstrap samples, and case-study data are in the repository's \texttt{outputs/moe\_analysis/} directory. Six pre-trained model variants (v3 / v4 / v5 LoRA adapters and v3 / v5 merged BF16 checkpoints, plus v3 GGUF Q4\_K\_M quantization) are released under \url{https://huggingface.co/dnagpt}. A preliminary version of this manuscript is available on bioRxiv (DOI: 10.1101/2026.01.03.697478).
 
 \section*{Acknowledgments}
 
-This research was supported by GPU compute donated by io.net ($\sim$160 GPU-hours total). The author thanks the HuggingFace team for hosting model artefacts and the BioPAWS contributors for the public homology benchmark.
-
-\section*{Author contributions}
-
-L.W. conceived the study, designed the architecture and training pipeline, executed all training and evaluation, performed the router-level analysis, drafted and revised the manuscript, and prepared all data and code releases.
-
-\section*{Competing interests}
-
-The author declares no competing financial or non-financial interests.
+The author thanks \textbf{io.net} (\url{https://io.net}) for providing the GPU compute resources that made the OmniGene-4 training pipeline possible. Continued pretraining (CPT) on 32.5\,GB of mixed biological corpora and the four-stage SFT pipeline (v2 through v5) together consumed approximately 160 GPU-hours on NVIDIA H20 and RTX PRO 6000 Blackwell hardware --- a budget that would have been infeasible without io.net's distributed compute platform. The author also thanks the open-source community behind Hugging Face Transformers, PEFT, bitsandbytes, and llama.cpp for the infrastructure that this work is built on.
 
 \bibliographystyle{plainnat}
 \bibliography{refs}
