@@ -202,7 +202,7 @@ Per-task entropy analysis strengthens this conclusion. Under CPT+SFT training, P
 \subsubsection{Decomposition: CPT vs SFT}
 \label{sec:moe-decomp}
 
-Because we have all three checkpoints (baseline, cpt, v3), we can ask which stage produced the observed differentiation. Writing $\Delta_{\mathrm{CPT}}(\ell) = J_{\mathrm{cpt}}(\ell) - J_{\mathrm{baseline}}(\ell)$ and $\Delta_{\mathrm{SFT}}(\ell) = J_{\mathrm{v3}}(\ell) - J_{\mathrm{cpt}}(\ell)$ for the mean pair-wise JS at layer $\ell$:
+Because we have all three checkpoints (baseline, cpt, v3), we can ask which stage produced the observed differentiation. Writing $\Delta_{\mathrm{CPT}}(\ell) = J_{\mathrm{cpt}}(\ell) - J_{\mathrm{baseline}}(\ell)$ and $\Delta_{\mathrm{SFT}}(\ell) = J_{\mathrm{v3}}(\ell) - J_{\mathrm{cpt}}(\ell)$ for the mean pair-wise JS at layer $\ell$, we obtain the stage-wise decomposition shown in Table~\ref{tab:decomp}.
 
 \begin{table}[H]
 \centering
@@ -238,6 +238,8 @@ A natural interpretation of these patterns is that the two training stages do qu
 
 Figure~\ref{fig:heatmap-delta} shows the task $\times$ expert difference in routing probability (v3 minus baseline), layer-averaged. Red indicates experts more used by v3; blue more used by baseline. The NL row shows bidirectional extremes (some experts vacated, new specialized ones recruited), Cell and Mol share their newly recruited experts (E6, E97, E100), and the RemHomology row introduces a distinct set of protein-character experts (E48, E72, E110, E114, E115).
 
+A complementary view is per-task isolation: for each task we compute its average JS divergence to the other seven tasks, layer-averaged; the result is summarized in Table~\ref{tab:isolation}.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\linewidth]{figures/fig2_heatmap_delta.png}
@@ -271,7 +273,7 @@ NL's isolation grows the most ($+0.187$ in CPT), confirming that our instruction
 \subsection{Case Studies and Comparison Against Classical Baselines}
 \label{sec:case_studies}
 
-To probe \emph{when} OmniGene-4 v5 succeeds where classical alignment-based and embedding-based remote-homology methods fail, we draw five protein pairs from the 500-pair balanced \texttt{protein\_pair\_remote} sample and run all methods head-to-head: ESM-2 (650M and 3B), MMseqs2 \texttt{easy-search}, DIAMOND \texttt{blastp --more-sensitive}, and OmniGene-4 v5 (4-bit, Alpaca prompt). Cases were selected to span four scenarios: (Type A, 2 cases) label 1, MMseqs2 and DIAMOND find no alignment, v5 right; (Type B, 1 case) label 0, ESM-2 cosine $\geq 0.5$ (false positive), v5 right; (Type C, 1 case) label 1, all methods correct (sanity check); (Type D, 1 case) label 1, all methods including v5 wrong (honest failure mode).
+To probe \emph{when} OmniGene-4 v5 succeeds where classical alignment-based and embedding-based remote-homology methods fail, we draw five protein pairs from the 500-pair balanced \texttt{protein\_pair\_remote} sample and run all methods head-to-head: ESM-2 (650M and 3B), MMseqs2 \texttt{easy-search}, DIAMOND \texttt{blastp --more-sensitive}, and OmniGene-4 v5 (4-bit, Alpaca prompt). Cases were selected to span four scenarios: (Type A, 2 cases) label 1, MMseqs2 and DIAMOND find no alignment, v5 right; (Type B, 1 case) label 0, ESM-2 cosine $\geq 0.5$ (false positive), v5 right; (Type C, 1 case) label 1, all methods correct (sanity check); (Type D, 1 case) label 1, all methods including v5 wrong (honest failure mode). Figure~\ref{fig:case_h2h} shows the per-method correctness pattern across these five pairs as a colour-coded matrix (blue: correct, red: wrong).
 
 \begin{figure}[H]
 \centering
@@ -423,6 +425,8 @@ New rows of the embedding matrix are initialized by averaging the embeddings of 
 
 \subsubsection{Data}
 
+The CPT corpus is a 32.5\,GB sampled mixture of DNA, protein, natural language, and structural sources, with composition summarized in Table~\ref{tab:cpt-data}.
+
 \begin{table}[H]
 \centering
 \small
@@ -532,6 +536,10 @@ For the analysis in \S\ref{sec:moe} we install a forward hook on every \texttt{G
 
 For the token-level analysis (\S\ref{sec:moe-tokens}) we additionally record, for every routing event at layers 11, 12, 13, the input token ID that triggered it, and compute the top-$n$ most frequent tokens per \texttt{(expert, task)} bucket.
 
+
+\section*{Funding}
+
+This work received no specific grant funding from any agency in the public, commercial, or not-for-profit sectors. Grant number: Not applicable. GPU compute resources used for model training were donated by io.net (see Acknowledgments).
 
 \section*{Acknowledgments}
 
