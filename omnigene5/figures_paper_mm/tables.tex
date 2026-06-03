@@ -1,0 +1,181 @@
+% =============================================================
+% Tables for the merged OmniGene-4 + MM v3 manuscript
+%
+% T1: BioPAWS homology benchmark across baselines + all stages
+% T2: Multi-modal capability matrix across MM stages (vision +
+%     multi-task generation)
+% T3: Methodological comparison vs AIDO.Protein / Tripathi 2025
+%
+% All numbers are real and traceable:
+%   - Pre-MM stages (v2, v3, v4, v5): copied from
+%     /root/omnigene4_repo/paper_nc/omnigene4_nc.tex (Table benchmarks)
+%   - Classical baselines (ESM-2, MMseqs2, DIAMOND, Gemma-Instruct,
+%     GPT-2, LLaMA-3.1, Qwen-3): copied from same source
+%   - MM stages 1, 2, 3v2, 3v3: copied from
+%     /root/autodl-tmp/dnagpt/outputs/OmniGene-4-MM-stage*/eval_report.json
+%   - AIDO.Protein figures: from arXiv:2412.06924 (Sun et al. 2024)
+%   - Tripathi figures: from arXiv:2507.09754 (Tripathi et al. 2025)
+% =============================================================
+
+% -------------------------------------------------------------
+% Table 1 — Protein homology benchmark
+% Goes in section "BioPAWS: alignment-free homology"
+% -------------------------------------------------------------
+\begin{table}[t]
+\centering
+\small
+\caption{Protein homology accuracy on BioPAWS \citep{wang2026biopaws}, comparing
+classical alignment, supervised PLMs, MoE bio-models, and OmniGene-4 stages.
+\textit{Standard} uses \texttt{protein\_pair\_short} (close homologs); \textit{Remote}
+uses \texttt{protein\_pair\_remote} (structurally related but sequence-divergent).
+``Compute'' is order-of-magnitude GPU-days for the listed checkpoint; for
+classical tools it is search-time on a single CPU run. Bold = best in column;
+\textit{italic} = our work.}
+\label{tab:t1-homology}
+\begin{tabular}{l c c c c}
+\toprule
+\textbf{Method} & \textbf{Type} & \textbf{Standard} & \textbf{Remote} & \textbf{Compute} \\
+                &               & (\%)              & (\%)            & (GPU-days)       \\
+\midrule
+\multicolumn{5}{l}{\textit{Classical alignment (no learning)}} \\
+\quad MMseqs2 \citep{steinegger2017mmseqs2}     & alignment & ---     & 54.40   & --- \\
+\quad DIAMOND  \citep{buchfink2021diamond}      & alignment & ---     & 53.20   & --- \\
+\midrule
+\multicolumn{5}{l}{\textit{Pre-trained protein language models}} \\
+\quad ESM-2 650M \citep{lin2023evolutionary}    & dense PLM & ---     & 50.50   & $\sim 10^3$ \\
+\quad ESM-2 3B   \citep{lin2023evolutionary}    & dense PLM & ---     & 51.20   & $\sim 10^4$ \\
+\midrule
+\multicolumn{5}{l}{\textit{General LLMs (literature-only baselines)}} \\
+\quad GPT-2 + PAWS-X SFT \citep{wang2026biopaws}            & dense LM  & 84.00   & ---     & $\sim 10^{0}$ \\
+\quad LLaMA-3.1 8B + LoRA \citep{wang2026biopaws}           & dense LM  & 72.00   & ---     & $\sim 10^{0}$ \\
+\quad Gemma-4-26B-Instruct (vocab-extended, zero-shot)      & MoE LM    & 85.00   & 60.00   & 0 \\
+\quad Qwen-3 (massive)                                       & MoE LM    & $\sim$100 & $\sim$75 & $\sim 10^{4}$ \\
+\midrule
+\multicolumn{5}{l}{\textit{Specialized MoE bio-foundation models}} \\
+\quad AIDO.Protein-16B \citep{sun2024aido}                  & MoE PLM   & ---     & ---$^{\dagger}$ & $\sim 1.6\!\times\!10^{4}$ \\
+\midrule
+\multicolumn{5}{l}{\textit{OmniGene-4 stages (this work, single H20 GPU)}} \\
+\quad \textit{OmniGene-4 v2} (CPT + Bio-SFT)                & MoE bio   & 100.00  & 56.55   & 0.5 \\
+\quad \textit{OmniGene-4 v3} (+20K remote)                  & MoE bio   &  99.95  & 59.50   & 0.6 \\
+\quad \textit{OmniGene-4 v4} (Alpaca + loss-mask)           & MoE bio   &  99.50  & 82.00   & 1.3 \\
+\quad \textit{OmniGene-4 v5} (dual-head)                    & MoE bio   & \textbf{99.40} & \textbf{82.60} & 1.5 \\
+\midrule
+\multicolumn{5}{l}{\textit{OmniGene-4-MM stages (this work, multi-modal extension)}} \\
+\quad \textit{MM Stage 1} (vision warmup)                   & MoE bio+V & ---$^{\ddagger}$ & ---$^{\ddagger}$ & 0.4 \\
+\quad \textit{MM Stage 2} (mixed text + vision)             & MoE bio+V & 59.00   & 56.50   & 1.0 \\
+\quad \textit{MM Stage 3 v2} (LR 5e-6, embed trainable)     & MoE bio+V & 59.50   & 60.00   & 2.3 \\
+\quad \textit{MM Stage 3 v3} (LR 2e-5, embed frozen)        & MoE bio+V & \textit{\textbf{85.00}} & \textit{\textbf{69.50}} & \textit{\textbf{1.9}} \\
+\bottomrule
+\end{tabular}
+
+\vspace{1ex}
+\footnotesize
+$^{\dagger}$ AIDO.Protein \citep{sun2024aido} does not report on the BioPAWS
+homology task; results listed in their paper cover xTrimoPGLM and ProteinGym
+DMS benchmarks. The compute figure (256 A100 $\times$ 64 d $\approx$ 16{,}384
+GPU-days) reflects pre-training cost only. \\
+$^{\ddagger}$ Stage 1 evaluates vision capabilities only; the homology head is
+not yet recovered from vision-warmup catastrophic forgetting (4/200 valid
+text generations).
+\end{table}
+
+
+% -------------------------------------------------------------
+% Table 2 — Multi-modal capability across MM stages
+% Goes in section "Stage-wise capability progression"
+% -------------------------------------------------------------
+\begin{table}[t]
+\centering
+\small
+\caption{Multi-modal capability across OmniGene-4-MM training stages. Vision
+metrics are accuracy on a 50-prompt-per-task subset of Vis-CheBI20
+\citep{fan2025ocsu}. Multi-task generation is keyword-overlap score on a
+30-prompt subset of an internal SFT-eval set covering biological domains.
+``Stage 3 v3'' is the final model recommended for downstream use.}
+\label{tab:t2-multimodal}
+\begin{tabular}{l c c c c c c c c c c}
+\toprule
+& \multicolumn{5}{c}{\textbf{Vision (Vis-CheBI20)}} & \multicolumn{4}{c}{\textbf{Multi-task generation (kw-score)}} & \\
+\cmidrule(lr){2-6} \cmidrule(lr){7-10}
+\textbf{Stage} & struct & struct & general & trans & trans & Cell & Mol & Protein & Lit. & Hom. \\
+               & recog  & cap    & desp    & IUPAC & SMILES &      &     & (gen)   & (gen)& \\
+\midrule
+v5 (text only)        & ---    & ---  & ---  & ---  & ---  & ---  & ---  & ---  & ---  & 99.4 / 82.6 \\
+MM Stage 1 (vision)   & 1.00   & 0.90 & 0.10 & 0.00 & 0.00 & ---  & ---  & ---  & ---  & --- \\
+MM Stage 2 (mixed)    & 1.00   & 0.88 & 0.14 & 0.00 & 0.00 & 0.25 & 0.32 & 1.00 & 0.17 & 59.0 / 56.5 \\
+MM Stage 3 v2         & 1.00   & 0.90 & 0.16 & 0.00 & 0.00 & 0.75 & 0.79 & 1.00 & 0.24 & 59.5 / 60.0 \\
+\textbf{MM Stage 3 v3} & \textbf{1.00} & \textbf{0.96} & 0.14 & 0.00 & 0.00 & \textbf{0.95} & \textbf{0.91} & \textbf{1.00} & \textbf{0.30} & \textbf{85.0 / 69.5} \\
+\bottomrule
+\end{tabular}
+
+\vspace{1ex}
+\footnotesize
+The ``trans\_IUPAC'' and ``trans\_SMILES'' columns measure exact-match accuracy
+of generated chemical strings; near-zero values reflect a known limitation of
+LoRA-tuned LLMs on character-level chemical naming and motivate the OCSU
+\citep{fan2025ocsu} reframing in the discussion. ``Hom.''\ shows BioPAWS
+standard / remote accuracy carried over from Table~\ref{tab:t1-homology}.
+\end{table}
+
+
+% -------------------------------------------------------------
+% Table 3 — Methodological comparison vs AIDO and Tripathi
+% Goes in discussion / "Position relative to recent MoE bio-models"
+% -------------------------------------------------------------
+\begin{table}[t]
+\centering
+\small
+\caption{Methodological comparison of recent Mixture-of-Experts bio-foundation
+models. ``Modality'' lists the input types the model can natively process.
+``Mechanism'' asks whether the paper's central claim is about a transferable
+\emph{mechanism} or about a downstream \emph{tool}. Compute is for the listed
+checkpoint, including pre-training when applicable; we use one significant
+figure.}
+\label{tab:t3-methodology}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{l c c c}
+\toprule
+& \textbf{AIDO.Protein} & \textbf{Tripathi et al.} & \textbf{OmniGene-4 \,/\, MM} \\
+& \citep{sun2024aido} & \citep{tripathi2025tfbs} & \textbf{(this work)} \\
+\midrule
+Year                            & 2024            & 2025                & 2025 \\
+Modality                        & Protein only    & DNA only            & 8 modalities (vision, sequence, language) \\
+Backbone                        & 16B-A8B sparse MoE (from scratch) & MoE of CNNs (DeepBIND ensemble) & Gemma-4 26B-A4B MoE + LoRA r=64 \\
+Pre-train data                  & 1.2T tokens     & ---                 & 96 GB mixed (DNA / protein / OWT / 3Di / DSSP); $\sim$100M-token paraphrase fine-tune \\
+Compute                         & $\sim 1.6\!\times\!10^{4}$ GPU-days & $\sim 10^{1}$ GPU-days & $\sim 1.5$ GPU-days \\
+Goal                            & SOTA on PEER, ProteinGym DMS & TFBS classification stability & Modality-invariant transfer + tool \\
+Transfer claim                  & no              & no                  & yes (paraphrase $\rightarrow$ homology, robust under modality scaling) \\
+Multi-modal                     & no              & no                  & yes (4 vision + 3 sequence + 1 NL) \\
+Interpretability                & ---             & ShiftSmooth (gradient attribution) & Router-level expert decomposition (3-tier modality emergence) \\
+Code / weights public           & yes (HF, GitHub) & ---                 & yes (HF, GitHub) \\
+Mechanism vs tool               & tool            & tool                & mechanism + tool \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% -------------------------------------------------------------
+% Bibliography entries (BibTeX) needed for the new citations
+% -------------------------------------------------------------
+% @article{sun2024aido,
+%   title  = {Mixture of Experts Enable Efficient and Effective
+%             Protein Understanding and Design},
+%   author = {Sun, Ning and Zou, Shuxian and Tao, Tianhua and others},
+%   journal= {bioRxiv},
+%   year   = {2024},
+%   doi    = {10.1101/2024.11.29.625425}
+% }
+% @article{tripathi2025tfbs,
+%   title  = {Explainable AI in Genomics: Transcription Factor Binding Site
+%             Prediction with Mixture of Experts},
+%   author = {Tripathi, Aakash and Nielsen, Ian E. and Umer, Muhammad
+%             and Ramachandran, Ravi P. and Rasool, Ghulam},
+%   journal= {arXiv preprint arXiv:2507.09754},
+%   year   = {2025}
+% }
+% @article{fan2025ocsu,
+%   title  = {OCSU: Optical Chemical Structure Understanding for
+%             Molecule-centric Scientific Discovery},
+%   author = {Fan, Siqi and Xie, Yuguang and Cai, Bowen and others},
+%   journal= {arXiv preprint arXiv:2501.15415},
+%   year   = {2025}
+% }

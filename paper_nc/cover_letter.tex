@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{parskip}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{flushright}
+Liang Wang\\
+School of Artificial Intelligence and Automation\\
+Huazhong University of Science and Technology\\
+Wuhan 430074, China\\
+\texttt{wangliang.f@gmail.com}\\
+\today
+\end{flushright}
+
+\vspace{1em}
+
+To the Editor,\\
+\textit{Communications AI \& Computing}
+
+\vspace{1em}
+
+Dear Editor,
+
+We are pleased to submit our manuscript ``OmniGene-4: A Unified Bio-Language MoE Model with Router-Level Interpretability'' for consideration by \textit{Communications AI \& Computing}.
+
+The paper addresses a question that has been actively debated for general LLMs but rarely measured directly in the biological domain: how do multi-modal large language models that jointly process natural language and biological sequences (DNA, protein, structural alphabets) actually answer biological questions, especially sequence-grounded questions whose answer depends on residue-level patterns rather than literature recall? We use the discrete router state of a Mixture-of-Experts (MoE) architecture as a direct observable to dissect this question.
+
+We build OmniGene-4, a unified bio-language foundation model on Gemma-4-26B-A4B (128 experts per layer, top-8 routing), and train it through a five-stage pipeline (continued pretraining + four supervised fine-tuning rounds, including a final dual-head architecture with per-residue 3Di and DSSP classifiers).
+
+\textbf{Three findings:}
+
+\textbf{(1) Router-level decomposition of CPT vs SFT.} By installing forward hooks on every router across eight task families, we find that continued pretraining accounts for 96\% of cross-task expert differentiation, while supervised fine-tuning accounts for 4\%, with bootstrap 95\% confidence intervals excluding zero for both. CPT reshapes middle transformer layers; SFT concentrates on the final two layers. To our knowledge this is the first router-level CPT/SFT decomposition for a biological MoE model.
+
+\textbf{(2) Gate-versus-expert separation.} Within the protein-homology task family, per-pair routing divergence stays below 0.04 (versus 0.23 cross-task), implying that homology decisions occur \emph{inside} expert computation rather than at the routing gate. The gate selects the modality; the experts compute the answer.
+
+\textbf{(3) Strong benchmark performance.} On a balanced protein remote-homology evaluation, the model reaches 82.60\% accuracy, outperforming ESM-2 (3B), MMseqs2, and DIAMOND by 28--31 percentage points on the identical pair set. Standard homology reaches 99.40\%, and BixBench (a general biological-knowledge benchmark covering literature comprehension, mutation interpretation, and bioinformatics workflow reasoning) reaches 93.66\%. The dual-head 3Di and DSSP classifiers reach 78.6\% and 100\% per-residue accuracy, without interfering with chat-style generation.
+
+All six trained model variants and the complete codebase are publicly released under \texttt{github.com/maris205/omnigene4} and \texttt{huggingface.co/dnagpt}. A preliminary version is available on bioRxiv (DOI: 10.1101/2026.01.03.697478).
+
+We believe the work is well suited to \textit{Communications AI \& Computing} because it combines a methodological contribution (the first router-level interpretability decomposition for a multi-modal bio-foundation MoE) with a concrete application (sequence-grounded biological reasoning), and produces fully reproducible artefacts. The manuscript has not been submitted elsewhere.
+
+Thank you for considering our work.
+
+\vspace{1em}
+
+Sincerely,
+
+\vspace{0.5em}
+
+Liang Wang
+
+\end{document}

@@ -1,0 +1,3 @@
+Data Availability Statement
+
+All data, code, and trained model weights supporting this study are publicly available at https://github.com/maris205/omnigene4.

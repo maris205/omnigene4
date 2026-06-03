@@ -1,0 +1,3 @@
+Author Contributions Statement
+
+L.W. (Liang Wang) is the sole author and is solely responsible for all aspects of this work, including conceptualization, methodology design, software implementation, data curation, model training and evaluation, formal analysis, manuscript writing, and final revision.

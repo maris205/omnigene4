@@ -1,0 +1,18 @@
+\documentclass[10pt]{article}
+\usepackage[a4paper,margin=1.5cm,landscape]{geometry}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{float}
+\usepackage[hyphens]{url}
+\usepackage{xcolor}
+\setlength{\parindent}{0pt}
+
+% Stub citations so the tables compile standalone
+\newcommand{\citepstub}[1]{[#1]}
+\renewcommand{\citep}[1]{\citepstub{#1}}
+
+\begin{document}
+
+\input{tables.tex}
+
+\end{document}

@@ -1,25 +1,48 @@
-# OmniGene-4: A Unified Bio-Language MoE Model with Router-Level Interpretability
+# OmniGene-4: A Unified Bio-Language MoE Model with Router-Level Interpretability and Modality-Invariant Transfer
 
 > **How do multi-modal LLMs that jointly process natural language and biological sequences (DNA, protein, structural alphabets) actually answer biological questions — especially sequence-grounded questions whose answer depends on residue-level patterns rather than literature recall?**
 >
-> We address this with the first router-level decomposition of a biological Mixture-of-Experts (MoE) foundation model.
+> We address this with the first router-level decomposition of a biological Mixture-of-Experts (MoE) foundation model, then demonstrate the underlying transfer mechanism is **modality-invariant** by extending it to a multi-modal generalist (vision + sequence + language) at $\sim 1.5$ GPU-days.
 
-📄 **Paper**: [`paper_nc/omnigene4_nc.pdf`](paper_nc/omnigene4_nc.pdf) (NC-format) · [`paper/omnigene4.pdf`](paper/omnigene4.pdf) (long version)
-🧬 **Models**: [Hugging Face `dnagpt/` org](https://huggingface.co/dnagpt) (6 variants released)
+📄 **Paper (latest, merged with MM)**: [`paper_mm/omnigene4_mm.pdf`](paper_mm/omnigene4_mm.pdf) (Patterns submission, 34 pages)
+📄 **v5 paper (original)**: [`paper_nc/omnigene4_nc.pdf`](paper_nc/omnigene4_nc.pdf) · [`paper/omnigene4.pdf`](paper/omnigene4.pdf) (long version)
+🧬 **Models**: [`maris205/OmniGene-4`](https://huggingface.co/maris205/OmniGene-4) (v5) · [`maris205/OmniGene-4-MM`](https://huggingface.co/maris205/OmniGene-4-MM) (multi-modal Stage 3 v3)
 📖 **Preprint**: bioRxiv [10.1101/2026.01.03.697478](https://doi.org/10.1101/2026.01.03.697478)
 
 ---
 
 ## TL;DR
 
-A Gemma-4-26B-A4B (30 layers × 128 experts, top-8 routing) trained into a unified DNA + protein + structure + natural-language bio-foundation model. Two scientific findings beyond benchmark numbers:
+A Gemma-4-26B-A4B (30 layers × 128 experts, top-8 routing) trained into a unified DNA + protein + structure + natural-language bio-foundation model, then extended to a vision-aware multi-modal generalist. Three scientific findings beyond benchmark numbers:
 
 1. **CPT vs SFT decomposition**: under a layer-averaged JS metric, **96% of cross-task expert differentiation comes from continued pretraining (CPT)**, only **4% from supervised fine-tuning (SFT)** — with bootstrap 95% CIs excluding zero for both. CPT reshapes middle layers (L11–L22); SFT concentrates on the final two layers (L28–L29).
 2. **Gate vs experts**: within the protein-homology task family, per-pair routing divergence stays below 0.04 (vs 0.23 cross-task). The gate selects the modality; the experts compute the answer.
+3. **Modality-invariant transfer**: the syntactic-isomorphism transfer underlying the homology result survives multi-modal scaling. After adding 4 vision modalities + chemical-structure understanding, OmniGene-4-MM still beats MMseqs2 by +15 pp and ESM-2 3B by +18 pp on remote homology, at $\approx 1.5$ GPU-days of total fine-tuning compute (≈4 orders of magnitude less than AIDO.Protein, Sun et al. 2024).
 
 ---
 
-## Headline numbers
+## Multi-modal extension (OmniGene-4-MM)
+
+The 2026 update of this work adds a vision tower and a 3-stage LoRA pipeline,
+producing a unified vision + sequence + language bio-foundation model.
+
+| Capability | Stage 2 | **Stage 3 v3 (final)** | v5 (text-only baseline) |
+|---|---|---|---|
+| Standard homology | 59.0 % | **85.0 %** | 99.4 % |
+| Remote homology | 56.5 % | **69.5 %** | 82.6 % |
+| Vis-CheBI20 `struct_recog` | 1.00 | **1.00** | — |
+| Vis-CheBI20 `struct_cap` | 0.88 | **0.96** | — |
+| Cell-marker → cell-type ID | 0.25 | **0.95** | — |
+| SMILES → physicochem descriptor | 0.32 | **0.91** | — |
+| Protein-pair homology (gen) | 1.00 | **1.00** | — |
+| Total compute | 1.0 GPU-day | **1.5 GPU-days** | 1.5 GPU-days |
+
+Code and pipelines for the MM extension are under [`omnigene5/`](omnigene5/) — see
+[`omnigene5/README.md`](omnigene5/README.md) for a script-by-script map.
+
+---
+
+## Headline numbers (v5, text-only)
 
 | Benchmark | Gemma-4-Instruct | v2 | v3 | v4 | **v5** | ESM-2 3B | MMseqs2 | DIAMOND |
 |---|---|---|---|---|---|---|---|---|

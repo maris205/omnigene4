@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{8pt}
+
+\begin{document}
+
+\hfill June 2, 2026
+
+\medskip
+
+To the Editors,\\
+\textit{Patterns}, Cell Press
+
+\medskip
+
+Dear Editors,
+
+We are pleased to submit our manuscript, \textbf{``OmniGene-4: A Unified Bio-Language MoE Model with Router-Level Interpretability and Modality-Invariant Transfer''}, for consideration as a Research Article in \textit{Patterns}.
+
+\paragraph{What this paper contributes.}
+This work asks how multi-modal large language models that jointly process natural language and biological sequences (DNA, protein, structural alphabets, microscopy and chemical-structure imagery) actually answer biological questions. We answer this by building OmniGene-4 --- a unified bio-language Mixture-of-Experts foundation model on Gemma-4-26B-A4B (128 experts/layer, top-8 routing) --- and then using its discrete router state, logged via $30$ forward hooks, as a direct readout of \emph{which} sub-network processes \emph{which} input. Our contribution is fourfold:
+\begin{enumerate}
+    \item the first router-level decomposition of CPT versus SFT contributions for a biological MoE, showing that continued pretraining produces $\sim 96\%$ of cross-task expert differentiation in the middle transformer layers, while supervised fine-tuning produces concentrated changes only at the layers nearest \texttt{lm\_head};
+    \item benchmark results that exceed both classical alignment tools (MMseqs2 by $+28$\,pp on remote homology) and recent dense protein language models (ESM-2 3B by $+31$\,pp), at $\sim 1.5$ GPU-days of total fine-tuning compute --- approximately four orders of magnitude less than recent specialized MoE bio-models such as AIDO.Protein (Sun et al., 2024);
+    \item a multi-modal extension (OmniGene-4-MM) that adds four vision modalities and demonstrates that the syntactic-isomorphism transfer underlying the homology result is \emph{modality-invariant} --- the homology capability is preserved under multi-modal scaling, and the router self-organization predicted by our analysis re-emerges as a clean three-tier modality clustering (intra-cluster JS $<0.05$, cross-cluster $>1.2$) without any modality supervision;
+    \item a cross-disciplinary comparison framework --- modality scope, training compute, transfer mechanism, and interpretability axis --- that distinguishes mechanism-oriented contributions from task-specialized tools (Table 4, Figure 6 in the manuscript).
+\end{enumerate}
+
+\paragraph{Why this fits Patterns.}
+\textit{Patterns} publishes data-science work that combines methodological novelty, broad cross-disciplinary appeal, and openness of code, models, and data. Our work matches all three. The methodological contribution is the use of MoE routing as an auditable, in-network interpretability substrate for biological foundation models --- something that the rapidly growing biology-LLM literature has not yet adopted at scale. The cross-disciplinary appeal spans bioinformatics (alignment-free homology detection), machine-learning interpretability (router-level decomposition that complements sparse-autoencoder and probing approaches), and AI-for-science economics (a four-orders-of-magnitude reduction in compute relative to comparable MoE bio-models). All training and evaluation code, all routing-count matrices, the qualitative-showcase outputs, and both the v5 and OmniGene-4-MM checkpoint weights ($\sim 1.7$\,GB each) are openly released through GitHub and Hugging Face under the project repository \texttt{maris205/omnigene4}.
+
+\paragraph{Bigger picture.}
+A 300-word ``Bigger Picture'' box accompanies the manuscript (immediately after the abstract). It frames why mechanistic transparency matters in biological AI and why modality-invariant transfer matters as a sustainability path for academic bio-foundation modelling.
+
+\paragraph{Related work, preprint, and prior consideration.}
+A preliminary version of this work (without the multi-modal extension and modality-invariant-transfer analysis) is available on bioRxiv as DOI \texttt{10.1101/2026.01.03.697478} (``Emergence of Biological Structural Discovery in General-Purpose Language Models''). The bioRxiv version was previously transferred from \textit{Nature Communications} to \textit{Communications AI \& Computing}, where it was declined without external review. The current submission incorporates substantial new content: the OmniGene-4-MM multi-modal extension (4 new vision modalities, 8-modality router analysis, qualitative showcase), the modality-invariant-transfer claim and supporting evidence, and an explicit positioning section against recent MoE bio-models (AIDO.Protein, Sun et al.\ 2024; Tripathi et al.\ 2025). We believe these additions clarify the conceptual advance --- a transferable mechanism, not another single-modality MoE bio-tool --- which we found difficult to communicate within the original framing.
+
+The author also has two methods-focused manuscripts under review at \textit{Scientific Reports} on related but disjoint topics (a benchmark dataset for biological paraphrase-style homology and a structured prediction protocol for transcription factor binding sites). Neither overlaps with the methodological or empirical content of the present manuscript. We will inform the editorial team promptly of any change in their status.
+
+\paragraph{No conflict of interest.}
+The author declares no competing financial interests. GPU compute resources used for OmniGene-4 training were donated by io.net (\url{https://io.net}); the company exercised no influence over the research design, analysis, or reporting.
+
+We hope the manuscript is of interest, and we welcome questions or pre-review feedback from the editorial team.
+
+\medskip
+
+Sincerely,
+
+\medskip
+
+\textbf{Liang Wang}\\
+School of Artificial Intelligence and Automation\\
+Huazhong University of Science and Technology\\
+Wuhan, Hubei 430070, P.R. China\\
+\texttt{wangliang.f@gmail.com}
+
+\end{document}

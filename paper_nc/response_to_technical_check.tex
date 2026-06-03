@@ -1,0 +1,131 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+\definecolor{editorblue}{RGB}{0,70,140}
+\definecolor{authorgreen}{RGB}{20,90,40}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{flushright}
+\small
+Liang Wang\\
+School of Artificial Intelligence and Automation\\
+Huazhong University of Science and Technology\\
+Wuhan 430074, China\\
+\texttt{wangliang.f@gmail.com}\\
+\today
+\end{flushright}
+
+\vspace{0.5em}
+
+\begin{center}
+\Large\textbf{Response to Technical Check}
+\end{center}
+
+\vspace{0.5em}
+
+\textbf{Manuscript Title:}\\
+OmniGene-4: A Unified Bio-Language MoE Model with Router-Level Interpretability
+
+\textbf{Manuscript ID:} 45376cf0-cd38-4848-9c46-c01e0dff0a15 v1.0
+
+\textbf{Journal:} \textit{Communications AI \& Computing}
+
+\vspace{1em}
+
+Dear Swetha M and the Editorial Team,
+
+Thank you for the technical check of our submission. We have addressed each of the three requested items and re-uploaded the revised manuscript. Below we describe the specific changes made.
+
+\vspace{1em}
+
+\textbf{\color{editorblue}Editor's request 1: Funding Statement}
+
+\textit{``The Funding Statement is not present in the manuscript. Please provide a Funding Declaration in the manuscript that includes the name of the funding source and the grant number, as a separate sub heading. If there was no Funding, please state so. If no grant number is applicable, kindly indicate this as `Not applicable.' Also make sure to maintain consistency with the submission system funding statement given.''}
+
+\textbf{\color{authorgreen}Author response:}
+
+A new \emph{Funding} section has been added to the manuscript as a separate sub-heading, immediately before the \emph{Acknowledgments} section. The exact text reads:
+
+\begin{quote}
+\small
+\textbf{Funding}\\
+This work received no specific grant funding from any agency in the public, commercial, or not-for-profit sectors. Grant number: Not applicable. GPU compute resources used for model training were donated by io.net (see Acknowledgments).
+\end{quote}
+
+This statement is consistent with the funding declaration provided in the submission system (no specific grant funding; GPU compute donated by io.net acknowledged separately).
+
+\vspace{1em}
+
+\textbf{\color{editorblue}Editor's request 2: Figure 4 in-text citation}
+
+\textit{``Figure 4 is not cited in the main text. Please ensure that all figures are appropriately cited in the manuscript to maintain clarity and consistency.''}
+
+\textbf{\color{authorgreen}Author response:}
+
+Figure 4 (the head-to-head accuracy matrix on the five case-study protein pairs) is now explicitly cited in Section 3.5 (\emph{Case Studies and Comparison Against Classical Baselines}). The new reference sentence reads:
+
+\begin{quote}
+\small
+``\ldots\ (Type D, 1 case) label 1, all methods including v5 wrong (honest failure mode). Figure~4 shows the per-method correctness pattern across these five pairs as a colour-coded matrix (blue: correct, red: wrong).''
+\end{quote}
+
+\vspace{1em}
+
+\textbf{\color{editorblue}Editor's request 3: Tables 4, 5, and 8 in-text citations}
+
+\textit{``Table 4, 5 and 8 is not cited in the main text. Please include an in-text citation for Table 4, 5 and 8 to ensure all tables are properly referenced and integrated into the manuscript.''}
+
+\textbf{\color{authorgreen}Author response:}
+
+In-text citations have been added for all three tables.
+
+\begin{itemize}[leftmargin=2em,itemsep=0.4em,topsep=0.3em]
+\item \textbf{Table 4} (\emph{Stage-wise decomposition of cross-task routing differentiation}, the CPT-vs-SFT 96\%/4\% table) is now cited in Section 3.3.3. The lead-in sentence has been extended to read:
+\begin{quote}
+\small
+``\ldots\ for the mean pair-wise JS at layer $\ell$, we obtain the stage-wise decomposition shown in Table~4.''
+\end{quote}
+
+\item \textbf{Table 5} (\emph{Per-task average JS-to-other-tasks}) is now cited in Section 3.3, immediately before the table. The new sentence reads:
+\begin{quote}
+\small
+``A complementary view is per-task isolation: for each task we compute its average JS divergence to the other seven tasks, layer-averaged; the result is summarized in Table~5.''
+\end{quote}
+
+\item \textbf{Table 8} (\emph{CPT corpus composition}) is now cited in Section~M.2 (Continued pretraining) of the Methods. A short lead-in sentence has been added before the table:
+\begin{quote}
+\small
+``The CPT corpus is a 32.5\,GB sampled mixture of DNA, protein, natural language, and structural sources, with composition summarized in Table~8.''
+\end{quote}
+\end{itemize}
+
+\vspace{1em}
+
+\textbf{\color{editorblue}Verification.}\\
+After the changes above, we re-checked every figure and table label in the manuscript. All 15 display items (4 figures, 11 tables) now have at least one in-text citation. The revised manuscript compiles cleanly to 25 pages with no undefined references and no formatting errors. No other content has been modified.
+
+We thank the editor and the technical check team for their careful review and remain available for any further clarification.
+
+\vspace{1.5em}
+
+Sincerely,
+
+\vspace{0.5em}
+
+Liang Wang
+
+\end{document}
