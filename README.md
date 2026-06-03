@@ -6,7 +6,11 @@
 
 📄 **Paper (latest, merged with MM)**: [`paper_mm/omnigene4_mm.pdf`](paper_mm/omnigene4_mm.pdf) (Patterns submission, 34 pages)
 📄 **v5 paper (original)**: [`paper_nc/omnigene4_nc.pdf`](paper_nc/omnigene4_nc.pdf) · [`paper/omnigene4.pdf`](paper/omnigene4.pdf) (long version)
-🧬 **Models**: [`maris205/OmniGene-4`](https://huggingface.co/maris205/OmniGene-4) (v5) · [`maris205/OmniGene-4-MM`](https://huggingface.co/maris205/OmniGene-4-MM) (multi-modal Stage 3 v3)
+🧬 **Models on Hugging Face** (`dnagpt/`):
+  - v5 LoRA: [`OmniGene-4-SFT-v5`](https://huggingface.co/dnagpt/OmniGene-4-SFT-v5)
+  - v5 merged BF16 (~49 GB): [`OmniGene-4-SFT-v5-merged`](https://huggingface.co/dnagpt/OmniGene-4-SFT-v5-merged)
+  - **OmniGene-4-MM Stage 3 v3 (LoRA)**: [`OmniGene-4-MM-LoRA`](https://huggingface.co/dnagpt/OmniGene-4-MM-LoRA)
+  - OmniGene-4-MM merged BF16: `OmniGene-4-MM-merged` (forthcoming)
 📖 **Preprint**: bioRxiv [10.1101/2026.01.03.697478](https://doi.org/10.1101/2026.01.03.697478)
 
 ---

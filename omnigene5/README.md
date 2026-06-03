@@ -51,7 +51,7 @@ The full pipeline costs about 1.5 GPU-days on a single H20.
 
 ```bash
 # Prerequisites: v5 merged checkpoint at /root/autodl-tmp/dnagpt/outputs/OmniGene-4-v5-merged
-# (or download from https://huggingface.co/maris205/OmniGene-4)
+# (or download from https://huggingface.co/dnagpt/OmniGene-4-SFT-v5-merged)
 
 # 1. Build the unified MM training corpus
 python scripts/01-build_unified_jsonl.py
@@ -84,7 +84,7 @@ Each training script saves:
 Evaluation scripts save `eval_report.json` in the same directory as the model.
 
 The final OmniGene-4-MM Stage 3 v3 weights are released at
-<https://huggingface.co/maris205/OmniGene-4-MM>.
+<https://huggingface.co/dnagpt/OmniGene-4-MM-LoRA>.
 
 ## Datasets
 
