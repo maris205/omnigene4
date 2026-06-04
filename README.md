@@ -9,9 +9,29 @@
 🧬 **Models on Hugging Face** (`dnagpt/`):
   - v5 LoRA: [`OmniGene-4-SFT-v5`](https://huggingface.co/dnagpt/OmniGene-4-SFT-v5)
   - v5 merged BF16 (~49 GB): [`OmniGene-4-SFT-v5-merged`](https://huggingface.co/dnagpt/OmniGene-4-SFT-v5-merged)
-  - **OmniGene-4-MM Stage 3 v3 (LoRA)**: [`OmniGene-4-MM-LoRA`](https://huggingface.co/dnagpt/OmniGene-4-MM-LoRA)
-  - OmniGene-4-MM merged BF16: `OmniGene-4-MM-merged` (forthcoming)
+  - **OmniGene-4-MM Stage 3 v3 LoRA** (~1.7 GB): [`OmniGene-4-MM-LoRA`](https://huggingface.co/dnagpt/OmniGene-4-MM-LoRA)
+  - **OmniGene-4-MM Stage 3 v3 merged BF16** (~49 GB): [`OmniGene-4-MM-merged`](https://huggingface.co/dnagpt/OmniGene-4-MM-merged)
 📖 **Preprint**: bioRxiv [10.1101/2026.01.03.697478](https://doi.org/10.1101/2026.01.03.697478)
+
+---
+
+## What's new in this version (June 2026)
+
+This release extends the original OmniGene-4 v5 paper (text-only MoE bio-foundation model with router-level interpretability) with a multi-modal arm — **OmniGene-4-MM** — and re-frames the contribution around **modality-invariant transfer**.
+
+**New science:**
+- A vision tower (Gemma-4 ViT, 27 layers) is attached to the v5 backbone and trained through a 3-stage LoRA pipeline (Stage 1 vision warmup → Stage 2 mixed text + vision → Stage 3 v3 homology specialty with frozen embedding) at $\sim 1.5$ GPU-days on a single H20. The final model retains **85.0%** standard / **69.5%** remote homology while gaining chemist-readable molecular-structure understanding (struct\_recog 100%, struct\_cap 96%) and four-domain multi-task text generation (Cell 95%, Mol 91%, Protein 100%).
+- An 8-modality router-level analysis on the multi-modal model reveals a clean, fully emergent three-tier structure (vision · sequence · language) — intra-cluster JS $<0.05$, cross-cluster $>1.2$, no modality supervision — supporting the central new claim that the syntactic-isomorphism transfer mechanism is **modality-invariant** under multi-modal scaling.
+- A direct comparison with recent specialized MoE bio-foundation models (AIDO.Protein, Sun et al. 2024; Tripathi et al. 2025) shows OmniGene-4-MM achieving the same alignment-free, text-driven outcome at roughly **four orders of magnitude less compute** (1.5 GPU-days vs ~16,384).
+
+**New artefacts:**
+- Merged manuscript: [`paper_mm/omnigene4_mm.pdf`](paper_mm/omnigene4_mm.pdf) (34 pages, Patterns submission)
+- Patterns cover letter: [`paper_mm/cover_letter_patterns.pdf`](paper_mm/cover_letter_patterns.pdf)
+- Four new figures and three new tables (multi-modal architecture, AIDO/Tripathi positioning, training-stage progression, qualitative showcase)
+- Public Hugging Face releases for both LoRA-only ($\sim 1.7$ GB) and merged BF16 ($\sim 49$ GB) variants of the multi-modal checkpoint
+- All training, evaluation, router-analysis, qualitative-showcase, merge, and upload scripts in [`omnigene5/`](omnigene5/)
+
+The v5 router-level analysis (CPT 96% / SFT 4% layer-averaged JS) and the v5 benchmark numbers (BioPAWS 99.4% standard / 82.6% remote, BixBench 93.66%, dual-head 78.6% 3Di / 100% DSSP) are unchanged from the bioRxiv preprint and remain the empirical core of the paper.
 
 ---
 

@@ -28,6 +28,11 @@ The pre-MM (v5) pipeline lives in `../biopaws/`.
 | `scripts/91-eval_stage3v2.py` | Stage 3 v2 evaluation. | §Results, Table 2 |
 | `scripts/92-eval_stage3v3.py` | **Stage 3 v3 evaluation (final)**. | §Results, Tables 1 + 2 |
 | `scripts/95-qualitative_demo_stage3v3.py` | Qualitative showcase: vision + homology + multi-task gen. | §Results, Figure 4 |
+| `scripts/96-upload_to_hf.py`              | One-shot uploader for v5-merged + MM-LoRA HF repos. | (release tooling) |
+| `scripts/97-upload_mm_robust.py`          | Per-file retry uploader (used because hf-xet died on long uploads). | (release tooling) |
+| `scripts/98-merge_mm_v3.py`               | **Merge MM v3 LoRA + embedding INTO v5-merged** to produce a stand-alone BF16 multi-modal checkpoint. Requires GPU. | §Methods (model release) |
+| `scripts/99-upload_merged.sh`             | Bash uploader for the 49 GB merged checkpoint (11 safetensors shards). | (release tooling) |
+| `scripts/99b-retry_missing_shards.sh`     | Aggressive retry on shards that silently fail mid-upload. | (release tooling) |
 
 ## Figures
 
