@@ -519,4 +519,192 @@ supervision (the only training signal is token-level cross-entropy). This is
 the empirical evidence supporting the modality-invariant-transfer claim in
 the main text.
 
+\subsection{8-Modality Routing Figures}
+
+Figure~\ref{fig:supp-js-heat-8mod} shows the full $8 \times 8$ pairwise JS
+divergence matrix; Figure~\ref{fig:supp-expert-heat-8mod} shows the
+modality-by-expert routing distribution at layer 12; Figure~\ref{fig:supp-per-layer-js-8mod}
+plots the per-layer JS curves for representative cross-cluster and
+within-cluster pairs.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\linewidth]{figures/js_heatmap_8mod.pdf}
+\caption{Pairwise routing JS divergence across the eight modalities (layer-averaged, Stage~2 checkpoint). Within-cluster cells are dark (low divergence), cross-cluster cells are bright (high divergence).}
+\label{fig:supp-js-heat-8mod}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.99\linewidth]{figures/heatmap_8mod_L12.pdf}
+\caption{Modality $\times$ expert routing at layer 12 (peak cross-modality differentiation), normalized within each row. Each row is one of the eight modalities; each column is one of the 128 experts.}
+\label{fig:supp-expert-heat-8mod}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\linewidth]{figures/per_layer_js_8mod.pdf}
+\caption{Per-layer routing JS divergence for selected modality pairs across the 30 transformer layers. Cross-cluster pairs (e.g.\ \textit{vision\_pathology} vs \textit{natural\_language}) sit consistently above 1.2; within-cluster pairs (e.g.\ \textit{protein\_sequence} vs \textit{structure\_3di}) sit below 0.05 across all layers.}
+\label{fig:supp-per-layer-js-8mod}
+\end{figure}
+
+
+%% ============================================================
+\section{Supplementary Note 3: Released Training Data}
+\label{sec:supp-data}
+%% ============================================================
+
+To support reproducibility, all training corpora used in the paper --- both
+for OmniGene-4 (CPT + Bio-SFT v2--v5) and for the OmniGene-4-MM extension
+(Stage 1--3 LoRA) --- are released as four publicly accessible Hugging Face
+dataset repositories under the \texttt{dnagpt} organization. Reviewers and
+practitioners can clone or stream any of them without authentication. The
+top-level repository layout is shown below.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Released Hugging Face dataset repositories supporting the OmniGene-4 / OmniGene-4-MM training pipeline.}
+\label{tab:supp-released-datasets}
+\begin{tabular}{lll}
+\toprule
+\textbf{Repository} & \textbf{Total size} & \textbf{Used by} \\
+\midrule
+\texttt{dnagpt/omnigene4-cpt-corpus} & $\approx 96$\,GB & CPT (\S\ref{sec:methods}) \\
+\texttt{dnagpt/omnigene4-sft-data}   & $\approx 700$\,MB & Bio-SFT v2--v5; OmniGene-4-MM Stage 2/3 \\
+\texttt{dnagpt/omnigene4-mm-corpus}  & $\approx 500$\,MB & OmniGene-4-MM Stage 1--3 \\
+\texttt{dnagpt/biopaws}              & $\approx 50$\,MB  & BioPAWS evaluation (standard + remote homology) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{S3.1: \texttt{dnagpt/omnigene4-cpt-corpus} (CPT corpus, $\approx 96$\,GB)}
+
+The full continued-pre-training mixture used for OmniGene-4. The 1{:}1{:}1
+biological-to-natural-language ratio described in the main text is realized
+by the file sizes below.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{File} & \textbf{Size} & \textbf{Source / Description} \\
+\midrule
+\texttt{dna\_32g.txt}              & 31\,GB & DNA sequences sampled from public genomes (one sequence per line) \\
+\texttt{protein\_uni\_16.txt}      & 16\,GB & UniRef-derived protein amino-acid sequences \\
+\texttt{protein\_lucaone\_15g.txt} & 15\,GB & Protein sequences sampled from the LucaOne pretraining pool \\
+\texttt{openwebtext.txt}           & 37\,GB & English text replay split (sampled from \texttt{Skylion007/openwebtext}); kept here so the entire CPT mixture is reproducible from a single repository \\
+\texttt{pdb\_aa.fasta}             & 100\,MB & Paired PDB amino-acid sequences (paired with \texttt{pdb\_3di.fasta} for the 3Di prediction objective) \\
+\texttt{pdb\_3di.fasta}            & 100\,MB & Paired PDB Foldseek-3Di sequences \\
+\texttt{ss.txt}                    & 263\,MB & DSSP secondary-structure labels (per residue) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{S3.2: \texttt{dnagpt/omnigene4-sft-data} (SFT corpus, $\approx 700$\,MB)}
+
+Cumulative supervised-fine-tuning corpus consumed by Bio-SFT v2 through v5
+and re-used by OmniGene-4-MM Stage 2/3. The most important file is
+\texttt{train/omnigene\_sft\_v1\_train\_with\_remote.jsonl}, which is the
+199K-row corpus used by every model from v3 onward.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrl}
+\toprule
+\textbf{File} & \textbf{Rows} & \textbf{Used by} \\
+\midrule
+\texttt{bio\_sft\_v2\_train.jsonl}                    & $\sim 179$K & Bio-SFT v2 (eight task families) \\
+\texttt{distill\_seed.jsonl}                          & $\sim 6$K   & Initial distillation seed (predecessor of v2) \\
+\texttt{train/omnigene\_sft\_v1\_train.jsonl}         & $\sim 179$K & SFT v3 base (cleaner schema, Alpaca template) \\
+\textbf{\texttt{train/omnigene\_sft\_v1\_train\_with\_remote.jsonl}} & $\sim 199$K & \textbf{Final SFT corpus used by Bio-SFT v3, v4, v5, and OmniGene-4-MM Stage 2/3} \\
+\texttt{eval/omnigene\_sft\_v1\_eval.jsonl}           & $\sim 1.5$K & Held-out evaluation split (used by all evaluation scripts) \\
+\texttt{master/omnigene\_sft\_v1\_master.jsonl}       & $\sim 285$K & Pre-split master corpus (intermediate; not used in training directly) \\
+\texttt{master/cell\_sft\_master.jsonl}               & $\sim 37$K  & Cell-biology task subset \\
+\texttt{master/mol\_sft\_master.jsonl}                & $\sim 50$K  & Molecule task subset \\
+\texttt{stats/data\_mix\_report.json}                 & --          & Per-category counts and mix ratios \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Each row is a JSON object with at least the fields \texttt{instruction},
+\texttt{input}, \texttt{output}, and \texttt{category}; some rows additionally
+carry \texttt{task\_name} and \texttt{subtask} for fine-grained accounting.
+
+\subsection*{S3.3: \texttt{dnagpt/omnigene4-mm-corpus} (MM corpus, $\approx 500$\,MB)}
+
+Multi-modal training corpus used by OmniGene-4-MM Stage 1 (vision warmup),
+Stage 2 (mixed text + vision), and Stage 3 (homology specialty with vision
+replay).
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrl}
+\toprule
+\textbf{File} & \textbf{Rows} & \textbf{Notes} \\
+\midrule
+\texttt{train.jsonl}            & $\sim 280$K & Unified multi-modal training file (vision + text) used by Stage 1 directly and as a pool for Stage 2/3 mixing \\
+\texttt{val.jsonl}              & $\sim 5$K   & Held-out validation slice \\
+\texttt{meta.json}              & --          & Per-modality counts and split sizes \\
+\texttt{B\_chebi20/train.json}  & $\sim 26$K  & Vis-CheBI20 train split (project copy of \href{https://huggingface.co/datasets/PharMolix/Vis-CheBI20}{PharMolix/Vis-CheBI20}). Five OCSU subtasks: \textit{struct\_recog}, \textit{struct\_cap}, \textit{general\_desp}, \textit{trans\_iupac}, \textit{trans\_smiles} \\
+\texttt{B\_chebi20/test.json}   & $\sim 3$K   & Vis-CheBI20 test split (same subtasks); the source of every Vis-CheBI20 number reported in the paper \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The unified \texttt{train.jsonl} carries each row's \texttt{messages}
+(chat-format), \texttt{images} (list of relative paths), and \texttt{modality}
+fields. Image rows reference local paths under the project's data tree;
+reviewers reproducing the MM training can either point those paths at their
+own copies of the upstream image datasets, or run
+\texttt{omnigene5/scripts/02-fix\_image\_paths.py} to remap.
+
+\subsection*{S3.4: \texttt{dnagpt/biopaws} (BioPAWS evaluation, $\approx 50$\,MB)}
+
+The BioPAWS protein-pair benchmark used for all standard and remote homology
+numbers reported in the main text. This dataset was first released as part of
+the BioPAWS paper (Wang, 2026).
+
+\begin{itemize}
+\setlength{\itemsep}{2pt}
+\item \texttt{protein\_pair\_short}: close-homolog pairs (the ``Standard'' homology benchmark).
+\item \texttt{protein\_pair\_remote}: structurally related but sequence-divergent pairs (the ``Remote'' homology benchmark, the headline metric of the paper).
+\end{itemize}
+
+For the v3 SFT recipe (\S\ref{sec:methods}) we draw 20{,}000 \texttt{protein\_pair\_remote} rows for training (10K label-1 + 10K label-0); the 2{,}000 evaluation rows are held out by deterministic seed-42 sampling and never appear in the SFT corpus.
+
+\subsection*{Loading Pattern}
+
+A minimal load + run pattern, end-to-end (model + data, no authentication
+required for either):
+
+\begin{verbatim}
+from transformers import AutoTokenizer, AutoProcessor, AutoModelForCausalLM
+from datasets import load_dataset
+import torch
+
+# 1. Load the merged multi-modal model in one call
+REPO = "dnagpt/OmniGene-4-MM-merged"
+tok   = AutoTokenizer.from_pretrained(REPO)
+proc  = AutoProcessor.from_pretrained(REPO)
+model = AutoModelForCausalLM.from_pretrained(
+    REPO, torch_dtype=torch.bfloat16, device_map="auto"
+).eval()
+
+# 2. Stream the SFT corpus
+sft = load_dataset("dnagpt/omnigene4-sft-data",
+                   data_files="train/omnigene_sft_v1_train_with_remote.jsonl",
+                   split="train", streaming=True)
+print(next(iter(sft)))
+
+# 3. Stream the MM corpus
+mm = load_dataset("dnagpt/omnigene4-mm-corpus",
+                  data_files="train.jsonl",
+                  split="train", streaming=True)
+print(next(iter(mm)))
+\end{verbatim}
+
 \end{document}
