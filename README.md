@@ -11,6 +11,12 @@
   - v5 merged BF16 (~49 GB): [`OmniGene-4-SFT-v5-merged`](https://huggingface.co/dnagpt/OmniGene-4-SFT-v5-merged)
   - **OmniGene-4-MM Stage 3 v3 LoRA** (~1.7 GB): [`OmniGene-4-MM-LoRA`](https://huggingface.co/dnagpt/OmniGene-4-MM-LoRA)
   - **OmniGene-4-MM Stage 3 v3 merged BF16** (~49 GB): [`OmniGene-4-MM-merged`](https://huggingface.co/dnagpt/OmniGene-4-MM-merged)
+
+📦 **Training data on Hugging Face** (`dnagpt/`):
+  - **CPT corpus (~96 GB)**: [`omnigene4-cpt-corpus`](https://huggingface.co/datasets/dnagpt/omnigene4-cpt-corpus) — DNA (32 GB) + protein UniRef + protein LucaOne + 3Di/AA + DSSP + OpenWebText replay
+  - **SFT corpus (~700 MB)**: [`omnigene4-sft-data`](https://huggingface.co/datasets/dnagpt/omnigene4-sft-data) — Bio-SFT v2 + omnigene_sft_v1 (with remote) + eval + master files
+  - **Multi-modal corpus (~500 MB)**: [`omnigene4-mm-corpus`](https://huggingface.co/datasets/dnagpt/omnigene4-mm-corpus) — unified train/val + Vis-CheBI20 splits
+  - BioPAWS benchmark: [`biopaws`](https://huggingface.co/datasets/dnagpt/biopaws)
 📖 **Preprint**:
   - v2 (merged with MM, May 2026): bioRxiv [10.64898/2026.05.12.724542](https://doi.org/10.64898/2026.05.12.724542)
   - v1 (original, January 2026): bioRxiv [10.1101/2026.01.03.697478](https://doi.org/10.1101/2026.01.03.697478)
