@@ -375,6 +375,148 @@ All code, training scripts, and analysis notebooks are available at:
 \item \url{https://huggingface.co/dnagpt/OmniGene-4-SFT-v4} -- v4 LoRA ($\sim$1.9\,GB)
 \item \url{https://huggingface.co/dnagpt/OmniGene-4-SFT-v5} -- v5 LoRA + heads ($\sim$1.9\,GB)
 \item \url{https://huggingface.co/dnagpt/OmniGene-4-SFT-v5-merged} -- v5, BF16 + heads ($\sim$52\,GB)
+\item \url{https://huggingface.co/dnagpt/OmniGene-4-MM-LoRA} -- \textbf{MM v3 LoRA + extended embedding} ($\sim$1.7\,GB)
+\item \url{https://huggingface.co/dnagpt/OmniGene-4-MM-merged} -- \textbf{MM v3, BF16, stand-alone} ($\sim$49\,GB)
 \end{itemize}
+
+
+%% ============================================================
+\section{Supplementary Note 2: OmniGene-4-MM Reproducibility}
+%% ============================================================
+
+The multi-modal extension reported in Section~4 of the main text was trained
+in three sequential LoRA stages on top of the v5-merged checkpoint, on a
+single H20 GPU, in roughly $1.5$ GPU-days total wall-clock. All scripts
+referenced below live under \texttt{omnigene5/scripts/} in the project
+repository.
+
+\subsection{Pipeline Scripts}
+
+\begin{itemize}
+\item \texttt{omnigene5/scripts/01-build\_unified\_jsonl.py} -- Assemble a single multi-modal training corpus from Vis-CheBI20, PubMedVision, HPA10M, ChartQA, BiomedVis, and the v5 SFT pool.
+\item \texttt{omnigene5/scripts/02-fix\_image\_paths.py} -- Resolve relative image paths after the corpus assembly step.
+\item \texttt{omnigene5/scripts/30-train\_omnigene5\_stage1.py} -- \textbf{Stage 1} (vision warmup, $\sim 10$K steps, LR $5\!\times\!10^{-5}$).
+\item \texttt{omnigene5/scripts/50-train\_stage2.py} -- \textbf{Stage 2} (mixed text + vision, $6$K steps, LR $5\!\times\!10^{-6}$).
+\item \texttt{omnigene5/scripts/82-train\_stage3v2.py} -- Stage 3 v2 (failed: trainable embedding plateaued at $59\%$ standard homology; kept for reproducibility of the failure mode).
+\item \texttt{omnigene5/scripts/83-train\_stage3v3.py} -- \textbf{Stage 3 v3 (final)} (LR $2\!\times\!10^{-5}$, frozen embedding, $3000$ steps; produces the released checkpoint).
+\item \texttt{omnigene5/scripts/60-eval\_stage2.py} -- Stage 2 evaluation.
+\item \texttt{omnigene5/scripts/91-eval\_stage3v2.py} -- Stage 3 v2 evaluation.
+\item \texttt{omnigene5/scripts/92-eval\_stage3v3.py} -- \textbf{Stage 3 v3 evaluation} (BioPAWS standard + remote, Vis-CheBI20 five subtasks, multi-task generation).
+\item \texttt{omnigene5/scripts/95-qualitative\_demo\_stage3v3.py} -- Qualitative-showcase generation, 39 examples (vision + homology + multi-task), used for Figure 8.
+\item \texttt{omnigene5/scripts/71-router\_analysis\_mm\_extended.py} -- 8-modality router-level analysis on the Stage 2 checkpoint, used for the modality-invariant-transfer evidence in Section~4.
+\item \texttt{omnigene5/scripts/98-merge\_mm\_v3.py} -- Merge MM v3 LoRA + extended embedding into the v5-merged base, producing the stand-alone BF16 checkpoint released as \texttt{dnagpt/OmniGene-4-MM-merged}.
+\end{itemize}
+
+\subsection{Stage 3 v3 Hyperparameters (Final Checkpoint)}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Stage 3 v3 training hyperparameters.}
+\label{tab:supp-mm-hparams}
+\begin{tabular}{ll}
+\toprule
+\textbf{Setting} & \textbf{Value} \\
+\midrule
+Initialization                  & v5 LoRA + extended embedding (Stage 2 checkpoint) \\
+Adapter name                    & \texttt{stage2} (matches Stage 2's saved state-dict keys) \\
+LoRA rank / $\alpha$            & $r{=}64$, $\alpha{=}128$, dropout $0.05$ \\
+Target modules                  & \texttt{q\_proj, k\_proj, v\_proj, o\_proj, gate\_proj, up\_proj, down\_proj, router.proj} \\
+Embedding                       & \textbf{Frozen} (preserves the v5 paraphrase-transfer signal) \\
+Learning rate                   & $2\!\times\!10^{-5}$ (cosine, $3\%$ warmup) \\
+Steps                           & $3{,}000$ \\
+Effective batch size            & $32$ ($1 \times 32$ gradient-accumulation) \\
+Max sequence length             & $1{,}536$ \\
+Optimizer                       & paged-AdamW-8bit \\
+Precision                       & BF16 \\
+Gradient checkpointing          & on (non-reentrant) \\
+Data                            & $45$K text (homology oversampled $\times 3$) + $5$K vision replay \\
+Hardware                        & 1 $\times$ NVIDIA H20 (80 GB) \\
+Wall-clock                      & $\sim 12$ hours \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Per-Stage Capability Trajectory}
+
+Table~\ref{tab:supp-stage-progression} reports the evaluation numbers underlying
+Figure~7. Stage~3~v2 plateaued at the Stage~2 level despite running for $6$K
+steps; freezing the embedding and raising the learning rate $4\times$ in
+Stage~3~v3 broke the plateau on the first attempt.
+
+\begin{table}[H]
+\centering
+\small
+\caption{OmniGene-4-MM capability across all training stages. Vision metrics
+are accuracy on a 50-prompt-per-task subset of Vis-CheBI20; multi-task
+generation is keyword-overlap on a 30-prompt-per-category subset of an
+internal SFT-eval set; homology is BioPAWS standard / remote.}
+\label{tab:supp-stage-progression}
+\begin{tabular}{l c c c c c c c c c c}
+\toprule
+& \multicolumn{5}{c}{\textbf{Vision (Vis-CheBI20)}} & \multicolumn{4}{c}{\textbf{Multi-task gen}} & \\
+\cmidrule(lr){2-6} \cmidrule(lr){7-10}
+\textbf{Stage} & rec. & cap. & desp & IUPAC & SMILES & Cell & Mol & Prot. & Lit. & \textbf{Hom. std/rem} \\
+\midrule
+v5 (text only)        & ---  & ---  & ---  & ---  & ---  & ---  & ---  & ---  & ---  & 99.4 / 82.6 \\
+MM Stage 1            & 1.00 & 0.90 & 0.10 & 0.00 & 0.00 & ---  & ---  & ---  & ---  & ---$^{\ast}$ \\
+MM Stage 2            & 1.00 & 0.88 & 0.14 & 0.00 & 0.00 & 0.25 & 0.32 & 1.00 & 0.17 & 59.0 / 56.5 \\
+MM Stage 3 v2         & 1.00 & 0.90 & 0.16 & 0.00 & 0.00 & 0.75 & 0.79 & 1.00 & 0.24 & 59.5 / 60.0 \\
+\textbf{MM Stage 3 v3} & \textbf{1.00} & \textbf{0.96} & 0.14 & 0.00 & 0.00 & \textbf{0.95} & \textbf{0.91} & \textbf{1.00} & \textbf{0.30} & \textbf{85.0 / 69.5} \\
+\bottomrule
+\end{tabular}
+
+\vspace{1ex}
+\footnotesize
+$^{\ast}$ Stage 1 produces parseable BioPAWS responses on only $4/200$ prompts
+(catastrophic forgetting), so a homology number is not meaningful.
+\end{table}
+
+\subsection{8-Modality Routing Analysis}
+
+The 8-modality routing-divergence numbers reported in the main text are
+collected by installing \texttt{forward\_hook}s on all $30$
+\texttt{Gemma4TextRouter} modules of the Stage 2 checkpoint, running $50$
+prompts per modality across the eight modality categories
+(\textit{vision\_molecule}, \textit{vision\_medical}, \textit{vision\_pathology},
+\textit{vision\_chart}, \textit{protein\_sequence}, \textit{dna\_sequence},
+\textit{structure\_3di}, \textit{natural\_language}), and computing pairwise
+Jensen--Shannon divergence per layer over the resulting $30 \times 128$
+expert-count matrices, then averaging over layers. The full $8 \times 8$
+divergence matrix and per-layer curves are saved to
+\texttt{outputs/OmniGene-4-MM-stage2/router\_analysis\_8mod/} when the
+analysis script is re-run; key numbers are reproduced below.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Selected pairwise routing JS divergences from the 8-modality analysis
+(layer-averaged, Stage~2 checkpoint).}
+\label{tab:supp-routing-js}
+\begin{tabular}{l c}
+\toprule
+\textbf{Pair} & \textbf{Layer-averaged JS} \\
+\midrule
+\textit{Within sequence cluster} & \\
+\quad protein\_sequence vs structure\_3di      & 0.016 \\
+\quad protein\_sequence vs dna\_sequence       & 0.038 \\
+\midrule
+\textit{Within vision cluster} & \\
+\quad vision\_medical vs vision\_pathology     & 0.048 \\
+\quad vision\_molecule vs vision\_chart        & 0.072 \\
+\midrule
+\textit{Cross-cluster (representative)} & \\
+\quad vision\_pathology vs natural\_language    & 1.21 \\
+\quad vision\_molecule vs protein\_sequence    & 1.24 \\
+\quad dna\_sequence vs natural\_language       & 1.31 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The within-cluster pairs all sit below $0.08$, while cross-cluster pairs all
+exceed $1.2$ -- a clean three-tier separation that emerges with no modality
+supervision (the only training signal is token-level cross-entropy). This is
+the empirical evidence supporting the modality-invariant-transfer claim in
+the main text.
 
 \end{document}
