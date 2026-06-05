@@ -11,7 +11,9 @@
   - v5 merged BF16 (~49 GB): [`OmniGene-4-SFT-v5-merged`](https://huggingface.co/dnagpt/OmniGene-4-SFT-v5-merged)
   - **OmniGene-4-MM Stage 3 v3 LoRA** (~1.7 GB): [`OmniGene-4-MM-LoRA`](https://huggingface.co/dnagpt/OmniGene-4-MM-LoRA)
   - **OmniGene-4-MM Stage 3 v3 merged BF16** (~49 GB): [`OmniGene-4-MM-merged`](https://huggingface.co/dnagpt/OmniGene-4-MM-merged)
-📖 **Preprint**: bioRxiv [10.1101/2026.01.03.697478](https://doi.org/10.1101/2026.01.03.697478)
+📖 **Preprint**:
+  - v2 (merged with MM, May 2026): bioRxiv [10.64898/2026.05.12.724542](https://doi.org/10.64898/2026.05.12.724542)
+  - v1 (original, January 2026): bioRxiv [10.1101/2026.01.03.697478](https://doi.org/10.1101/2026.01.03.697478)
 
 ---
 
@@ -219,10 +221,10 @@ Expected paths are currently hardcoded (e.g. `/root/autodl-tmp/dnagpt/...`). Ada
 ```bibtex
 @article{wang2026omnigene4,
   author    = {Wang, Liang},
-  title     = {{OmniGene-4}: A Unified Bio-Language {MoE} Model with Router-Level Interpretability},
+  title     = {{OmniGene-4}: A Unified Bio-Language {MoE} Model with Router-Level Interpretability and Modality-Invariant Transfer},
   year      = {2026},
   journal   = {bioRxiv},
-  doi       = {10.1101/2026.01.03.697478},
+  doi       = {10.64898/2026.05.12.724542},
   url       = {https://github.com/maris205/omnigene4}
 }
 ```
