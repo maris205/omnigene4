@@ -1,0 +1,5 @@
+*.bak
+__pycache__/
+data/
+eval/_apikeys.py
+results/
