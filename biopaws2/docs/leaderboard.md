@@ -23,6 +23,15 @@ Dual-mode protocol: **base** = zero-shot QA, **ft** = LoRA-SFT-then-eval, **Δ**
 | OmniGene-4-MM-joint | F2_functional | lg_signal_peptide | accuracy | — | 0.945 | — |
 | OmniGene-4-MM-joint | F2_functional | lg_subcellular_loc | f1 | — | 0.813 | — |
 | OmniGene-4-MM-joint | F1_pairwise | protein_homology_std | accuracy | — | 0.999 | — |
+| OmniGene-4-MM-joint9 | F4_variant | f4_proteingym_dms | accuracy | — | 0.625 | — |
+| OmniGene-4-MM-joint9 | F7_cot | f7_bioreason_cot | rouge_l | — | 0.082 | — |
+| OmniGene-4-MM-joint9 | F6_crossmodal | lg_central_dogma | accuracy | — | 0.615 | — |
+| OmniGene-4-MM-joint9 | F5_structure | lg_fold_class | f1 | — | 0.570 | — |
+| OmniGene-4-MM-joint9 | F2_functional | lg_npp | accuracy | — | 0.867 | — |
+| OmniGene-4-MM-joint9 | F3_dna | lg_promoter_detection | accuracy | — | 0.865 | — |
+| OmniGene-4-MM-joint9 | F2_functional | lg_signal_peptide | accuracy | — | 0.924 | — |
+| OmniGene-4-MM-joint9 | F2_functional | lg_subcellular_loc | f1 | — | 0.803 | — |
+| OmniGene-4-MM-joint9 | F1_pairwise | protein_homology_std | accuracy | — | 0.998 | — |
 | esm2_3B+head | F4_variant | f4_proteingym_dms | accuracy | — | 0.531 | — |
 | esm2_3B+head | F5_structure | lg_fold_class | f1 | — | 0.971 | — |
 | esm2_3B+head | F2_functional | lg_npp | accuracy | — | 0.929 | — |
@@ -49,6 +58,7 @@ Dual-mode protocol: **base** = zero-shot QA, **ft** = LoRA-SFT-then-eval, **Δ**
 |---|---|---|---|
 | OmniGene-4-MM | 0.392 | 0.590 | 0.199 |
 | OmniGene-4-MM-joint | — | 0.793 | — |
+| OmniGene-4-MM-joint9 | — | 0.660 | — |
 | esm2_3B+head | — | 0.806 | — |
 | qwen3.7-max | 0.475 | — | — |
 
@@ -59,10 +69,10 @@ Per task: best chat-model score vs best PLM-head score. `gap = chat − head` (s
 | Task | chat (1 model) | PLM head (per-task) | gap |
 |---|---|---|---|
 | f4_proteingym_dms | 0.674 | 0.531 | 0.143 |
-| f7_bioreason_cot | 0.067 | — | — |
+| f7_bioreason_cot | 0.082 | — | — |
 | lg_central_dogma | 0.615 | — | — |
 | lg_fold_class | 0.631 | 0.971 | -0.340 |
-| lg_npp | 0.849 | 0.929 | -0.080 |
+| lg_npp | 0.867 | 0.929 | -0.062 |
 | lg_promoter_detection | 0.897 | — | — |
 | lg_signal_peptide | 0.945 | 1.000 | -0.055 |
 | lg_subcellular_loc | 0.834 | 0.954 | -0.120 |
@@ -70,4 +80,4 @@ Per task: best chat-model score vs best PLM-head score. `gap = chat − head` (s
 | protein_homology_std | 1.000 | 0.998 | 0.002 |
 
 **Coverage cost**: chat generalist needs **1** model + 1 training to cover all 10 tasks; PLM-head paradigm needs **10** separate heads.
-**Mean parity gap (chat − head)**: -0.069 — a single generalist model stays within this of task-specific heads while covering 10× the tasks with one interface.
+**Mean parity gap (chat − head)**: -0.066 — a single generalist model stays within this of task-specific heads while covering 10× the tasks with one interface.

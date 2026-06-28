@@ -112,7 +112,13 @@ one interface, competitive with the ensemble of $N$ task-specific heads?''
 Table~\ref{tab:biopaws2_main} reports the result. A single OmniGene-4-MM model, jointly
 fine-tuned on a 49K-example mixture of seven BioPAWS-2 tasks (one LoRA, one training run),
 attains a macro score of \textbf{0.814}, while the specialist ESM-2-3B head must be trained
-once per task. Three findings stand out. First, on protein homology the generalist matches
+once per task. Extending the joint mixture to nine tasks spanning seven families (F1--F7;
+50K examples) yields a single model with macro \textbf{0.783} across the eight
+classification/discrimination tasks (\textbf{0.705} including the F7 free-form
+chain-of-thought task, whose ROUGE-L is depressed when long-generation training competes
+with short-answer tasks in one mixture). Either way the headline holds: \emph{one} model,
+\emph{one} training run, covering the breadth of the suite. Three findings stand out. First,
+on protein homology the generalist matches
 the specialist almost exactly (0.999 vs 0.998 standard), and on remote homology the
 generalist's \emph{zero-shot} score (0.653) already exceeds the specialist head (0.524),
 which collapses toward chance in the $<$25\%-identity twilight zone --- reproducing the
