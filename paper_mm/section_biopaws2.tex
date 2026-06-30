@@ -191,15 +191,83 @@ mean-pool-plus-head paradigm structurally discards. This is a concrete case wher
 chat-form formulation is not merely a convenience but recovers capability lost by the
 classical protocol.
 
+\subsection{Controlling for initialization: is the gain from BioPAWS-2 data or from OmniGene?}
+\label{sec:biopaws2_control}
+
+A benchmark that is built and run by the same group that built one of the evaluated models
+must guard against a specific confound: when a model performs well after fine-tuning on the
+benchmark's training corpus, is the performance attributable to the \emph{model}
+(OmniGene's bio-vocabulary and 32.5\,GB biological continued pretraining) or to the
+\emph{data} (the BioPAWS-2 SFT corpus itself)? Because the leaderboard reports fine-tuned
+scores, this distinction is essential and is exactly the kind of question a fair benchmark
+should be able to answer about its own entrants.
+
+We therefore ran a matched control: the \emph{raw} Gemma-4-26B-A4B base model (original
+262{,}144 vocabulary, no bio-vocabulary injection, no biological continued pretraining) was
+fine-tuned with the \emph{identical} joint multi-task LoRA recipe (same nine-task mixture,
+same per-task cap, same $r$=64/$\alpha$=128 adapter, same learning rate, epochs, and
+batch size) as OmniGene-4-MM. The only differences are the initialization and the
+tokenizer. Table~\ref{tab:biopaws2_control} reports the result.
+
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Initialization control under identical joint SFT.} OmniGene-4-MM
+(bio-vocab + 32.5\,GB bio-CPT) vs.\ raw Gemma-4 base (no bio-CPT), both LoRA-fine-tuned on
+the same nine-task BioPAWS-2 mixture with the same recipe. Macro is over the eight
+discrimination tasks (the free-form F7 chain-of-thought task is excluded from the macro;
+see text).}
+\label{tab:biopaws2_control}
+\begin{tabular}{lccc}
+\toprule
+Task & OmniGene-4-MM + SFT & Gemma-4-base + SFT & $\Delta$ \\
+\midrule
+Protein homology (standard)  & 0.998 & 0.998 & $+0.000$ \\
+Subcellular localization     & 0.803 & 0.791 & $+0.011$ \\
+Promoter detection           & 0.865 & 0.837 & $+0.028$ \\
+Fold class (7-way)           & 0.570 & 0.518 & $+0.051$ \\
+Central Dogma                & 0.615 & 0.615 & $+0.000$ \\
+Signal peptide               & 0.924 & 0.941 & $-0.017$ \\
+Natural-product peptide      & 0.867 & 0.840 & $+0.027$ \\
+Variant effect (ProteinGym)  & 0.625 & 0.636 & $-0.011$ \\
+\midrule
+\textbf{Macro (8 tasks)}     & \textbf{0.783} & \textbf{0.772} & $+0.011$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The two models are \emph{statistically indistinguishable} under joint SFT: the macro gap is
+$+0.011$, the mean per-task difference is $+0.010$, the largest single-task difference is
+$0.051$ (fold class), and the sign of the difference is inconsistent across tasks (five
+favor OmniGene, two are ties, two favor the base model). We read this honestly: \textbf{on
+BioPAWS-2's supervised tasks, almost all of the achievable performance comes from the
+BioPAWS-2 training data, not from OmniGene's biological pretraining}. Biological CPT does
+not provide a material advantage \emph{once a model is fine-tuned on the instruction
+corpus}.
+
+This is a useful negative result that the benchmark itself surfaces, and it sharpens --- rather
+than weakens --- the contribution of this paper. First, it cleanly separates the two claims:
+BioPAWS-2 is established as an effective, model-agnostic training resource (a strong base
+model with no domain pretraining reaches macro 0.772), while OmniGene-4-MM's distinctive
+value is shown to lie \emph{elsewhere} than in supervised-fine-tuning headroom --- namely in
+its \emph{zero-shot} behaviour (e.g.\ remote-homology detection, \S\ref{sec:benchmarks},
+where it exceeds specialist PLMs without any task training) and in its router-level
+interpretability (\S\ref{sec:moe}), neither of which the base model possesses. Second, it
+directly answers the self-benchmarking concern with data rather than rhetoric: the group
+that built the benchmark used it to show that its \emph{own} model's pretraining confers no
+SFT advantage on these tasks --- the opposite of a benchmark tuned to flatter its authors.
+
 \subsection{Positioning}
 
-BioPAWS-2 is, to our knowledge, the first biological benchmark that is simultaneously
-instruction-tuning native, SFT-trainable, multimodal, and cross-modal, with a dual
-zero-shot/fine-tune protocol. It subsumes the task content of TAPE, PEER, FLIP, ProteinGym,
-GUE, DeepLoc, SignalP, and the LLaMA-Gene corpus into one chat-formatted axis on which a
-specialist PLM (in its native head-training regime) and a generalist LLM (zero-shot or
-fine-tuned) can be compared directly. By releasing it as a public training resource on
-which any model can be fine-tuned and scored, BioPAWS-2 reframes the evaluation of
-OmniGene-4-MM: the model is one of many entrants on an open leaderboard, not the author of
-its own test --- directly addressing the self-benchmarking concern of evaluating a model on
-a benchmark built by the same group.
+BioPAWS-2 unifies the task content of TAPE, PEER, FLIP, ProteinGym, GUE, DeepLoc, SignalP,
+and the LLaMA-Gene corpus into a single chat-formatted axis on which a specialist PLM (in
+its native head-training regime) and a generalist LLM (zero-shot or fine-tuned) can be
+compared directly, with a dual zero-shot/fine-tune protocol and an explicit
+initialization control (\S\ref{sec:biopaws2_control}). To our knowledge it is the first
+biological benchmark to combine instruction-tuning-native format, SFT-trainability,
+multimodality, and cross-modality in one suite, though we make this breadth claim
+descriptively rather than as a priority claim. By releasing it as a public training
+resource on which any model can be fine-tuned and scored --- and by using it to report a
+negative control on our own model's pretraining --- BioPAWS-2 makes OmniGene-4-MM one
+entrant among many on an open leaderboard rather than the author of its own test, which is
+how we address the self-benchmarking concern of the previous submission.

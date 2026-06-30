@@ -1,0 +1,64 @@
+% =====================================================================
+% BioPAWS-2 leakage / data-quality appendix.
+% Insert into supplementary or Methods. Reports the entity-disjoint
+% re-splitting and before/after leakage audit (real MMseqs2 numbers).
+% =====================================================================
+
+\subsection{Data-leakage audit and entity-disjoint splitting}
+\label{sec:biopaws2_leakage}
+
+A benchmark whose value rests on fine-tuned scores must demonstrate that train and test
+splits do not share entities, or those scores measure memorization rather than
+generalization. We audited every sequence task with two measures: (i) \emph{exact leak} ---
+the fraction of test sequences appearing verbatim anywhere in train (entity level); and (ii)
+\emph{homology leak} --- we cluster all sequences with MMseqs2 \citep{steinegger2017mmseqs2}
+(\texttt{easy-cluster}, \texttt{--min-seq-id 0.5 -c 0.5 --cov-mode 1}) and report the
+fraction of test-containing clusters that also contain a train sequence.
+
+Our initial release used a row-level hash split, which we found to leak badly: because the
+same protein recurs across many pairs/rows, it could land in different splits. We therefore
+re-split every sequence task at the \emph{entity} level: MMseqs2 clusters are assigned whole
+to train/val/test (80/10/10), so a sequence --- and every row mentioning it --- lives in
+exactly one split; pairwise rows whose two sequences fall in different splits are dropped.
+Table~\ref{tab:leakage} reports the audit before and after.
+
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Leakage audit, before vs.\ after entity-disjoint re-splitting.}
+exact = test sequences appearing verbatim in train; homology = test MMseqs2 clusters
+(min-seq-id 0.5) sharing a train sequence. Entity-disjoint splitting drives both to
+$\approx$0 on all single-sequence tasks. Central Dogma is cross-modal (DNA+protein pairs);
+single-tower clustering cannot fully separate it (residual 0.46), which we flag as a known
+limitation. ProteinGym and the name-grounded UniProt-QA task are split by wild-type /
+accession entity rather than sequence string (see text).}
+\label{tab:leakage}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{before (hash split)} & \multicolumn{2}{c}{after (entity-disjoint)} \\
+Task & exact & homology & exact & homology \\
+\midrule
+Protein homology (standard)  & 0.498 & 0.782 & \textbf{0.000} & \textbf{0.085} \\
+Protein homology (remote)    & 0.968 & 0.890 & \textbf{0.000} & \textbf{0.000} \\
+Signal peptide               & 0.888 & 0.907 & \textbf{0.000} & \textbf{0.005} \\
+Subcellular localization     & 0.139 & 0.629 & \textbf{0.000} & \textbf{0.022} \\
+Fold class (7-way)           & 0.000 & 0.313 & \textbf{0.000} & \textbf{0.005} \\
+Natural-product peptide      & 0.000 & 0.169 & \textbf{0.000} & \textbf{0.000} \\
+Promoter detection           & 0.002 & 0.233 & \textbf{0.000} & \textbf{0.013} \\
+Central Dogma (cross-modal)  & 0.415 & 0.836 & \textbf{0.000} & 0.457$^{\dagger}$ \\
+Splice site / TF / core-prom.& 0.000 & 0.000 & 0.000 & 0.000 \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+{\footnotesize $^{\dagger}$ Central Dogma pairs a DNA sequence with a protein; clustering
+either tower alone leaves residual cross-modal homology. A gene-level joint split is future
+work; we report the task with this caveat rather than over-claiming a clean split.}
+\end{table}
+
+All fine-tuned and joint-SFT numbers reported in this paper use the entity-disjoint splits.
+The audit script, the split manifests, and the per-task cluster assignments are released
+with the dataset so that any leakage claim is independently checkable. We regard this audit
+--- including the honest reporting of the residual cross-modal leak --- as part of the
+benchmark's contribution: a public bio-instruction corpus should ship with its own leakage
+accounting rather than an unverified assertion of cleanliness.

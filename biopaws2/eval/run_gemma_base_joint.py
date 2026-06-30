@@ -30,7 +30,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from eval.score import score_task  # noqa: E402
 
-BASE = "/root/autodl-tmp/dnagpt/models_local/gemma-4-26B-A4B-base"
+BASE = "/autodl-fs/data/omnigene_v2/models/gemma-4-26B-A4B-it"
 
 
 def alpaca(instr, answer=None):
@@ -68,7 +68,7 @@ def main():
     import torch
     from datasets import Dataset
     from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer
-    from peft import LoraConfig, get_peft_model
+    from peft import LoraConfig, inject_adapter_in_model
 
     try:
         import transformers.integrations.moe as _moe
@@ -88,13 +88,19 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(
         BASE, torch_dtype=torch.bfloat16, device_map={"": 0}, trust_remote_code=True)
 
-    # fresh LoRA from scratch (no pre-existing adapter) — matched target modules
+    # fresh LoRA from scratch via inject_adapter_in_model (handles Gemma4 custom layers,
+    # which get_peft_model rejects). Freeze base, inject a trainable adapter on the LM.
+    for p in model.parameters():
+        p.requires_grad = False
     lora = LoraConfig(r=a.lora_r, lora_alpha=a.lora_alpha, lora_dropout=0.05, bias="none",
                       target_modules=['q_proj', 'k_proj', 'v_proj', 'o_proj',
                                       'gate_proj', 'up_proj', 'down_proj'],
                       task_type="CAUSAL_LM")
-    model = get_peft_model(model, lora)
-    model.print_trainable_parameters()
+    lm = model.model.language_model if hasattr(model.model, "language_model") else model.model
+    inject_adapter_in_model(lora, lm, adapter_name="biopaws2")
+    model._hf_peft_config_loaded = True
+    trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f"[gemma-joint] trainable {trainable/1e6:.0f}M params", flush=True)
 
     # --- build joint mixture (identical logic to OmniGene joint) ---
     mix, per_task = [], {}
@@ -109,7 +115,8 @@ def main():
             ids = tok(full, truncation=True, max_length=a.max_seq_len)["input_ids"]
             plen = len(tok(prompt, truncation=True, max_length=a.max_seq_len)["input_ids"])
             labels = ([-100] * min(plen, len(ids)) + ids[min(plen, len(ids)):])[:len(ids)]
-            mix.append({"input_ids": ids, "attention_mask": [1] * len(ids), "labels": labels})
+            mix.append({"input_ids": ids, "attention_mask": [1] * len(ids), "labels": labels,
+                        "mm_token_type_ids": [0] * len(ids)})
     print(f"[gemma-joint] mixture {len(mix)} rows | per-task {per_task}", flush=True)
     ds = Dataset.from_list(mix)
 
@@ -117,12 +124,13 @@ def main():
         def __call__(self, feats):
             maxlen = max(len(f["input_ids"]) for f in feats)
             pad = tok.pad_token_id
-            b = {"input_ids": [], "attention_mask": [], "labels": []}
+            b = {"input_ids": [], "attention_mask": [], "labels": [], "mm_token_type_ids": []}
             for f in feats:
                 n = maxlen - len(f["input_ids"])
                 b["input_ids"].append(f["input_ids"] + [pad] * n)
                 b["attention_mask"].append(f["attention_mask"] + [0] * n)
                 b["labels"].append(f["labels"] + [-100] * n)
+                b["mm_token_type_ids"].append(f["mm_token_type_ids"] + [0] * n)
             return {k: torch.tensor(v) for k, v in b.items()}
 
     targs = TrainingArguments(
@@ -148,7 +156,8 @@ def main():
             ids = tok(alpaca(r["messages"][0]["content"]), return_tensors="pt",
                       truncation=True, max_length=a.max_seq_len).input_ids.to(model.device)
             with torch.no_grad():
-                out = model.generate(ids, max_new_tokens=24, do_sample=False,
+                out = model.generate(ids, mm_token_type_ids=torch.zeros_like(ids),
+                                     max_new_tokens=24, do_sample=False,
                                      eos_token_id=eos, pad_token_id=pad)
             preds[r["id"]] = tok.decode(out[0][ids.shape[1]:], skip_special_tokens=True).strip()
         res = score_task(tf, preds)

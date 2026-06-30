@@ -154,3 +154,50 @@ overclaims. The path forward is the 5-item package — most of it is **rewrite +
 (Gemma-base control) + leakage appendix**, all feasible on current hardware. The
 results-to-claims matrix is pre-committed so we report honestly whatever the Gemma control
 shows.
+
+---
+
+## ROUND 3 — Mock Review WITH SCORES (post Gemma-base control + benchmark-first revision)
+**Date:** 2026-06-30 | **New thread:** `019f1660-020b-7531-9d45-52d703a25599`
+
+### Score: **4/10 · Major revision · confidence 4/5**
+
+**Verdict shift:** "No longer a principled reject on fairness grounds. The negative control
+genuinely improves the paper." → We escaped the auto-reject zone. But 4/10 is still far from
+accept.
+
+### What worked
+- The `Gemma-base + identical SFT` negative control is "the strongest addition" — convincing
+  precisely because it weakens our own story (honesty over flattery).
+- Public BioPAWS-2 resource, dual-mode protocol, base/ft/Δ reporting all praised.
+- Zero-shot remote homology = clearest model-specific reason to care about OmniGene.
+- Router CPT-vs-SFT decomposition "more substantial than cosmetic."
+- Over-claim softening acknowledged.
+
+### The NEW core problem (center of gravity)
+The control data say BioPAWS-2 is the stronger supervised contribution, but the title/framing
+still sell an OmniGene paper. "Four papers compressed into one." Hierarchy unresolved.
+
+### Residual reject risks (still substantial)
+1. Benchmark not yet audit-proof: "identity-aware splitting" asserted, no task-wise
+   thresholds/contamination audit. THE remaining credibility bottleneck — and the zero-shot
+   remote-homology claim (our best) is the MOST leakage-sensitive, needs cleanest split docs.
+2. Results presentation still mixed (footnote-heavy omnibus table) → need 3 protocol-separated tables.
+3. Baseline panel still thin → need ≥1 more matched fine-tuned non-OmniGene LLM beyond Gemma.
+4. ProteinGym should use native Spearman primary metric, not bucketized accuracy.
+5. Router "interpretability" overstated — shows WHEN differentiation arises, not what it MEANS / causal use.
+6. No DNA specialist baseline.
+
+### Highest-leverage change toward accept
+**Recast explicitly as a BioPAWS-2 benchmark/resource paper** + make benchmark unimpeachable:
+protocol-separated tables, field-standard primary metrics, full task-wise split/leakage
+documentation, ≥1 additional matched non-OmniGene LLM fine-tuning baseline. Without this
+package → another reject likely.
+
+### Questions for authors (to resolve before resubmission)
+- What IS the primary paper: BioPAWS-2 / OmniGene-4 / router interp / multimodal? Pick one hierarchy.
+- Willing to retitle around BioPAWS-2, OmniGene as case study?
+- Add ≥1 matched fine-tuned open LLM baseline beyond Gemma?
+- Full leakage appendix (split rules, homology thresholds, dedup, overlap-vs-CPT audit)?
+- ProteinGym native metric in main text?
+- Router result: causal/semantic validation beyond divergence accounting?
