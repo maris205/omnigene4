@@ -22,100 +22,36 @@ Attn: Dr.\ Alejandra Alvarado
 
 Dear Dr.\ Alvarado,
 
-Thank you for your considered assessment of our earlier submission
-(PATTERNS-D-26-00307) and for the invitation to submit a revised and expanded version. We
-are resubmitting as a new manuscript that directly implements your central recommendation:
-to \textbf{consolidate the OmniGene-4 and BioPAWS work into a single, balanced study with a
-fair benchmarking framework}. We summarize below exactly how this version addresses the
-concern you raised.
+Thank you for your assessment of our earlier submission (PATTERNS-D-26-00307) and for
+inviting a revised, expanded version. We resubmit as a new manuscript implementing your
+central recommendation: to consolidate the OmniGene-4 and BioPAWS work into a single,
+balanced study with a fair benchmarking framework.
 
-\paragraph{Your concern.}
-You wrote that you were not fully convinced the paper presented a sufficiently fair
-benchmarking framework, ``particularly given that BioPAWS was also developed by your
-group,'' and you suggested an integrated manuscript consolidating the two efforts. We agree
-this was the right diagnosis: in the previous version, the central model was evaluated
-largely on a benchmark from the same group that was neither independently described nor
-released as a standing resource, which understandably reads as self-benchmarking.
+You were not fully convinced the paper offered a fair benchmarking framework, ``particularly
+given that BioPAWS was also developed by your group.'' We took this seriously and addressed
+it head-on. We have turned the benchmark into a first-class, openly released contribution ---
+\textbf{BioPAWS-2}, a chat-form suite of 9 task families / 22 tasks ($\sim$306K examples),
+released on Hugging Face (\texttt{dnagpt/biopaws-2}) with all code on GitHub, so any group
+can score any model on it. Crucially, we then used our own benchmark to argue \emph{against}
+a self-serving conclusion: a matched raw-Gemma-base control under identical joint fine-tuning
+shows our model's biological continued-pretraining confers \emph{no material advantage under
+supervised fine-tuning} (macro 0.769 vs.\ 0.760) --- the opposite of self-benchmarking.
+OmniGene-4's value is instead in deployment cost ($\sim$1.5 GPU-days, 4-bit GGUF on a single
+24\,GB GPU), modality breadth, and zero-shot remote-homology detection. We also release an
+MMseqs2 leakage audit and re-split every sequence task entity-disjoint (homology leakage
+0.78$\to$0.08); re-running all supervised results on the clean splits moves the headline by
+only $-1.4$ points, showing the leaderboard is not a memorization artifact.
 
-\paragraph{What we changed.}
-We have turned the benchmark itself into a first-class, openly released contribution and
-re-positioned OmniGene-4-MM as \emph{one of several models evaluated on it}, rather than
-its author-evaluator. Concretely:
+The empirical core of the original submission (router-level CPT-vs-SFT decomposition,
+remote-homology results, modality-invariant transfer) is retained in full. All artefacts ---
+dataset, model checkpoints, and training/evaluation/leakage-audit code --- are public
+(\texttt{github.com/maris205/omnigene4}), so any leaderboard number is independently
+reproducible. A preliminary version is on bioRxiv (DOI \texttt{10.1101/2026.01.03.697478}).
+The author declares no competing interests; GPU compute was donated by io.net, which
+exercised no influence over the research.
 
-\begin{enumerate}
-    \item \textbf{BioPAWS-2, a public benchmark and training resource (new Section~2).} We
-    consolidate and substantially expand the benchmark into \textbf{BioPAWS-2}: a
-    chat-form instruction-tuning suite spanning \textbf{nine task families and 22 tasks
-    ($\sim$306K examples)} --- pairwise homology, protein function, DNA/genomic
-    classification, variant effect, structure, cross-modal DNA$\leftrightarrow$protein,
-    chain-of-thought reasoning, biomedical QA, and multimodal image+text. It is released
-    openly on Hugging Face (\texttt{dnagpt/biopaws-2}) with all conversion and evaluation
-    code on GitHub, so that \emph{any} group can train and score \emph{any} model on it.
-
-    \item \textbf{A fair, paradigm-neutral evaluation protocol.} Every task is scored under
-    two modes: zero-shot QA (for generative LLMs) and fine-tune-then-evaluate, where a
-    specialized protein/DNA language model runs its \emph{native} frozen-backbone
-    head-training protocol and a generalist LLM runs LoRA-SFT --- on the same train/test
-    split, each in its home-turf regime. This lets a specialist PLM (e.g.\ ESM-2-3B) and a
-    generalist LLM be compared on a common axis without disadvantaging either.
-
-    \item \textbf{OmniGene-4-MM is one entrant among several.} The leaderboard reports
-    OmniGene-4-MM alongside ESM-2-3B (per-task heads) and Qwen-3.7-max (zero-shot), across
-    all families. Where the specialist is stronger (structure, localization) we report it
-    plainly; the contribution is that a single generalist covers all tasks with one
-    training run while remaining competitive, not that our model wins every cell.
-
-    \item \textbf{New, independent findings that strengthen rather than assume the result.}
-    Consolidation surfaced results we could not have shown in the narrower framing: (a) on
-    ProteinGym variant-effect prediction, a mean-pooled PLM head sits at chance (0.53)
-    because single-point-mutation signal is averaged away, whereas the chat formulation
-    --- presenting the mutation as explicit tokens --- recovers it (0.67 after SFT); and
-    (b) fine-grained biological label sets (protein fold, localization) are near-zero
-    zero-shot for \emph{every} large model tested, quantifying precisely what the BioPAWS-2
-    training corpus contributes.
-\end{enumerate}
-
-\paragraph{Positioning and data integrity.}
-The consolidated manuscript presents two coupled contributions: \textbf{OmniGene-4}, a
-low-cost ($\sim$1.5 GPU-days), locally-deployable (4-bit GGUF on a single 24\,GB GPU)
-multi-modal bio-language MoE, and \textbf{BioPAWS-2}, the open, leakage-audited benchmark and
-training resource on which it --- and any other model --- can be evaluated. Crucially, we do
-\emph{not} claim the model wins by supervised fine-tuning. A matched \emph{raw-Gemma-base}
-control under the identical joint fine-tuning protocol shows that our model's biological
-continued-pretraining confers \emph{no material advantage under supervised fine-tuning}
-(macro 0.769 vs.\ 0.760) --- i.e.\ we used our own benchmark to argue \emph{against} a
-self-serving conclusion, which is the opposite of self-benchmarking; OmniGene-4's value is
-located instead in deployment cost, modality breadth, and zero-shot behaviour. To make the
-benchmark self-auditing, we release an MMseqs2 leakage audit and re-split every sequence task
-\emph{entity-disjoint} (homology leakage reduced from 0.78 to 0.08); re-running all supervised
-results on the leakage-free splits moves the headline by only $-1.4$ points, demonstrating the
-leaderboard is not a memorization artifact. ProteinGym is additionally reported with its
-field-standard Spearman metric, and the local-deployment footprint is characterized
-quantitatively (VRAM, latency, throughput on a single 24\,GB GPU).
-
-\paragraph{What is unchanged.}
-The empirical core of the original submission --- the router-level CPT-vs-SFT
-decomposition, the remote-homology results, and the modality-invariant-transfer analysis of
-OmniGene-4-MM --- is retained in full (Sections~3--5). The new BioPAWS-2 section provides
-the independent benchmarking foundation those results now rest on.
-
-\paragraph{Openness.}
-All artefacts are public: the BioPAWS-2 dataset (\texttt{dnagpt/biopaws-2}), the model
-checkpoints (\texttt{dnagpt/OmniGene-4-MM-merged} and the LoRA adapter), and all training,
-conversion, evaluation, leakage-audit, and leaderboard code
-(\texttt{github.com/maris205/omnigene4}). A third party can reproduce every leaderboard
-number --- including the leakage audit and the entity-disjoint splits --- or add a new model,
-without any artefact private to our group.
-
-\paragraph{Preprint and prior consideration.}
-A preliminary version is on bioRxiv (DOI \texttt{10.1101/2026.01.03.697478}); an updated v2
-with the multi-modal extension is at DOI \texttt{10.64898/2026.05.12.724542}. The present
-manuscript adds the consolidated BioPAWS-2 benchmark and its independent evaluation. The
-author declares no competing interests; GPU compute was donated by io.net, which exercised
-no influence over the research.
-
-We are grateful for the path you offered toward a more compelling and balanced paper, and
-we believe this integrated version answers it. We welcome any further feedback.
+We are grateful for the path you offered toward a more balanced paper and welcome any further
+feedback.
 
 \medskip
 
