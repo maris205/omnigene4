@@ -17,6 +17,7 @@ Reject → 4 → 6 → 6.8 → **7.1**.
 | `omnigene4_mm.tex` | Source (retitled to BioPAWS-2-first) | ✅ |
 | `section_biopaws2.tex` | §2 BioPAWS-2 (`\input`) — 2 protocol-pure tables | ✅ |
 | `section_leakage.tex` | Leakage audit appendix (before/after MMseqs2) | ✅ |
+| `supplementary_nc.pdf/.tex` | Supplementary Info, **18 pp** (+ Note 4: BioPAWS-2 construction/leakage/controls) | ✅ compiles, cross-doc refs resolve on merge |
 | `refs.bib` | Bibliography (+ llama-gene, PEER, FLIP) | ✅ |
 | `cover_letter_resubmission.pdf/.tex` | 2-pp cover letter to Dr. Alvarado | ✅ updated to final state |
 | `REVIEW_biopaws2_gpt54.md` | Full 6-round external review record | ✅ (internal, do not submit) |
