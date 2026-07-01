@@ -109,76 +109,86 @@ alone. The fair question is therefore not ``does the chat model beat the head on
 $X$?'' but ``is a single generalist model, covering all $N$ tasks with one training run and
 one interface, competitive with the ensemble of $N$ task-specific heads?''
 
-Table~\ref{tab:biopaws2_main} reports the result. A single OmniGene-4-MM model, jointly
-fine-tuned on a 49K-example mixture of seven BioPAWS-2 tasks (one LoRA, one training run),
-attains a macro score of \textbf{0.814}, while the specialist ESM-2-3B head must be trained
-once per task. Extending the joint mixture to nine tasks spanning seven families (F1--F7;
-50K examples) yields a single model with macro \textbf{0.783} across the eight
-classification/discrimination tasks (\textbf{0.705} including the F7 free-form
-chain-of-thought task, whose ROUGE-L is depressed when long-generation training competes
-with short-answer tasks in one mixture). Either way the headline holds: \emph{one} model,
-\emph{one} training run, covering the breadth of the suite. Three findings stand out. First,
-on protein homology the generalist matches
-the specialist almost exactly (0.999 vs 0.998 standard), and on remote homology the
-generalist's \emph{zero-shot} score (0.653) already exceeds the specialist head (0.524),
-which collapses toward chance in the $<$25\%-identity twilight zone --- reproducing the
-core BioPAWS finding. Notably, remote homology is the one task where \emph{supervised
-fine-tuning does not help} the generalist: training on the remote split drives the model to
-a majority-class shortcut rather than a discriminative solution, leaving its honest remote
-capability at the zero-shot level. This is consistent with --- rather than counter to ---
-the BioPAWS thesis: on the twilight-zone regime the model's advantage comes from
-abductive reasoning over a structural prior, not from pattern memorization that fine-tuning
-could amplify, so the trainability ($\Delta$) signal is informative precisely by being flat
-here. Second, on the fine-grained biological label sets (7-way fold class,
-6-way localization), zero-shot performance is poor for \emph{every} large model we tested
-(Qwen-3.7-max: 7.3\% fold, 23.3\% localization; OmniGene zero-shot: 6.0\%, 50.1\%), because
-these specialized label vocabularies are not recoverable from general pretraining --- this
-is precisely the gap that the BioPAWS-2 \emph{training corpus} fills, and after fine-tuning
-OmniGene rises to 63.1\% / 83.4\% ($\Delta$ of $+57$ and $+33$ points). Third, the
-specialist head remains strongest on the structure/localization tasks that are the PLM's
-home turf (0.971 / 0.954), but at the cost of one model per task; the generalist stays
-within a modest macro gap while covering $8\times$ the tasks with a single interface.
+Tables~\ref{tab:biopaws2_main} and~\ref{tab:biopaws2_ref} report the result, each under a
+single evaluation protocol. A single OmniGene-4-MM, jointly fine-tuned once on the nine-task
+mixture and evaluated on the leakage-free splits, attains macro \textbf{0.769} across the
+eight discrimination tasks (the free-form F7 chain-of-thought task is kept out of the macro,
+as its ROUGE-L is depressed when long-generation competes with short-answer tasks in one
+mixture). The headline holds: \emph{one} model, \emph{one} training run, covering the breadth
+of the suite. One observation is worth isolating: on the fine-grained biological label sets
+(7-way fold class, 6-way localization), \emph{zero-shot} performance is poor for every large
+model we tested (Qwen-3.7-max 7.3\% / 23.3\%; OmniGene zero-shot 6.0\% / 50.1\%), because
+these specialized label vocabularies are not recoverable from general pretraining --- this is
+precisely the gap that the BioPAWS-2 \emph{training corpus} fills, with joint SFT lifting the
+generalist to 0.568 / 0.757.
 
 \begin{table}[t]
 \centering
 \small
-\caption{\textbf{BioPAWS-2 generalist--specialist comparison.} One jointly-SFT'd
-OmniGene-4-MM (\emph{1 model, 1 training run}) versus per-task specialist ESM-2-3B heads
-(\emph{1 model per task}) and Qwen-3.7-max zero-shot. Protein-homology metrics are
-accuracy; fold/localization are macro-F1. ``---'' = not applicable (PLM heads are
-single-task; DNA tasks are not ESM-2's modality and await a DNA-PLM baseline).}
+\caption{\textbf{BioPAWS-2 joint multi-task SFT (single protocol, leakage-free
+entity-disjoint splits).} One OmniGene-4-MM and one raw-Gemma-4-base, each fine-tuned
+\emph{once} on the same nine-task mixture and evaluated on every task's clean test split.
+Homology/DNA/QA metrics are accuracy; fold/localization are macro-F1; F7 is ROUGE-L. Every
+cell is the same protocol (joint SFT) on the same splits --- no per-task or zero-shot
+exceptions.}
 \label{tab:biopaws2_main}
-\begin{tabular}{lcccc}
+\begin{tabular}{llcc}
 \toprule
-Task & Family & OmniGene-4-MM & ESM-2-3B head & Qwen-3.7 \\
-     &        & joint (1 model) & (1 model/task) & zero-shot \\
+Task & Family & OmniGene-4-MM & Gemma-4-base \\
 \midrule
-Protein homology (standard)      & F1 & \textbf{0.999} & 0.998 & 0.813 \\
-Protein homology (remote $<$25\%)& F1 & 0.653$^{\dagger}$ & 0.524 & 0.457 \\
-Fold class (7-way)               & F5 & 0.583 & \textbf{0.971} & 0.073 \\
-Subcellular localization (6-way) & F2 & 0.813 & \textbf{0.954} & 0.233 \\
-Promoter detection               & F3 & \textbf{0.897} & ---$^{\S}$ & 0.420 \\
-Signal peptide                   & F2 & 0.945 & \textbf{1.000} & 0.663 \\
-Natural-product peptide          & F2 & 0.849 & \textbf{0.929} & --- \\
-Central Dogma (DNA$\leftrightarrow$protein) & F6 & 0.615 & ---$^{\ddagger}$ & 0.787 \\
-Variant effect (ProteinGym DMS)  & F4 & \textbf{0.674}$^{\P}$ & 0.531 & 0.497 \\
-Biomedical QA (BixBench T/F)     & F8 & 0.912$^{\P}$ & --- & \textbf{0.937} \\
+Protein homology (standard)      & F1 & \textbf{1.000} & 0.999 \\
+Signal peptide                   & F2 & \textbf{0.933} & 0.904 \\
+Promoter detection               & F3 & \textbf{0.886} & 0.873 \\
+Natural-product peptide          & F2 & \textbf{0.823} & 0.811 \\
+Subcellular localization (6-way) & F2 & 0.757 & \textbf{0.775} \\
+Central Dogma (DNA$\leftrightarrow$protein) & F6 & 0.604 & 0.604 \\
+Variant effect (ProteinGym DMS)  & F4 & 0.578 & \textbf{0.580} \\
+Fold class (7-way)               & F5 & \textbf{0.568} & 0.536 \\
 \midrule
-\textbf{Macro (7 trained tasks)} & & \textbf{0.814} & --- & --- \\
+\textbf{Macro (8 discrimination tasks)} & & \textbf{0.769} & 0.760 \\
+\midrule
+Bio-CoT reasoning (F7, ROUGE-L)  & F7 & 0.078 & 0.075 \\
 \bottomrule
 \end{tabular}
-
-\vspace{2pt}
-{\footnotesize $^{\dagger}$ remote-homology generalist value is zero-shot; per-task SFT on
-the lowercase remote split is unstable and reported separately.
-$^{\ddagger}$ the Central-Dogma task mixes DNA and protein; ESM-2 is a protein-only encoder
-and is not an appropriate single-tower baseline (a cross-modal PLM baseline is future work).
-$^{\S}$ a dedicated DNA-language-model baseline (DNABERT-2) for the genomic tasks is left to
-future work due to toolchain incompatibility with our training stack; the generalist and
-Qwen-3.7 zero-shot columns already bracket the achievable range.
-$^{\P}$ F4 and F8 values are per-task (F4: OmniGene single-task SFT; F8: zero-shot) rather
-than from the 7-task joint model, and are not included in the joint macro.}
 \end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Reference baselines under their own native protocols.} Specialist ESM-2-3B
+head (per-task frozen-backbone + trained head) and Qwen-3.7-max (zero-shot QA), reported
+separately because each is a distinct evaluation regime rather than the joint-SFT protocol
+of Table~\ref{tab:biopaws2_main}. ESM-2 head values are on the pre-leakage-fix splits and
+should be read as optimistic upper bounds; ``---'' = protocol not applicable (ESM-2 is a
+protein-only encoder; DNA tasks await a DNA-PLM baseline).}
+\label{tab:biopaws2_ref}
+\begin{tabular}{llcc}
+\toprule
+Task & Family & ESM-2-3B head & Qwen-3.7 zero-shot \\
+\midrule
+Protein homology (standard)      & F1 & 0.998 & 0.813 \\
+Protein homology (remote $<$25\%)& F1 & 0.524 & 0.457 \\
+Fold class (7-way)               & F5 & \textbf{0.971} & 0.073 \\
+Subcellular localization (6-way) & F2 & \textbf{0.954} & 0.233 \\
+Signal peptide                   & F2 & \textbf{1.000} & 0.663 \\
+Natural-product peptide          & F2 & \textbf{0.929} & --- \\
+Variant effect (ProteinGym, acc) & F4 & 0.531 & 0.497 \\
+Variant effect (ProteinGym, Spearman) & F4 & 0.36 & --- \\
+Promoter detection               & F3 & --- & 0.420 \\
+Central Dogma                    & F6 & --- & 0.787 \\
+Biomedical QA (BixBench T/F)     & F8 & --- & \textbf{0.937} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On protein homology the generalist matches or beats the specialist head; the specialist
+remains strongest on structure/localization (fold 0.971, localization 0.954), but each such
+number requires a separate trained head, whereas the generalist covers all tasks with one
+model. Remote homology is the one task where the generalist's advantage is at
+\emph{zero-shot} (0.653, exceeding the specialist head's 0.524 --- see \S\ref{sec:benchmarks})
+rather than from SFT; on BioPAWS-2's supervised split, remote-homology SFT collapses to a
+majority-class shortcut, consistent with the BioPAWS thesis that the twilight-zone advantage
+comes from abductive reasoning over a structural prior, not pattern memorization.
 
 The variant-effect result (F4) is informative about paradigm differences. ProteinGym
 deep-mutational-scanning is notoriously hard for mean-pooled PLM embeddings: a single point

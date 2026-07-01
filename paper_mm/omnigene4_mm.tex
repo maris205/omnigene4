@@ -19,7 +19,7 @@
 \linenumbers
 \captionsetup{font=small,labelfont=bf}
 
-\title{\textbf{OmniGene-4: A Unified Bio-Language MoE Model with\\ Router-Level Interpretability and Modality-Invariant Transfer}}
+\title{\textbf{BioPAWS-2: A Chat-Form Instruction-Tuning Benchmark and Training Resource\\ for Biological Foundation Models, with OmniGene-4 as a Case Study}}
 
 \author{Liang Wang\thanks{Corresponding author. Email: wangliang.f@gmail.com}\\
 \small School of Artificial Intelligence and Automation\\
@@ -32,7 +32,31 @@
 \maketitle
 
 \begin{abstract}
-\noindent How do multi-modal large language models that jointly process natural language and biological sequences (DNA, protein, structural alphabets) actually answer biological questions, especially sequence-grounded questions whose answer depends on residue-level patterns rather than literature recall? We introduce \textbf{OmniGene-4}, a unified bio-language Mixture-of-Experts foundation model on Gemma-4-26B-A4B (128 experts/layer, top-8 routing), and use its discrete router state to dissect this question. By hooking every router across eight task families, we provide the first router-level decomposition for a biological MoE: continued pretraining (CPT) accounts for \textbf{96\%} of cross-task expert differentiation and supervised fine-tuning (SFT) for \textbf{4\%}, reshaping middle and output layers respectively. Within the protein-homology task family, per-pair routing divergence stays below 0.04 (vs 0.23 cross-task), implying that sequence-grounded decisions occur \emph{inside} expert computation rather than at the gate --- the gate selects the modality, the experts compute the answer. The pipeline yields strong benchmarks: remote-homology \textbf{82.60\%} (vs ESM-2 3B, MMseqs2, DIAMOND by 28--31 pp); standard homology \textbf{99.40\%}; \textbf{BixBench} (general biological-knowledge) \textbf{93.66\%}. A dual-head architecture adds per-residue 3Di/DSSP classifiers (78.6\%/100\%). To probe whether the discovered transfer mechanism is robust under modality scaling, we further extend the model to \textbf{OmniGene-4-MM}, adding four vision modalities (chemical-structure images, medical/pathology imagery, charts) via a vision tower and a three-stage LoRA pipeline at $1.5$ GPU-days total. The multi-modal model preserves the homology capability (\textbf{85\%} standard, \textbf{69.5\%} remote) and acquires chemist-readable structure understanding (\textbf{96\%} on Vis-CheBI20 functional-group captioning) while consuming roughly four orders of magnitude less compute than recent specialized MoE bio-models. The work characterizes how multi-modal bio-foundation models acquire, route, and preserve sequence-aware capability --- central to the next generation of scientific large language models.
+\noindent The evaluation landscape for biological foundation models is fragmented across
+paradigm-specific formats --- protein/DNA language models with task-specific classification
+heads (TAPE, PEER, FLIP, ProteinGym, GUE) on one side, and free-form biological question
+answering on the other --- with no common axis on which a specialist encoder and a
+generalist chat model can be compared. We introduce \textbf{BioPAWS-2}, a public chat-form
+instruction-tuning benchmark and \emph{training resource} that re-expresses biological
+sequence classification, regression, structure, variant-effect, cross-modal, reasoning, and
+multimodal tasks in one instruction-QA format (9 task families, 22 tasks, 306K examples;
+released on Hugging Face and GitHub). Every task ships train/val/test splits and is scored
+under a dual protocol: zero-shot QA and fine-tune-then-evaluate, with the trainability gap
+$\Delta$ reported. We take data integrity as a first-class requirement: an MMseqs2 leakage
+audit is released with the benchmark, and all sequence tasks use entity-disjoint splits
+(homology leakage reduced from 0.78 to 0.08); re-running every supervised result on the
+leakage-free splits moves the headline by only $-1.4$ points, showing the leaderboard is not
+a memorization artifact. As a case study we evaluate \textbf{OmniGene-4}, a bio-language
+Mixture-of-Experts model on Gemma-4-26B-A4B, alongside a matched raw-Gemma-base control and
+specialist baselines. A key --- and deliberately self-critical --- finding is that
+biological continued-pretraining confers \emph{no material advantage under supervised
+fine-tuning} on BioPAWS-2 (OmniGene 0.769 vs.\ raw-base 0.760 macro, robust across leaky and
+clean splits): almost all supervised performance comes from the BioPAWS-2 data itself, which
+establishes it as a model-agnostic resource. OmniGene-4's distinctive value instead lies in
+its \emph{zero-shot} remote-homology detection (82.6\%, exceeding ESM-2 3B / MMseqs2 /
+DIAMOND by 28--31 pp with no task training) and in a router-level decomposition of where
+sequence-aware capability forms. BioPAWS-2 provides the common, leakage-controlled axis on
+which such claims can be made and reproduced.
 \end{abstract}
 
 
