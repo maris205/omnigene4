@@ -22,7 +22,7 @@ Reject → 4 → 6 → 6.8 → **7.1**.
 | `cover_letter_resubmission.pdf/.tex` | 2-pp cover letter to Dr. Alvarado | ✅ updated to final state |
 | `REVIEW_biopaws2_gpt54.md` | Full 6-round external review record | ✅ (internal, do not submit) |
 
-**Title:** "BioPAWS-2: A Chat-Form Instruction-Tuning Benchmark and Training Resource for
+**Title:** "OmniGene-4 and BioPAWS-2: A Low-Cost, Locally-Deployable Multi-Modal Bio-Language Mixture-of-Experts and an Open Chat-Form Benchmark for Biological Foundation Models" (dual-thread; 7.1/10 accept-track)
 Biological Foundation Models, with OmniGene-4 as a Case Study"
 
 ## 2. Public artefacts (reproducibility — links in manuscript + cover letter)
