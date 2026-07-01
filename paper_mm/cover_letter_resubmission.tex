@@ -75,6 +75,20 @@ its author-evaluator. Concretely:
     training corpus contributes.
 \end{enumerate}
 
+\paragraph{Reframing and data integrity.}
+Reflecting where the evidence now points, we have retitled and re-led the manuscript around
+\textbf{BioPAWS-2 as the central contribution}, with OmniGene-4 presented as a case study
+evaluated on it. Two additions make the benchmark self-auditing. First, a matched
+\emph{raw-Gemma-base} control under the identical joint fine-tuning protocol shows that our
+model's biological continued-pretraining confers \emph{no material advantage under
+supervised fine-tuning} (macro 0.769 vs.\ 0.760) --- i.e.\ we used our own benchmark to argue
+\emph{against} a self-serving conclusion, which is the opposite of self-benchmarking.
+Second, we release an MMseqs2 leakage audit and re-split every sequence task
+\emph{entity-disjoint} (homology leakage reduced from 0.78 to 0.08); re-running all
+supervised results on the leakage-free splits moves the headline by only $-1.4$ points,
+demonstrating the leaderboard is not a memorization artifact. ProteinGym is additionally
+reported with its field-standard Spearman metric.
+
 \paragraph{What is unchanged.}
 The empirical core of the original submission --- the router-level CPT-vs-SFT
 decomposition, the remote-homology results, and the modality-invariant-transfer analysis of
@@ -84,9 +98,10 @@ the independent benchmarking foundation those results now rest on.
 \paragraph{Openness.}
 All artefacts are public: the BioPAWS-2 dataset (\texttt{dnagpt/biopaws-2}), the model
 checkpoints (\texttt{dnagpt/OmniGene-4-MM-merged} and the LoRA adapter), and all training,
-conversion, evaluation, and leaderboard code (\texttt{github.com/maris205/omnigene4}). A
-third party can reproduce every leaderboard number, or add a new model, without any
-artefact private to our group.
+conversion, evaluation, leakage-audit, and leaderboard code
+(\texttt{github.com/maris205/omnigene4}). A third party can reproduce every leaderboard
+number --- including the leakage audit and the entity-disjoint splits --- or add a new model,
+without any artefact private to our group.
 
 \paragraph{Preprint and prior consideration.}
 A preliminary version is on bioRxiv (DOI \texttt{10.1101/2026.01.03.697478}); an updated v2
