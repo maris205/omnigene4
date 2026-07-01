@@ -707,4 +707,108 @@ mm = load_dataset("dnagpt/omnigene4-mm-corpus",
 print(next(iter(mm)))
 \end{verbatim}
 
+\section{Supplementary Note 4: BioPAWS-2 Construction, Leakage Audit, and Controls}
+\label{sec:supp-biopaws2}
+%% ============================================================
+
+This note documents the construction, integrity checks, and control experiments for the
+BioPAWS-2 benchmark (main text \S\ref{sec:biopaws2}). All items are reproducible from the
+public release (\texttt{dnagpt/biopaws-2} on Hugging Face; converters, audit, and re-split
+scripts under \texttt{biopaws2/} at \texttt{github.com/maris205/omnigene4}).
+
+\subsection*{S4.1: Coverage and sources}
+BioPAWS-2 comprises 9 task families / 22 tasks / $\approx$306K chat-format QA records:
+F1 pairwise homology (BioPAWS pairs), F2 protein function (LLaMA-Gene subcellular / signal
+peptide / NPP; UniProt-QA; Protein2Text; OPI-Struc), F3 DNA (promoter / core-promoter /
+splice / TF), F4 variant effect (ProteinGym DMS), F5 structure (fold class), F6 cross-modal
+(Central Dogma), F7 chain-of-thought (bioreason, protein\_catalogue), F8 biomedical QA
+(BixBench), F9 multimodal (Vis-CheBI20). Every record carries \texttt{task\_family},
+\texttt{task\_id}, \texttt{split}, \texttt{metric}, \texttt{license}, and \texttt{source}
+fields; regression tasks retain the raw value under \texttt{meta.value} for Spearman scoring.
+
+\subsection*{S4.2: Leakage audit and entity-disjoint splitting}
+The initial release used a row-level hash split, which we found leaked because the same
+protein recurs across many pairs/rows. We audited every sequence task with (i) exact
+cross-split duplicate rate and (ii) MMseqs2 homology leakage (\texttt{easy-cluster
+{-}{-}min-seq-id 0.5 -c 0.5 {-}{-}cov-mode 1}: fraction of test-containing clusters that also
+contain a train sequence). We then re-split at the \emph{entity} level --- whole MMseqs2
+clusters assigned to one split; pairwise rows straddling splits dropped. Table~\ref{tab:supp-leak}
+reports before/after.
+
+\begin{table}[H]
+\centering
+\small
+\caption{BioPAWS-2 leakage before (row-hash split) vs.\ after (entity-disjoint split).
+exact = test sequences appearing verbatim in train; homology = test MMseqs2 clusters
+(min-seq-id 0.5) sharing a train sequence. All fine-tuned results in the paper use the
+after-splits.}
+\label{tab:supp-leak}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{before} & \multicolumn{2}{c}{after} \\
+Task & exact & homology & exact & homology \\
+\midrule
+Protein homology (standard)  & 0.498 & 0.782 & 0.000 & 0.085 \\
+Protein homology (remote)    & 0.968 & 0.890 & 0.000 & 0.000 \\
+Signal peptide               & 0.888 & 0.907 & 0.000 & 0.005 \\
+Subcellular localization     & 0.139 & 0.629 & 0.000 & 0.022 \\
+Fold class (7-way)           & 0.000 & 0.313 & 0.000 & 0.005 \\
+Natural-product peptide      & 0.000 & 0.169 & 0.000 & 0.000 \\
+Promoter detection           & 0.002 & 0.233 & 0.000 & 0.013 \\
+Central Dogma (cross-modal)  & 0.415 & 0.836 & 0.000 & 0.457$^{\dagger}$ \\
+Splice / TF / core-promoter  & 0.000 & 0.000 & 0.000 & 0.000 \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+{\footnotesize $^{\dagger}$ Central Dogma pairs a DNA sequence with a protein; single-tower
+clustering cannot fully separate the cross-modal pair (residual reported honestly; a
+gene-level joint split is future work).}
+\end{table}
+
+Re-running all supervised results on the after-splits moved the joint-SFT headline by only
+$-1.4$ points (8-task macro $0.783 \to 0.769$), indicating the leaderboard is not a
+memorization artifact. Split manifests and the audit script are released so any leakage
+number is independently checkable.
+
+\subsection*{S4.3: Dual-mode protocol and metrics}
+Each task is scored under Mode~A (zero-shot QA; generative models only) and Mode~B
+(fine-tune-then-evaluate: generalist LLM via LoRA-SFT on the QA records, specialist PLM via
+its native frozen-backbone + trained head, same splits). Metrics are per task: accuracy /
+macro-F1 for classification, MCC for genomics binary tasks, Spearman for regression
+(bucketized to \texttt{low}/\texttt{medium}/\texttt{high} for the QA form while retaining the
+raw value), ROUGE-L/BLEU for free-form generation.
+
+\subsection*{S4.4: Initialization control (bio-CPT vs.\ none)}
+To separate ``the BioPAWS-2 data is useful'' from ``OmniGene is useful,'' we fine-tuned the
+raw Gemma-4-26B-A4B base (no bio-vocabulary, no bio-CPT) with the \emph{identical} 9-task
+joint-SFT recipe as OmniGene-4-MM (same mixture, per-task cap 6000, LoRA $r{=}64/\alpha{=}128$,
+same lr/epochs/batch), on the entity-disjoint splits. Only initialization and tokenizer
+differ. Result: OmniGene 0.769 vs.\ raw-base 0.760 (8-task macro), mean per-task
+$\Delta{+}0.008$, max$|\Delta|$ 0.032, sign inconsistent (5 favor OmniGene, 1 tie, 2 favor
+base). The same $\approx$-zero gap held on the pre-leakage-fix splits (0.783 vs.\ 0.772),
+so the conclusion --- biological CPT confers no material advantage under joint SFT --- is
+robust to the split.
+
+\subsection*{S4.5: ProteinGym native metric}
+For F4 we additionally report the field-standard ProteinGym primary metric. An ESM-2-3B
+mean-pooled regression head trained on the eight training assays and evaluated on the
+held-out AMIE assay ($n{=}3000$, WT-disjoint from training) attains Spearman $\rho = 0.36$.
+The bucketized deleterious/benign QA form is retained as the chat-interface-compatible
+variant, with the raw DMS score preserved per item.
+
+\subsection*{S4.6: Reproducibility}
+\begin{itemize}
+  \item Dataset: \texttt{huggingface.co/datasets/dnagpt/biopaws-2} (22 jsonl, dataset card,
+        \texttt{dataset\_stats.md}).
+  \item Converters: \texttt{biopaws2/tasks/} (one per family + \texttt{from\_llama\_gene.py},
+        \texttt{from\_local\_datasets.py}).
+  \item Leakage audit / re-split: \texttt{biopaws2/scripts/leakage\_audit.py},
+        \texttt{resplit\_entity\_disjoint.py}.
+  \item Evaluation: \texttt{biopaws2/eval/} (zero-shot, per-task SFT, joint SFT, PLM head,
+        Gemma-base control, ProteinGym Spearman, leaderboard builder).
+\end{itemize}
+
+
+
 \end{document}
