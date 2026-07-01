@@ -191,6 +191,16 @@ mean-pool-plus-head paradigm structurally discards. This is a concrete case wher
 chat-form formulation is not merely a convenience but recovers capability lost by the
 classical protocol.
 
+For completeness we also report the field-standard ProteinGym primary metric --- Spearman
+correlation between predicted and measured DMS fitness --- rather than only the bucketized
+accuracy above. An ESM-2-3B mean-pooled regression head trained on the eight training assays
+and evaluated on the held-out assay (AMIE, $n{=}3000$ variants, WT-disjoint from training)
+attains Spearman $\rho = 0.36$, a mid-range value typical for single-assay DMS regression at
+this model scale. We provide this native-metric number so BioPAWS-2's F4 can be compared
+directly against the ProteinGym leaderboard convention; the bucketized-QA form is retained
+as the chat-interface-compatible variant, with the raw DMS score preserved per item for
+Spearman scoring.
+
 \subsection{Controlling for initialization: is the gain from BioPAWS-2 data or from OmniGene?}
 \label{sec:biopaws2_control}
 
@@ -214,31 +224,33 @@ tokenizer. Table~\ref{tab:biopaws2_control} reports the result.
 \small
 \caption{\textbf{Initialization control under identical joint SFT.} OmniGene-4-MM
 (bio-vocab + 32.5\,GB bio-CPT) vs.\ raw Gemma-4 base (no bio-CPT), both LoRA-fine-tuned on
-the same nine-task BioPAWS-2 mixture with the same recipe. Macro is over the eight
+the same nine-task BioPAWS-2 mixture with the same recipe, on the leakage-free
+entity-disjoint splits (\S\ref{sec:biopaws2_leakage}). Macro is over the eight
 discrimination tasks (the free-form F7 chain-of-thought task is excluded from the macro;
-see text).}
+see text). The same $\approx$-zero gap held on the pre-leakage-fix splits (macro
+0.783 vs.\ 0.772, $\Delta{+}0.011$), so the conclusion is robust to the split.}
 \label{tab:biopaws2_control}
 \begin{tabular}{lccc}
 \toprule
 Task & OmniGene-4-MM + SFT & Gemma-4-base + SFT & $\Delta$ \\
 \midrule
-Protein homology (standard)  & 0.998 & 0.998 & $+0.000$ \\
-Subcellular localization     & 0.803 & 0.791 & $+0.011$ \\
-Promoter detection           & 0.865 & 0.837 & $+0.028$ \\
-Fold class (7-way)           & 0.570 & 0.518 & $+0.051$ \\
-Central Dogma                & 0.615 & 0.615 & $+0.000$ \\
-Signal peptide               & 0.924 & 0.941 & $-0.017$ \\
-Natural-product peptide      & 0.867 & 0.840 & $+0.027$ \\
-Variant effect (ProteinGym)  & 0.625 & 0.636 & $-0.011$ \\
+Protein homology (standard)  & 1.000 & 0.999 & $+0.001$ \\
+Subcellular localization     & 0.757 & 0.775 & $-0.018$ \\
+Promoter detection           & 0.886 & 0.873 & $+0.013$ \\
+Fold class (7-way)           & 0.568 & 0.536 & $+0.032$ \\
+Central Dogma                & 0.604 & 0.604 & $+0.000$ \\
+Signal peptide               & 0.933 & 0.904 & $+0.030$ \\
+Natural-product peptide      & 0.823 & 0.811 & $+0.012$ \\
+Variant effect (ProteinGym)  & 0.578 & 0.580 & $-0.002$ \\
 \midrule
-\textbf{Macro (8 tasks)}     & \textbf{0.783} & \textbf{0.772} & $+0.011$ \\
+\textbf{Macro (8 tasks)}     & \textbf{0.769} & \textbf{0.760} & $+0.008$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 The two models are \emph{statistically indistinguishable} under joint SFT: the macro gap is
-$+0.011$, the mean per-task difference is $+0.010$, the largest single-task difference is
-$0.051$ (fold class), and the sign of the difference is inconsistent across tasks (five
+$+0.008$, the mean per-task difference is $+0.008$, the largest single-task difference is
+$0.032$ (fold class), and the sign of the difference is inconsistent across tasks (five
 favor OmniGene, two are ties, two favor the base model). We read this honestly: \textbf{on
 BioPAWS-2's supervised tasks, almost all of the achievable performance comes from the
 BioPAWS-2 training data, not from OmniGene's biological pretraining}. Biological CPT does
@@ -248,7 +260,7 @@ corpus}.
 This is a useful negative result that the benchmark itself surfaces, and it sharpens --- rather
 than weakens --- the contribution of this paper. First, it cleanly separates the two claims:
 BioPAWS-2 is established as an effective, model-agnostic training resource (a strong base
-model with no domain pretraining reaches macro 0.772), while OmniGene-4-MM's distinctive
+model with no domain pretraining reaches macro 0.760), while OmniGene-4-MM's distinctive
 value is shown to lie \emph{elsewhere} than in supervised-fine-tuning headroom --- namely in
 its \emph{zero-shot} behaviour (e.g.\ remote-homology detection, \S\ref{sec:benchmarks},
 where it exceeds specialist PLMs without any task training) and in its router-level
