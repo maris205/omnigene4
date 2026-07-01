@@ -19,7 +19,7 @@
 \linenumbers
 \captionsetup{font=small,labelfont=bf}
 
-\title{\textbf{BioPAWS-2: A Chat-Form Instruction-Tuning Benchmark and Training Resource\\ for Biological Foundation Models, with OmniGene-4 as a Case Study}}
+\title{\textbf{OmniGene-4 and BioPAWS-2: A Low-Cost, Locally-Deployable Multi-Modal\\ Bio-Language Mixture-of-Experts and an Open Chat-Form Benchmark\\ for Biological Foundation Models}}
 
 \author{Liang Wang\thanks{Corresponding author. Email: wangliang.f@gmail.com}\\
 \small School of Artificial Intelligence and Automation\\
@@ -32,31 +32,7 @@
 \maketitle
 
 \begin{abstract}
-\noindent The evaluation landscape for biological foundation models is fragmented across
-paradigm-specific formats --- protein/DNA language models with task-specific classification
-heads (TAPE, PEER, FLIP, ProteinGym, GUE) on one side, and free-form biological question
-answering on the other --- with no common axis on which a specialist encoder and a
-generalist chat model can be compared. We introduce \textbf{BioPAWS-2}, a public chat-form
-instruction-tuning benchmark and \emph{training resource} that re-expresses biological
-sequence classification, regression, structure, variant-effect, cross-modal, reasoning, and
-multimodal tasks in one instruction-QA format (9 task families, 22 tasks, 306K examples;
-released on Hugging Face and GitHub). Every task ships train/val/test splits and is scored
-under a dual protocol: zero-shot QA and fine-tune-then-evaluate, with the trainability gap
-$\Delta$ reported. We take data integrity as a first-class requirement: an MMseqs2 leakage
-audit is released with the benchmark, and all sequence tasks use entity-disjoint splits
-(homology leakage reduced from 0.78 to 0.08); re-running every supervised result on the
-leakage-free splits moves the headline by only $-1.4$ points, showing the leaderboard is not
-a memorization artifact. As a case study we evaluate \textbf{OmniGene-4}, a bio-language
-Mixture-of-Experts model on Gemma-4-26B-A4B, alongside a matched raw-Gemma-base control and
-specialist baselines. A key --- and deliberately self-critical --- finding is that
-biological continued-pretraining confers \emph{no material advantage under supervised
-fine-tuning} on BioPAWS-2 (OmniGene 0.769 vs.\ raw-base 0.760 macro, robust across leaky and
-clean splits): almost all supervised performance comes from the BioPAWS-2 data itself, which
-establishes it as a model-agnostic resource. OmniGene-4's distinctive value instead lies in
-its \emph{zero-shot} remote-homology detection (82.6\%, exceeding ESM-2 3B / MMseqs2 /
-DIAMOND by 28--31 pp with no task training) and in a router-level decomposition of where
-sequence-aware capability forms. BioPAWS-2 provides the common, leakage-controlled axis on
-which such claims can be made and reproduced.
+\noindent We present two coupled contributions for biological foundation modeling. First, \textbf{OmniGene-4}, a unified bio-language Mixture-of-Experts model built on Gemma-4-26B-A4B (128 experts/layer, top-8 routing, $\approx$3.8B active parameters) trained at \textbf{$\sim$1.5 GPU-days} of total fine-tuning --- roughly four orders of magnitude less compute than recent specialized MoE bio-models --- and \textbf{locally deployable} (4-bit / Q4\_K\_M GGUF on a single 24\,GB GPU such as an RTX 4090). One model spans eight modalities (DNA, protein, structural alphabets, natural language, and, in the multi-modal extension OmniGene-4-MM, molecular/medical/chart imagery). It exhibits two capabilities that do not depend on task-specific training: \emph{zero-shot} remote-homology detection (82.6\%, exceeding ESM-2 3B, MMseqs2, and DIAMOND by 28--31 pp on identical pairs), and a router-level decomposition suggesting continued pretraining (CPT) reshapes middle-layer routing while supervised fine-tuning (SFT) adjusts output-layer routing. Second, to evaluate such models fairly --- the landscape being fragmented across paradigm-specific formats (PLM-plus-head benchmarks vs.\ free-form QA, with no common axis) --- we release \textbf{BioPAWS-2}, a public chat-form instruction-tuning benchmark and training resource (9 task families, 22 tasks, 306K examples) with a dual zero-shot / fine-tune protocol. We treat data integrity as first-class: an MMseqs2 leakage audit is released, all sequence tasks use entity-disjoint splits (homology leakage 0.78$\to$0.08), and re-running every supervised result on the clean splits moves the headline by only $-1.4$ points. A matched raw-Gemma-base control under identical joint fine-tuning shows biological CPT confers \emph{no material advantage under SFT} (0.769 vs.\ 0.760) --- we use our own benchmark to argue against a self-serving conclusion, establishing BioPAWS-2 as a model-agnostic resource and locating OmniGene-4's value in deployment cost, modality breadth, and zero-shot behaviour rather than SFT headroom. Model checkpoints and the full benchmark/code are public.
 \end{abstract}
 
 
